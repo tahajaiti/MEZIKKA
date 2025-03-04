@@ -19,7 +19,8 @@ class AuthController extends Controller
         $data = $request->validate([
             'name' => 'string|required|min:3',
             'email' => 'email|required|unique:users',
-            'password' => 'string|required|min:6'
+            'password' => 'string|required|min:6',
+            'role' => 'string|required|in:artist,listener'
         ]);
 
         $token = $this->authService->register($data);
