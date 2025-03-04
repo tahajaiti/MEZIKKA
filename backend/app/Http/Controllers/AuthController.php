@@ -15,8 +15,6 @@ class AuthController extends Controller
         $this->authService = $authService;
     }
 
-
-
     public function register(Request $request){
         $data = $request->validate([
             'name' => 'string|required|min:3',
@@ -24,12 +22,12 @@ class AuthController extends Controller
             'password' => 'string|required|min:6'
         ]);
 
-        $user = !$this->authService->register($data);
+        $token = $this->authService->register($data);
 
-        if (!$user){
+        if (!$token){
             return ApiResponse::error('Failed to register user', 500);
         }
 
-        return ApiResponse::success($user,'User registered successfully', 201);
+        return ApiResponse::success($token,'User registered successfully', 201);
     }
 }
