@@ -56,4 +56,14 @@ class AuthTest extends TestCase
                 'data'
             ]);
     }
+
+    public function test_login_with_invalid_creds(): void
+    {
+        $response = $this->postJson('/api/auth/login', [
+            'email' => 'random@gmail.com',
+            'password' => 'passsssssw',
+        ]);
+
+        $response->assertStatus(422);
+    }
 }
