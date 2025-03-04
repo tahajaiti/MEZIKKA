@@ -25,11 +25,27 @@ class AuthService {
 
         $token = JWTAuth::fromUser($user);
 
+        return $this->toToken($token);
+    }
+
+
+    public function login(array $data){
+        $user = User::where('email', $data['email'])->first();
+
+        if (!$user || !Hash::check($data['password'], $user->password)) {
+            return false;
+        }
+
+        $token = JWTAuth::fromUser($user);
+
+        return $this->toToken($token);
+    }
+
+    private function toToken($token){
         return [
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => JWTAuth::factory()->getTTL() * 60
         ];
     }
-
 }

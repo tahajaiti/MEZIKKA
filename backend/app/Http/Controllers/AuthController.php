@@ -31,4 +31,19 @@ class AuthController extends Controller
 
         return ApiResponse::success($token,'User registered successfully', 201);
     }
+
+    public function login(Request $request){
+        $data = $request->validate([
+            'email'=> 'email|required|exists:users,email',
+            'password'=> 'required|string',
+        ]);
+
+        $token = $this->authService->login($data);
+
+        if (!$token){
+            return ApiResponse::error('Invalid credentials', 401);
+        }
+
+        return ApiResponse::success($token,'Logged in successfully');
+    }
 }
