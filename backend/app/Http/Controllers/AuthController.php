@@ -12,11 +12,13 @@ class AuthController extends Controller
 
     protected AuthService $authService;
 
-    public function __construct(AuthService $authService){
+    public function __construct(AuthService $authService)
+    {
         $this->authService = $authService;
     }
 
-    public function register(Request $request){
+    public function register(Request $request)
+    {
         $data = $request->validate([
             'name' => 'string|required|min:3',
             'email' => 'email|required|unique:users',
@@ -26,31 +28,38 @@ class AuthController extends Controller
 
         $token = $this->authService->register($data);
 
-        if (!$token){
+        if (!$token) {
             return ApiResponse::error('Failed to register user', 500);
         }
 
-        return ApiResponse::success($token,'User registered successfully', 201);
+        return ApiResponse::success($token, 'User registered successfully', 201);
     }
 
-    public function login(Request $request){
+    public function login(Request $request)
+    {
         $data = $request->validate([
-            'email'=> 'email|required|exists:users,email',
-            'password'=> 'required|string',
+            'email' => 'email|required|exists:users,email',
+            'password' => 'required|string',
         ]);
 
         $token = $this->authService->login($data);
 
-        if (!$token){
+        if (!$token) {
             return ApiResponse::error('Invalid credentials', 401);
         }
 
-        return ApiResponse::success($token,'Logged in successfully');
+        return ApiResponse::success($token, 'Logged in successfully');
     }
 
-    public function logout(){
-        JWTAuth::invalidate(JWTAuth::getToken());
+    public function logout(Request $request)
+    {
+        $token = $request->bearerToken();
 
-        return ApiResponse::success(null,'Logged out successfully');
+        if (!$token) {
+            return ApiResponse::error('Token not provided', 401);
+        }
+
+        JWTAuth::parseToken()->invalidate();
+        return ApiResponse::success(null, 'Logged out successfully');
     }
 }

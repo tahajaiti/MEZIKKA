@@ -67,7 +67,8 @@ class AuthTest extends TestCase
         $response->assertStatus(422);
     }
 
-    public function test_login_with_invalid_password(): void{
+    public function test_login_with_invalid_password(): void
+    {
         $user = User::factory()->create();
 
         $response = $this->postJson('/api/auth/login', [
@@ -80,6 +81,30 @@ class AuthTest extends TestCase
                 'status',
                 'message',
                 'data'
+            ]);
+    }
+
+    public function test_logout_user()
+    {
+        $user = User::factory()->create();
+        $tokenResponse = $this->postJson('/api/auth/login', [
+            'email' => $user->email,
+            'password' => 'password',
+        ]);
+
+        $tokenResponse->assertStatus(200);
+
+        $token = $tokenResponse->json('data.token');
+
+        $response = $this->withHeaders([
+            'Authorization' => "Bearer $token"
+        ])->postJson('/api/auth/logout');
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'status' => 'success',
+                'message' => 'Logged out successfully',
+                'data' => null
             ]);
     }
 }
