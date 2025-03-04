@@ -2,6 +2,8 @@
 namespace App\Http\Services;
 
 use App\Models\User;
+use App\Models\Profile;
+use Illuminate\Support\Facades\Hash;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 
@@ -13,7 +15,12 @@ class AuthService {
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => bcrypt($data['password'])
+            'password' => Hash::make($data['password']),
+            'role_id' => $data['role'] === 'artist' ? 2 : 3
+        ]);
+
+        Profile::create([
+            'user_id' => $user->id
         ]);
 
         $token = JWTAuth::fromUser($user);

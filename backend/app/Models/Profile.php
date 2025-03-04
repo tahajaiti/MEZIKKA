@@ -10,7 +10,8 @@ class Profile extends Model
 
     protected $fillable = [
         "bio",
-        "avatar"
+        "avatar",
+        'user_id'
     ];
 
     public function user (){
