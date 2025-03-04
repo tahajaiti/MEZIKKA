@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Throwable;
 use App\Helpers\ApiResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +20,7 @@ class ApiErrMiddleware
     {
         try {
             return $next($request);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return ApiResponse::error($e->getMessage(), 500);
         }
     }

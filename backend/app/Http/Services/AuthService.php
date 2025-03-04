@@ -1,8 +1,8 @@
 <?php
 namespace App\Http\Services;
 
-use App\Models\User;
 use App\Models\Profile;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
@@ -40,6 +40,7 @@ class AuthService {
 
         return $this->toToken($token);
     }
+
 
     private function toToken($token){
         return [

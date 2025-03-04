@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\ApiResponse;
 use App\Http\Services\AuthService;
 use Illuminate\Http\Request;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -45,5 +46,11 @@ class AuthController extends Controller
         }
 
         return ApiResponse::success($token,'Logged in successfully');
+    }
+
+    public function logout(){
+        JWTAuth::invalidate(JWTAuth::getToken());
+
+        return ApiResponse::success(null,'Logged out successfully');
     }
 }
