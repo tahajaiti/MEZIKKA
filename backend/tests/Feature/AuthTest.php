@@ -66,4 +66,20 @@ class AuthTest extends TestCase
 
         $response->assertStatus(422);
     }
+
+    public function test_login_with_invalid_password(): void{
+        $user = User::factory()->create();
+
+        $response = $this->postJson('/api/auth/login', [
+            'email' => $user->email,
+            'password' => 'baddddpaaaaaa',
+        ]);
+
+        $response->assertStatus(401)
+            ->assertJsonStructure([
+                'status',
+                'message',
+                'data'
+            ]);
+    }
 }
