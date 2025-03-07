@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Services;
 
+use App\Facades\JWT;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -23,7 +24,7 @@ class AuthService {
             'user_id' => $user->id
         ]);
 
-        $token = JWTAuth::fromUser($user);
+        $token = JWT::generate($user);
 
         return $this->toToken($token);
     }
@@ -36,7 +37,7 @@ class AuthService {
             return false;
         }
 
-        $token = JWTAuth::fromUser($user);
+        $token = JWT::generate($user);
 
         return $this->toToken($token);
     }

@@ -2,11 +2,11 @@
 
 namespace App\Http\Middleware;
 
+use App\Facades\JWT;
 use App\Helpers\ApiResponse;
 use Closure;
 use Illuminate\Http\Request;
 use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
-use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use Symfony\Component\HttpFoundation\Response;
 
 class JwtMiddleware
@@ -20,7 +20,7 @@ class JwtMiddleware
     {
 
         try {
-            $user = JWTAuth::parseToken()->authenticate();
+            JWT::validate($request->bearerToken());
         } catch (JWTException $e) {
             return ApiResponse::error('Unauthorized', 401);
         }

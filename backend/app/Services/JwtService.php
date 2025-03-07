@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Exception;
 use App\Models\User;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
