@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Services;
+
 use App\Models\User;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;

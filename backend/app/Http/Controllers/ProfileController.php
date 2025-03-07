@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
 use App\Models\Profile;
-use Illuminate\Http\Request;
 use App\Http\Services\ProfileService;
 
 class ProfileController extends Controller
