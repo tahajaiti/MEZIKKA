@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Facades\JWT;
+use App\Helpers\Gen;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -19,8 +20,10 @@ class AuthService {
             'role_id' => $data['role'] === 'artist' ? 2 : 3
         ]);
 
+        $username = Gen::username($user->name);
 
         Profile::create([
+            'username' => $username,
             'user_id' => $user->id
         ]);
 
