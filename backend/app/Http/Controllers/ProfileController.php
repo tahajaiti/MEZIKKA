@@ -30,8 +30,7 @@ class ProfileController extends Controller
     }
 
     public function update(ProfileUpdateRequest $request){
-        dump($request->all());
-        $result = $this->profileService->update($request->validated());
+        $result = $this->profileService->update($request);
 
 
         if ($result) {
@@ -39,7 +38,6 @@ class ProfileController extends Controller
         }
 
         return ApiResponse::error('Failed to update profile',400);
-
     }
 
 

@@ -14,7 +14,6 @@ class ProfileUpdateRequest extends FormRequest
         return true;
     }
 
-    
 
     /**
      * Get the validation rules that apply to the request.
@@ -24,8 +23,8 @@ class ProfileUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'bio' => 'string|nullable',
-            'avatar' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'bio' => 'string',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 }

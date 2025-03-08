@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\ApiResponse;
 use Exception;
 use App\Models\User;
 use Firebase\JWT\JWT;
@@ -36,7 +37,7 @@ class JwtService {
             'iss' => Config::get('app.name'),
             'sub' => $user->id,
             'iat' => Carbon::now()->timestamp,
-            'exp' => Carbon::now()->addHours(2)->timestamp,
+            'exp' => Carbon::now()->addHours(6)->timestamp,
         ];
     }
 
@@ -51,7 +52,12 @@ class JwtService {
     public function validate(string $token){
         $decode = $this->decode($token);
         $this->token = $token;
-        return $decode && $decode->exp > Carbon::now()->timestamp;
+
+        if (!$decode){
+            throw new Exception('Invalid token');
+        }
+
+        return true;
     }
 
     public function user(){

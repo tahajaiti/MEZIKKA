@@ -5,7 +5,6 @@ use App\Facades\JWT;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 
 class AuthService {
@@ -47,7 +46,6 @@ class AuthService {
         return [
             'token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => JWTAuth::factory()->getTTL() * 60
         ];
     }
 }
