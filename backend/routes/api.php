@@ -14,5 +14,5 @@ Route::prefix('auth')->group(function () {
 
 
 Route::group(['prefix' => 'profile', 'middleware' => ['jwt']], function () {
-    Route::get('/{profile}', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/', [ProfileController::class, 'show'])->name('profile.show');
 });

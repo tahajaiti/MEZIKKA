@@ -15,6 +15,8 @@ class JwtService {
 
     protected string $algo;
 
+    protected string $token;
+
 
     public function __construct(){
 
@@ -23,17 +25,17 @@ class JwtService {
     }
 
     public function generate(User $user){
-        $payload = $this->getPayload($user);
+        $payload = $this->payload($user);
 
         return JWT::encode($payload, $this->secret, $this->algo);
     }
 
 
-    private function getPayload(User $user){
+    private function payload(User $user){
         return [
             'iss' => Config::get('app.name'),
             'sub' => $user->id,
-            'iat' => Carbon::now(),
+            'iat' => Carbon::now()->timestamp,
             'exp' => Carbon::now()->addHours(2)->timestamp,
         ];
     }
@@ -48,7 +50,25 @@ class JwtService {
 
     public function validate(string $token){
         $decode = $this->decode($token);
-        return $decode && isset($decode->sub);
+        $this->token = $token;
+        return $decode ?? null;
     }
+
+    public function user(){
+
+        $decoded = $this->decode($this->token);
+
+        return User::find($decoded->sub);
+    }
+
+    // public function get(string $token, string $key){
+    //     $decode = $this->decode($token);
+
+    //     if (isset($key)){
+    //         return $decode->$key;
+    //     }
+
+    //     return $decode;
+    // }
 
 }

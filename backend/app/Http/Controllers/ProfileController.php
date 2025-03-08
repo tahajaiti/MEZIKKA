@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Facades\JWT;
 use App\Helpers\ApiResponse;
-use App\Models\Profile;
-use App\Http\Services\ProfileService;
+use App\Services\ProfileService;
+use Illuminate\Http\Request;
 
 class ProfileController extends Controller
 {
@@ -16,10 +17,16 @@ class ProfileController extends Controller
         $this->profileService = $profileService;
     }
 
-    public function show(Profile $profile)
+    public function show()
     {
-        $profile->user;
-        return ApiResponse::success($profile);
+        $user = JWT::user();
+
+        if (!$user) {
+            return ApiResponse::error('Unauthorized', 401);
+        }
+
+        return ApiResponse::success($user->profile);
     }
+
 
 }
