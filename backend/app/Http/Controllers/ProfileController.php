@@ -32,7 +32,6 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request){
         $result = $this->profileService->update($request);
 
-
         if ($result) {
             return ApiResponse::success($result, 'Profile updated successfully');
         }
