@@ -16,7 +16,7 @@ class ProfileService
 
         $path = $request->hasFile('avatar') ? $request->file('avatar')->store('avatars', 'public') : null;
 
-        if ($profile->avatar) {
+        if ($profile->avatar && $path) {
             Storage::disk('public')->delete($profile->avatar);
         }
 
@@ -24,7 +24,7 @@ class ProfileService
         $profile->bio = $request->bio;
 
         $profile->save();
-        
+
         return $profile;
     }
 

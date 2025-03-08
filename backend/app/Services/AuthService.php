@@ -19,6 +19,7 @@ class AuthService {
             'role_id' => $data['role'] === 'artist' ? 2 : 3
         ]);
 
+
         Profile::create([
             'user_id' => $user->id
         ]);
