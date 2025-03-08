@@ -20,8 +20,8 @@ class JwtService {
 
     public function __construct(){
 
-        $this->secret = Config::get('app.jwt_secret', env('JWT_SECRET'));
-        $this->algo = Config::get('app.jwt_algo', env('JWT_ALGO'));
+        $this->secret = Config::get('jwt.secret', env('JWT_SECRET'));
+        $this->algo = Config::get('jwt.algo', env('JWT_ALGO'));
     }
 
     public function generate(User $user){
@@ -51,7 +51,7 @@ class JwtService {
     public function validate(string $token){
         $decode = $this->decode($token);
         $this->token = $token;
-        return $decode ?? null;
+        return $decode && $decode->exp > Carbon::now()->timestamp;
     }
 
     public function user(){

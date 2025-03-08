@@ -15,4 +15,5 @@ Route::prefix('auth')->group(function () {
 
 Route::group(['prefix' => 'profile', 'middleware' => ['jwt']], function () {
     Route::get('/', [ProfileController::class, 'show'])->name('profile.show');
+    Route::put('/', [ProfileController::class, 'update'])->name('profile.update');
 });

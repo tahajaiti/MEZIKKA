@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Facades\JWT;
 use App\Helpers\ApiResponse;
+use App\Http\Requests\ProfileUpdateRequest;
 use App\Services\ProfileService;
 use Illuminate\Http\Request;
 
@@ -26,6 +27,19 @@ class ProfileController extends Controller
         }
 
         return ApiResponse::success($user->profile);
+    }
+
+    public function update(ProfileUpdateRequest $request){
+        dump($request->all());
+        $result = $this->profileService->update($request->validated());
+
+
+        if ($result) {
+            return ApiResponse::success($result, 'Profile updated successfully');
+        }
+
+        return ApiResponse::error('Failed to update profile',400);
+
     }
 
 

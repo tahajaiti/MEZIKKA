@@ -20,8 +20,6 @@ class JwtMiddleware
     {
 
         try {
-            // dd($request->bearerToken());
-
             JWT::validate($request->bearerToken());
         } catch (JWTException $e) {
             return ApiResponse::error('Unauthorized', 401);
