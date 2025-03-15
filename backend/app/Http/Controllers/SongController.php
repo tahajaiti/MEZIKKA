@@ -2,12 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponse;
 use App\Http\Requests\SongPostRequest;
 use App\Models\Song;
+use App\Services\SongService;
 use Illuminate\Http\Request;
 
 class SongController extends Controller
 {
+
+    private SongService $songService;
+
+    public function __construct(SongService $songService)
+    {
+        $this->songService = $songService;
+    }
+
+
     /**
      * Display a listing of the resource.
      */
@@ -21,9 +32,13 @@ class SongController extends Controller
      */
     public function store(SongPostRequest $request)
     {
-        $data = $request->validated();
+        $res = $this->songService->create($request);
 
-        
+        if ($res) {
+            return ApiResponse::success($res, 'Song created successfully', 201);
+        }
+
+        return ApiResponse::error('Failed to create song', 400);
     }
 
     /**
