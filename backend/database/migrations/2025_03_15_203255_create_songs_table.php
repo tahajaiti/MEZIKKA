@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('songs', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('file_path');
+            $table->string('cover_path');
+            $table->string('description');
+            $table->json('metadata');
+            $table->foreignId('parent_id')->nullable()->default(null)->constrained('songs');
+            $table->foreignId('remix_id')->nullable()->default(null)->constrained('songs');
+            $table->foreignId('user_id')->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
     }
