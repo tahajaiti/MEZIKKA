@@ -11,7 +11,7 @@ class SongPostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -26,7 +26,7 @@ class SongPostRequest extends FormRequest
             'song_file' => 'required|file|mimes:mp3,ogg,wav,flac',
             'cover_file' => 'required|file|mimes:jpeg,png|max:2048',
             'description' => 'string',
-            'metadata' => 'required|json',
+            'metadata' => 'json',
         ];
     }
 }

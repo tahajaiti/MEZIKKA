@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('file_path');
             $table->string('cover_path');
             $table->string('description');
-            $table->json('metadata');
+            $table->json('metadata')->nullable();
             $table->foreignId('parent_id')->nullable()->default(null)->constrained('songs');
             $table->foreignId('remix_id')->nullable()->default(null)->constrained('songs');
             $table->foreignId('user_id')->constrained('users')->nullOnDelete();

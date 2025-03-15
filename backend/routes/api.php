@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SongController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -16,4 +17,10 @@ Route::prefix('auth')->group(function () {
 Route::group(['prefix' => 'profile', 'middleware' => ['jwt']], function () {
     Route::get('/', [ProfileController::class, 'show'])->name('profile.show');
     Route::put('/', [ProfileController::class, 'update'])->name('profile.update');
+});
+
+
+Route::group(['prefix' => 'songs', 'middleware' => ['jwt']], function() {
+    Route::post('/', [SongController::class, 'store'])->name('song.store');
+
 });

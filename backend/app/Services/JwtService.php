@@ -2,37 +2,40 @@
 
 namespace App\Services;
 
-use App\Helpers\ApiResponse;
 use Exception;
 use App\Models\User;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Config;
+use stdClass;
 
-class JwtService {
+class JwtService
+{
 
     protected string $secret;
 
     protected string $algo;
 
-    protected string $token;
+    protected stdClass $decoded;
 
 
-    public function __construct(){
-
-        $this->secret = Config::get('jwt.secret', env('JWT_SECRET'));
-        $this->algo = Config::get('jwt.algo', env('JWT_ALGO'));
+    public function __construct()
+    {
+        $this->secret = env('JWT_SECRET', Config::get('jwt.secret'));
+        $this->algo = env('JWT_ALGO', Config::get('jwt.algo', 'HS256'));
     }
 
-    public function generate(User $user){
+    public function generate(User $user)
+    {
         $payload = $this->payload($user);
 
         return JWT::encode($payload, $this->secret, $this->algo);
     }
 
 
-    private function payload(User $user){
+    private function payload(User $user)
+    {
         return [
             'iss' => Config::get('app.name'),
             'sub' => $user->id,
@@ -41,7 +44,8 @@ class JwtService {
         ];
     }
 
-    public function decode(string $token){
+    public function decode(string $token)
+    {
         try {
             return JWT::decode($token, new Key($this->secret, $this->algo));
         } catch (Exception $e) {
@@ -49,32 +53,32 @@ class JwtService {
         }
     }
 
-    public function validate(string $token){
+    public function validate(string $token)
+    {
         $decode = $this->decode($token);
-        $this->token = $token;
+        $this->decoded = $decode;
+        $user = $this->user();
 
-        if (!$decode){
+        if (!$decode) {
             throw new Exception('Invalid token');
+        }
+
+        if (!$user) {
+            throw new Exception('Invalid user');
         }
 
         return true;
     }
 
-    public function user(){
+    public function user()
+    {
+        $id = $this->decoded->sub;
 
-        $decoded = $this->decode($this->token);
+        if (!$id) {
+            return null;
+        }
 
-        return User::find($decoded->sub);
+        return User::find($id);
     }
-
-    // public function get(string $token, string $key){
-    //     $decode = $this->decode($token);
-
-    //     if (isset($key)){
-    //         return $decode->$key;
-    //     }
-
-    //     return $decode;
-    // }
 
 }
