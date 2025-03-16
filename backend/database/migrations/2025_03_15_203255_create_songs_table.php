@@ -20,6 +20,7 @@ return new class extends Migration
             $table->json('metadata')->nullable();
             $table->foreignId('parent_id')->nullable()->default(null)->constrained('songs');
             $table->foreignId('remix_id')->nullable()->default(null)->constrained('songs');
+            $table->foreignId('genre_id')->nullable()->default(null)->constrained('genres');
             $table->foreignId('user_id')->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
