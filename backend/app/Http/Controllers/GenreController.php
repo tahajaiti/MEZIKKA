@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Genre;
-use App\Helpers\ApiResponse;
+use App\Helpers\Res;
 use App\Http\Requests\GenrePostRequest;
 use Illuminate\Http\Request;
 use App\Services\GenreService;
@@ -22,7 +22,7 @@ class GenreController extends Controller
      */
     public function index()
     {
-        return Genre::all();
+        return Res::success(Genre::all());
     }
 
     /**
@@ -33,10 +33,10 @@ class GenreController extends Controller
         $res = $this->genreService->create($request);
 
         if ($res) {
-            return ApiResponse::success($res, 'Genre created successfully', 201);
+            return Res::success($res, 'Genre created successfully', 201);
         }
 
-        return ApiResponse::error('Failed to create genre', 400);
+        return Res::error('Failed to create genre', 400);
 
 
     }
@@ -44,9 +44,9 @@ class GenreController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Genre $genre)
     {
-        //
+        return Res::success($genre);
     }
 
     /**

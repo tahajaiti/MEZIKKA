@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ApiResponse;
+use App\Helpers\Res;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
 
@@ -28,10 +28,10 @@ class AuthController extends Controller
         $token = $this->authService->register($data);
 
         if (!$token) {
-            return ApiResponse::error('Failed to register user', 500);
+            return Res::error('Failed to register user', 500);
         }
 
-        return ApiResponse::success($token, 'User registered successfully', 201);
+        return Res::success($token, 'User registered successfully', 201);
     }
 
     public function login(Request $request)
@@ -44,10 +44,10 @@ class AuthController extends Controller
         $token = $this->authService->login($data);
 
         if (!$token) {
-            return ApiResponse::error('Invalid credentials', 401);
+            return Res::error('Invalid credentials', 401);
         }
 
-        return ApiResponse::success($token, 'Logged in successfully');
+        return Res::success($token, 'Logged in successfully');
     }
 
     public function logout(Request $request)
@@ -55,10 +55,10 @@ class AuthController extends Controller
         $token = $request->bearerToken();
 
         if (!$token) {
-            return ApiResponse::error('Token not provided', 401);
+            return Res::error('Token not provided', 401);
         }
 
         // JWT::invalidate($token);
-        return ApiResponse::success(null, 'Logged out successfully');
+        return Res::success(null, 'Logged out successfully');
     }
 }

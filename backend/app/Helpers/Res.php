@@ -2,7 +2,7 @@
 namespace App\Helpers;
 
 
-class ApiResponse {
+class Res {
     public static function success($data, $message = 'success', $code = 200): \Illuminate\Http\JsonResponse
     {
         return response()->json([

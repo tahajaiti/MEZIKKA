@@ -3,7 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Facades\JWT;
-use App\Helpers\ApiResponse;
+use App\Helpers\Res;
 use Closure;
 use Exception;
 use Illuminate\Http\Request;
@@ -20,13 +20,13 @@ class JwtMiddleware
     {
         $jwt = $request->bearerToken();
         if (empty($jwt)) {
-            return ApiResponse::error('No Token', 401);
+            return Res::error('No Token', 401);
         }
 
         try {
             JWT::validate($jwt);
         } catch (Exception $e) {
-            return ApiResponse::error('Unauthorized', 401);
+            return Res::error('Unauthorized', 401);
         }
 
 
