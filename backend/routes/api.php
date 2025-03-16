@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GenreController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SongController;
 use Illuminate\Support\Facades\Route;
@@ -20,6 +21,6 @@ Route::middleware('jwt')->group(function () {
     });
 
     Route::apiResource('songs', SongController::class);
-    Route::apiResource('genres', SongController::class);
+    Route::apiResource('genres', GenreController::class);
 
 });

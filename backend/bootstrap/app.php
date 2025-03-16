@@ -1,10 +1,12 @@
 <?php
 
-use App\Http\Middleware\ApiErrMiddleware;
+use App\Helpers\Res;
 use App\Http\Middleware\JwtMiddleware;
 use Illuminate\Foundation\Application;
+use App\Http\Middleware\ApiErrMiddleware;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -22,4 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
+        $exceptions->render(function (NotFoundHttpException $e) {
+            return Res::error('Resource not found', 404);
+        });
     })->create();

@@ -21,7 +21,7 @@ class ApiErrMiddleware
         try {
             return $next($request);
         } catch (Throwable $e) {
-            return Res::error($e->getMessage(), 500);
+            return Res::error('an error occurred', 500);
         }
     }
 }
