@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Genre;
 use App\Helpers\Res;
 use App\Http\Requests\GenrePostRequest;
-use Illuminate\Http\Request;
 use App\Services\GenreService;
 
 class GenreController extends Controller
@@ -37,8 +36,6 @@ class GenreController extends Controller
         }
 
         return Res::error('Failed to create genre', 400);
-
-
     }
 
     /**
@@ -52,16 +49,27 @@ class GenreController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(GenrePostRequest $request, Genre $genre)
     {
-        //
+        $res = $this->genreService->update($request, $genre);
+        if ($res) {
+            return Res::success($genre, 'Genre updated successfully', 200);
+        }
+
+        return Res::error('Failed to update genre', 400);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Genre $genre)
     {
-        //
+        $res = $this->genreService->delete($genre);
+
+        if ($res) {
+            return Res::success(null, 'Genre deleted successfully', 200);
+        }
+
+        return Res::error('Failed to delete genre', 400);
     }
 }
