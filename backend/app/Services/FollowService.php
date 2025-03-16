@@ -24,5 +24,13 @@ class FollowService {
         return $follow ? true : false;
     }
 
+    public function myFollows(){
+        $user = JWT::user();
+
+        $follows = $user->following()->get();
+
+        return $follows;
+    }
+
 
 }

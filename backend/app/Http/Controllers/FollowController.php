@@ -25,14 +25,12 @@ class FollowController extends Controller
             : Res::error('Failed to follow user', 500);
     }
 
-    // public function myFollows(){
-    //     $user = JWT::user();
+    public function myFollows(){
+        $follows = $this->followService->myFollows();
 
-    //     $follows = $user->following()->get();
-
-    //     return $follows
-    //         ? Res::success($follows, 'Follows', 200)
-    //         : Res::error('Failed to get follows', 500);
-    // }
+        return $follows
+            ? Res::success($follows, 'Follows', 200)
+            : Res::error('Failed to get follows', 500);
+    }
 
 }
