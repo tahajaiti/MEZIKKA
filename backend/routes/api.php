@@ -25,7 +25,8 @@ Route::middleware('jwt')->group(function () {
     Route::apiResource('genres', GenreController::class);
 
     Route::post('/follow/{id}', [FollowController::class, 'follow'])->name('follow');
-    Route::get('/followings', [FollowController::class, 'myFollows'])->name('follow');
+    Route::get('/followings', [FollowController::class, 'myFollows'])->name('followings');
+    Route::get('/followers', [FollowController::class, 'myFollowers'])->name('followers');
 
 
 });

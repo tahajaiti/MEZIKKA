@@ -26,9 +26,13 @@ class FollowService {
 
     public function myFollows(){
         $user = JWT::user();
-
         $follows = $user->following()->get();
+        return $follows;
+    }
 
+    public function myFollowers(){
+        $user = JWT::user();
+        $follows = $user->followers()->get();
         return $follows;
     }
 
