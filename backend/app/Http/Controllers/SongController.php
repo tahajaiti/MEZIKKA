@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ApiResponse;
+use App\Helpers\Res;
 use App\Http\Requests\SongPostRequest;
 use App\Models\Song;
 use App\Services\SongService;
@@ -35,10 +35,10 @@ class SongController extends Controller
         $res = $this->songService->create($request);
 
         if ($res) {
-            return ApiResponse::success($res, 'Song created successfully', 201);
+            return Res::success($res, 'Song created successfully', 201);
         }
 
-        return ApiResponse::error('Failed to create song', 400);
+        return Res::error('Failed to create song', 400);
     }
 
     /**

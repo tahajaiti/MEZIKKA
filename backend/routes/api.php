@@ -13,14 +13,13 @@ Route::prefix('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 });
 
+Route::middleware('jwt')->group(function () {
+    Route::prefix('profile')->group(function () {
+        Route::get('/', [ProfileController::class, 'show'])->name('profile.show');
+        Route::put('/', [ProfileController::class, 'update'])->name('profile.update');
+    });
 
-Route::group(['prefix' => 'profile', 'middleware' => ['jwt']], function () {
-    Route::get('/', [ProfileController::class, 'show'])->name('profile.show');
-    Route::put('/', [ProfileController::class, 'update'])->name('profile.update');
-});
-
-
-Route::group(['prefix' => 'songs', 'middleware' => ['jwt']], function() {
-    Route::post('/', [SongController::class, 'store'])->name('song.store');
+    Route::apiResource('songs', SongController::class);
+    Route::apiResource('genres', SongController::class);
 
 });
