@@ -25,6 +25,15 @@ class FollowController extends Controller
             : Res::error('Failed to follow user', 500);
     }
 
+    public function unfollow(string $id)
+    {
+        $res = $this->followService->unfollow($id);
+
+        return $res
+            ? Res::success(null, 'Unfollowed', 200)
+            : Res::error('Failed to unfollow user', 500);
+    }
+
     public function myFollows(){
         $follows = $this->followService->myFollows();
 

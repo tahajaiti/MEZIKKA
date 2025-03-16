@@ -25,6 +25,7 @@ Route::middleware('jwt')->group(function () {
     Route::apiResource('genres', GenreController::class);
 
     Route::post('/follow/{id}', [FollowController::class, 'follow'])->name('follow');
+    Route::delete('/follow/{id}', [FollowController::class, 'unfollow'])->name('unfollow');
     Route::get('/followings', [FollowController::class, 'myFollows'])->name('followings');
     Route::get('/followers', [FollowController::class, 'myFollowers'])->name('followers');
 

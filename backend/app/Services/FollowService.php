@@ -24,6 +24,18 @@ class FollowService {
         return $follow ? true : false;
     }
 
+    public function unfollow(string $id): bool{
+        $user = JWT::user();
+
+        $toFollow = Profile::with('user')->where('id', $id)->first();
+
+        $follow = Follow::where('follower_id', $user->id)
+            ->where('following_id', $toFollow->user->id)
+            ->delete();
+
+        return $follow ? true : false;
+    }
+
     public function myFollows(){
         $user = JWT::user();
         $follows = $user->following()->get();
