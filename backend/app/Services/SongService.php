@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Facades\JWT;
 use App\Models\Song;
 use App\Http\Requests\SongPostRequest;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\SongUpdateRequest;
 use App\Exceptions\UnauthorizedException;
 
@@ -61,6 +62,8 @@ class SongService
         }
 
         $res = $song->delete();
+        Storage::disk('public')->delete($song->file_path);
+        Storage::disk('public')->delete($song->cover_path);
 
         return $res ? true : false;
     }
