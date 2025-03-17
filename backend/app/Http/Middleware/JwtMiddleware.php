@@ -26,7 +26,7 @@ class JwtMiddleware
         try {
             JWT::validate($jwt);
         } catch (Exception $e) {
-            return Res::error('Unauthorized', 401);
+            return Res::error($e->getMessage(), 401);
         }
 
 

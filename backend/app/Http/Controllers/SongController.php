@@ -44,17 +44,17 @@ class SongController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Song $song)
     {
-        //
+        return Res::success($song);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Song $song)
     {
-        //
+        
     }
 
     /**

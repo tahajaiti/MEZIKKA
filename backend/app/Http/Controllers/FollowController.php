@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Facades\JWT;
 use App\Helpers\Res;
 use App\Services\FollowService;
 

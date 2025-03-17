@@ -12,10 +12,11 @@ use App\Http\Controllers\ProfileController;
 Route::prefix('auth')->group(function () {
     Route::post('register', [AuthController::class, 'register'])->name('register');
     Route::post('login', [AuthController::class, 'login'])->name('login');
-    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+    Route::middleware('jwt')->post('logout', [AuthController::class, 'logout'])->name('logout');
 });
 
 Route::middleware('jwt')->group(function () {
+
     Route::prefix('profile')->group(function () {
         Route::get('/', [ProfileController::class, 'show'])->name('profile.show');
         Route::put('/', [ProfileController::class, 'update'])->name('profile.update');

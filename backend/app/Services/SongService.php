@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Facades\JWT;
 use App\Models\Song;
 use App\Http\Requests\SongPostRequest;
+use App\Http\Requests\SongUpdateRequest;
 
 class SongService {
 
@@ -28,6 +29,13 @@ class SongService {
             return $song;
         }
         return false;
+    }
+
+    public function update(SongUpdateRequest $request, string $songId) {
+        $user = JWT::user();
+        
+
+
     }
 
 

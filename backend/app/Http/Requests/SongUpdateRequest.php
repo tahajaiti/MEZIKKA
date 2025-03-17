@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SongPostRequest extends FormRequest
+class SongUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,11 +22,10 @@ class SongPostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'song_file' => 'required|file|mimes:mp3,ogg,wav,flac',
-            'cover_file' => 'required|file|mimes:jpeg,png|max:2048',
+            'name' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
             'metadata' => 'sometimes|json',
+            'cover_file' => 'sometimes|file|mimes:jpeg,png,jpg|max:2048'
         ];
     }
 }
