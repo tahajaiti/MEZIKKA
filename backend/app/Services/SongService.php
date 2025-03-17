@@ -8,10 +8,12 @@ use App\Http\Requests\SongPostRequest;
 use App\Http\Requests\SongUpdateRequest;
 use App\Exceptions\UnauthorizedException;
 
-class SongService {
+class SongService
+{
 
 
-    public function create(SongPostRequest $request) {
+    public function create(SongPostRequest $request): ?Song
+    {
         $user = JWT::user();
         $data = $request->validated();
         $data['user_id'] = $user->id;
@@ -24,15 +26,13 @@ class SongService {
         $data['file_path'] = $song_path;
         $data['cover_path'] = $cover_path;
 
-        $song = Song::create( $data );
+        $song = Song::create($data);
 
-        if ($song) {
-            return $song;
-        }
-        return false;
+        return $song ? $song : null;
     }
 
-    public function update(SongUpdateRequest $request, string $songId): ?Song {
+    public function update(SongUpdateRequest $request, string $songId): ?Song
+    {
         $user = JWT::user();
         $song = Song::where('id', $songId)->where('user_id', $user->id)->first();
 
@@ -51,5 +51,18 @@ class SongService {
         return $updated ? $song : null;
     }
 
+    public function destroy(string $songId): bool
+    {
+        $user = JWT::user();
+        $song = Song::where('id', $songId)->where('user_id', $user->id)->first();
+
+        if (!$song) {
+            throw new UnauthorizedException();
+        }
+
+        $res = $song->delete();
+
+        return $res ? true : false;
+    }
 
 }

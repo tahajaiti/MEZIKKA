@@ -66,6 +66,8 @@ class SongController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $res = $this->songService->destroy($id);
+        return $res ? Res::success(null, 'Song deleted successfully', 200)
+            : Res::error('Failed to delete song', 400);
     }
 }
