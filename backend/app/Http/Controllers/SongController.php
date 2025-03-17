@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Res;
 use App\Http\Requests\SongPostRequest;
+use App\Http\Requests\SongUpdateRequest;
 use App\Models\Song;
 use App\Services\SongService;
 use Illuminate\Http\Request;
@@ -52,9 +53,12 @@ class SongController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Song $song)
+    public function update(SongUpdateRequest $request, string $songId)
     {
-        
+        $res = $this->songService->update($request, $songId);
+        return $res ?
+            Res::success($res, 'Song updated succesfully', 200)
+            : Res::error('Failed to update song', 400);
     }
 
     /**
