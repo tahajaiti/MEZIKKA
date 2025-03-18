@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SongController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\FollowController;
+use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\ProfileController;
 
 
@@ -24,6 +25,7 @@ Route::middleware('jwt')->group(function () {
 
     Route::apiResource('songs', SongController::class);
     Route::apiResource('genres', GenreController::class);
+    Route::apiResource('playlists', PlaylistController::class);
 
     Route::post('/follow/{id}', [FollowController::class, 'follow'])->name('follow');
     Route::delete('/follow/{id}', [FollowController::class, 'unfollow'])->name('unfollow');

@@ -21,8 +21,8 @@ class SongService
 
 
 
-        $song_path = $request->hasFile('song_file') ? $request->file('song_file')->store('songs', 'public') : null;
-        $cover_path = $request->hasFile('cover_file') ? $request->file('cover_file')->store('covers', 'public') : null;
+        $song_path = $request->hasFile('song_file') ? $request->file('song_file')->store('songs/files', 'public') : null;
+        $cover_path = $request->hasFile('cover_file') ? $request->file('cover_file')->store('songs/covers', 'public') : null;
 
         $data['file_path'] = $song_path;
         $data['cover_path'] = $cover_path;
