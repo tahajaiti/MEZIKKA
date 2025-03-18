@@ -75,10 +75,10 @@ class JwtService
         $id = $this->decoded->sub;
 
         if (!$id) {
-            return null;
+            throw new Exception('Invalid user id');
         }
 
-        return User::find($id);
+        return User::where('id', $id)->first();
     }
 
 }

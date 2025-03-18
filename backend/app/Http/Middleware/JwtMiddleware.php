@@ -7,6 +7,7 @@ use App\Helpers\Res;
 use Closure;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class JwtMiddleware
@@ -25,8 +26,10 @@ class JwtMiddleware
 
         try {
             JWT::validate($jwt);
+            $user = JWT::user();
+            Auth::setUser($user);
         } catch (Exception $e) {
-            return Res::error($e->getMessage(), 401);
+            return Res::error('Unauthorized', 401);
         }
 
 
