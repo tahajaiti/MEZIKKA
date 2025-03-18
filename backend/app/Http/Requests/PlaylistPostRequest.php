@@ -22,7 +22,9 @@ class PlaylistPostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => 'required|string|max:255',
+            'description' => 'sometimes|string|max:255',
+            'cover_file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 }
