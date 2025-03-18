@@ -6,7 +6,6 @@ use App\Facades\JWT;
 use App\Helpers\Res;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Services\ProfileService;
-use Illuminate\Http\Request;
 
 class ProfileController extends Controller
 {
