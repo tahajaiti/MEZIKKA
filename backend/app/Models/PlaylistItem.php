@@ -23,4 +23,8 @@ class PlaylistItem extends Model
     {
         return $this->belongsTo(Song::class);
     }
+
+    public static function nextOrder(string $id) {
+        return self::where('playlist_id', $id)->max('order') + 1;
+    }
 }

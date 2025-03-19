@@ -12,7 +12,7 @@ class Res {
         ], $code);
     }
 
-    public static function error($message, $code = 400): \Illuminate\Http\JsonResponse {
+    public static function error($message = 'error', $code = 400): \Illuminate\Http\JsonResponse {
         return response()->json([
             'status' => 'error',
             'message' => $message,

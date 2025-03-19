@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('password');
-            $table->foreignId('role_id')->constrained();
+            $table->foreignId('role_id')->default(2)->constrained('roles');
             $table->timestamps();
         });
     }

@@ -18,7 +18,7 @@ class PlaylistService {
 
         $playlist = Playlist::create([
             'title' => $request->title,
-            'description' => $request->description,
+            'description' => $request->description ?? '',
             'cover' => $path,
             'user_id' => $user->id
         ]);
