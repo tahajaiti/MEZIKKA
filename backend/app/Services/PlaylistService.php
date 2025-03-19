@@ -26,21 +26,21 @@ class PlaylistService {
         return $playlist ? $playlist : null;
     }
 
-    public function update(PlaylistUpdateRequest $request, Playlist $playlist): ?Playlist {
-
-
+    public function update(PlaylistUpdateRequest $request, Playlist $playlist) {
         $path = $request->hasFile('cover_file') ? $request->file('cover_file')->store('playlist/covers', 'public') : null;
 
-        if ($playlist && $playlist->cover) {
+        if ($playlist && $playlist->cover && $path) {
             Storage::disk('public')->delete($playlist->cover);
         }
 
         $data = $request->validated();
         $data['cover'] = $path;
+        $data['title'] = $request->title ?? $playlist->title;
+        $data['description'] = $request->description ?? $playlist->description;
 
         $res = $playlist->update($data);
 
-        return $res ? $playlist : null;
+        return $res ? $request : null;
     }
 
     public function delete(Playlist $playlist): bool {
