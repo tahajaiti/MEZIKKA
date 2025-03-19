@@ -15,4 +15,9 @@ class Playlist extends Model
     public function user() {
         return $this->belongsTo(User::class);
     }
+
+    public function playlistItems()
+    {
+        return $this->hasMany(PlaylistItem::class);
+    }
 }
