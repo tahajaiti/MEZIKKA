@@ -48,5 +48,10 @@ class Song extends Model
         return $this->belongsTo(Song::class, 'remix_id');
     }
 
-    
+    public function playlists()
+    {
+        return $this->belongsToMany(Playlist::class, 'playlist_items')
+                    ->withPivot('order')
+                    ->withTimestamps();
+    }
 }
