@@ -3,10 +3,10 @@
 namespace App\Services;
 
 use App\Exceptions\DuplicateException;
+use App\Exceptions\NotFoundException;
 use App\Models\Song;
 use App\Models\Playlist;
 use App\Models\PlaylistItem;
-use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
 class PlaylistItemService
 {
@@ -38,14 +38,20 @@ class PlaylistItemService
 
     public function remove(string $playlistId, string $songId)
     {
-        $exists = PlaylistItem::where("playlist_id", $playlistId)
-            ->where('song_id', $songId)->exists();
+        $playlistItem = PlaylistItem::where("playlist_id", $playlistId)
+            ->where('song_id', $songId)->first();
 
-        if (!$exists) {
-            throw new NotFoundResourceException('Song does not exist in the playlist');
+        if (!$playlistItem) {
+            throw new NotFoundException('Song does not exist in the playlist');
         }
 
-        $res = PlaylistItem::where('playlist_id', $playlistId)->where('song_id', $songId)->delete();
+        $deletedOrder = $playlistItem->order;
+
+        $res = $playlistItem->delete();
+
+        PlaylistItem::where('playlist_id', $playlistId)
+                ->where('order', '>', $deletedOrder)
+                ->decrement('order');
 
         return $res ? true : false;
     }
