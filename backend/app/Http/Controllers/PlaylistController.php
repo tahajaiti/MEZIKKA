@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Services\PlaylistService;
 use App\Http\Requests\PlaylistPostRequest;
 use App\Http\Requests\PlaylistUpdateRequest;
+use Illuminate\Support\Facades\Gate;
 
 class PlaylistController extends Controller
 {
@@ -51,7 +52,11 @@ class PlaylistController extends Controller
      */
     public function update(PlaylistUpdateRequest $request, Playlist $playlist)
     {
-        //
+        Gate::authorize('update', $playlist);
+        $res = $this->playlistService->update($request, $playlist);
+
+        return $res ? Res::success($res, 'Playlist updated successfully')
+        : Res::error('Failed to update playlist');
     }
 
     /**
