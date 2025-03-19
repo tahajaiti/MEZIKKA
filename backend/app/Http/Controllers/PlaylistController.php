@@ -62,8 +62,11 @@ class PlaylistController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Playlist $playlist)
     {
-        //
+        Gate::authorize('delete', $playlist);
+        $res = $this->playlistService->delete($playlist);
+        return $res ? Res::success($res, 'Playlist deleted successfully')
+        : Res::error('Failed to delete playlist');
     }
 }

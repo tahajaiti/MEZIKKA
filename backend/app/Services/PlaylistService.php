@@ -43,6 +43,12 @@ class PlaylistService {
         return $res ? $playlist : null;
     }
 
+    public function delete(Playlist $playlist): bool {
+        if ($playlist && $playlist->cover) {
+            Storage::disk('public')->delete($playlist->cover);
+        }
 
+        return $playlist->delete() ? true : false;
+    }
 
 }
