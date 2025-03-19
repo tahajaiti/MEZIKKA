@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Res;
 use App\Services\PlaylistItemService;
-use Illuminate\Http\Request;
 
 class PlaylistItemController extends Controller
 {
@@ -21,5 +20,9 @@ class PlaylistItemController extends Controller
         return $res ? Res::success($res) : Res::error();
     }
 
+    public function remove(string $playlistId, string $songId){
+        $res = $this->playlistItemService->remove($playlistId, $songId);
 
+        return $res ? Res::success($res) : Res::error();
+    }
 }
