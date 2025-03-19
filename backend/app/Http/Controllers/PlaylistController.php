@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Res;
-use App\Http\Requests\PlaylistPostRequest;
-use App\Services\PlaylistService;
+use App\Models\Playlist;
 use Illuminate\Http\Request;
+use App\Services\PlaylistService;
+use App\Http\Requests\PlaylistPostRequest;
 
 class PlaylistController extends Controller
 {
@@ -39,9 +40,9 @@ class PlaylistController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Playlist $playlist)
     {
-        //
+        return $playlist;
     }
 
     /**
