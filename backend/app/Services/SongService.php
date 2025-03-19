@@ -19,8 +19,6 @@ class SongService
         $data = $request->validated();
         $data['user_id'] = $user->id;
 
-
-
         $song_path = $request->hasFile('song_file') ? $request->file('song_file')->store('songs/files', 'public') : null;
         $cover_path = $request->hasFile('cover_file') ? $request->file('cover_file')->store('songs/covers', 'public') : null;
 

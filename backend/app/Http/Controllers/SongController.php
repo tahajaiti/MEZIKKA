@@ -8,6 +8,7 @@ use App\Http\Requests\SongUpdateRequest;
 use App\Models\Song;
 use App\Services\SongService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class SongController extends Controller
 {
@@ -55,6 +56,7 @@ class SongController extends Controller
      */
     public function update(SongUpdateRequest $request, string $songId)
     {
+        Gate::authorize('update', Song::where('id', $songId)->first());
         $res = $this->songService->update($request, $songId);
         return $res ?
             Res::success($res, 'Song updated succesfully', 200)
@@ -66,6 +68,7 @@ class SongController extends Controller
      */
     public function destroy(string $id)
     {
+        Gate::authorize('delete', Song::where('id', $id)->first());
         $res = $this->songService->destroy($id);
         return $res ? Res::success(null, 'Song deleted successfully', 200)
             : Res::error('Failed to delete song', 400);
