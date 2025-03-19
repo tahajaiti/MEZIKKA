@@ -27,4 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (NotFoundHttpException $e) {
             return Res::error('Resource not found', 404);
         });
+        $exceptions->render(function (ErrorException $e) {
+            return Res::error('Resource not found', 404);
+        });
     })->create();
