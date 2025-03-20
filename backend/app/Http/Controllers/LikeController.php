@@ -24,4 +24,10 @@ class LikeController extends Controller
         }
         return Res::error('Something went wrong', 500);
     }
+
+    public function getLikes()
+    {
+        $likes = $this->likeService->getLikes();
+        return Res::success($likes);
+    }
 }

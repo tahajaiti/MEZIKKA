@@ -30,5 +30,22 @@ class LikeService
         return 'liked';
     }
 
+    public function getLikes(){
+        $user = Auth::user();
+
+        $likedPlaylists = $user->likes()->where('likeable_type', Playlist::class)
+        ->with('likeable')
+        ->get()->pluck('likeable');
+
+        $likedSongs = $user->likes()->where('likeable_type', Song::class)
+        ->with('likeable')
+        ->get()->pluck('likeable');
+
+        return [
+            'songs' => $likedSongs,
+            'playlists' => $likedPlaylists
+        ];
+    }
+
 
 }
