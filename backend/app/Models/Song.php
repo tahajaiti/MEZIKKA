@@ -51,7 +51,12 @@ class Song extends Model
     public function playlists()
     {
         return $this->belongsToMany(Playlist::class, 'playlist_items')
-                    ->withPivot('order')
-                    ->withTimestamps();
+            ->withPivot('order')
+            ->withTimestamps();
+    }
+
+    public function likes()
+    {
+        return $this->morphMany(Like::class, 'likeable');
     }
 }

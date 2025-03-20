@@ -32,4 +32,9 @@ class Playlist extends Model
             ->withTimestamps()
             ->orderBy('playlist_items.order');
     }
+
+    public function likes()
+{
+    return $this->morphMany(Like::class, 'likeable');
+}
 }
