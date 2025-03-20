@@ -8,7 +8,6 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Config;
-use stdClass;
 
 class JwtService
 {
@@ -17,7 +16,7 @@ class JwtService
 
     protected string $algo;
 
-    protected stdClass $decoded;
+    protected $decoded;
 
 
     public function __construct()
@@ -70,7 +69,7 @@ class JwtService
         return true;
     }
 
-    public function user()
+    public function user(): User
     {
         $id = $this->decoded->sub;
 
@@ -78,7 +77,7 @@ class JwtService
             throw new Exception('Invalid user id');
         }
 
-        return User::where('id', $id)->first();
+        return User::findOrFail($id)->first();
     }
 
 }
