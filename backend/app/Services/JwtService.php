@@ -69,7 +69,7 @@ class JwtService
         return true;
     }
 
-    public function user(): User
+    public function user()
     {
         $id = $this->decoded->sub;
 
@@ -77,7 +77,7 @@ class JwtService
             throw new Exception('Invalid user id');
         }
 
-        return User::findOrFail($id)->first();
+        return User::where('id', $id)->first();
     }
 
 }

@@ -28,6 +28,7 @@ class AuthService {
             'user_id' => $user->id
         ]);
 
+
         $token = JWT::generate($user);
 
         return $this->toToken($token);

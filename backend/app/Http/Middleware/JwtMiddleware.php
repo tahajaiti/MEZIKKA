@@ -29,7 +29,7 @@ class JwtMiddleware
             $user = JWT::user();
             Auth::setUser($user);
         } catch (Exception $e) {
-            return Res::error('Unauthorized', 401);
+            return Res::error($e->getMessage(), 401);
         }
 
 
