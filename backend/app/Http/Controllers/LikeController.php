@@ -30,4 +30,14 @@ class LikeController extends Controller
         $likes = $this->likeService->getLikes();
         return Res::success($likes);
     }
+
+    public function getLikeCount(string $type, string $id)
+    {
+        $like = $this->likeService->getLikeCount($type, $id);
+        if ($like) {
+            return Res::success($like, 'Like count retrieved');
+        }
+
+        return Res::error('Something went wrong', 500);
+    }
 }

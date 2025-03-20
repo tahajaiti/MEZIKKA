@@ -32,10 +32,14 @@ Route::middleware('jwt')->group(function () {
     Route::post('/playlists/{playlist}/songs/{song}', [PlaylistItemController::class, 'add']);
     Route::delete('/playlists/{playlist}/songs/{song}', [PlaylistItemController::class, 'remove']);
 
+    // Like routes
     Route::get('/likes', [LikeController::class, 'getLikes']);
+    Route::get('/likes/{type}/{id}', [LikeController::class, 'getLikeCount'])
+        ->whereIn('type', ['song', 'playlist']);
     Route::post('/like/{type}/{id}', [LikeController::class, 'toggleLike'])
         ->whereIn('type', ['song', 'playlist']);
 
+    // Follow routes
     Route::post('/follow/{id}', [FollowController::class, 'follow'])->name('follow');
     Route::delete('/follow/{id}', [FollowController::class, 'unfollow'])->name('unfollow');
     Route::get('/followings', [FollowController::class, 'myFollows'])->name('followings');
