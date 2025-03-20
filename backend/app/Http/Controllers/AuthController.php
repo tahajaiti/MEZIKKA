@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Res;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
 
@@ -16,15 +18,9 @@ class AuthController extends Controller
         $this->authService = $authService;
     }
 
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $data = $request->validate([
-            'name' => 'string|required|min:3',
-            'email' => 'email|required|unique:users',
-            'password' => 'string|required|min:6',
-        ]);
-
-        $token = $this->authService->register($data);
+        $token = $this->authService->register($request);
 
         if (!$token) {
             return Res::error('Failed to register user', 500);
@@ -33,14 +29,9 @@ class AuthController extends Controller
         return Res::success($token, 'User registered successfully', 201);
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $data = $request->validate([
-            'email' => 'email|required|exists:users,email',
-            'password' => 'required|string',
-        ]);
-
-        $token = $this->authService->login($data);
+        $token = $this->authService->login($request);
 
         if (!$token) {
             return Res::error('Invalid credentials', 401);

@@ -3,6 +3,8 @@ namespace App\Services;
 
 use App\Facades\JWT;
 use App\Helpers\Gen;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -11,12 +13,12 @@ use Illuminate\Support\Facades\Hash;
 class AuthService {
 
 
-    public function register(array $data){
+    public function register(RegisterRequest $data){
 
         $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            'name' => $data->name,
+            'email' => $data->email,
+            'password' => Hash::make($data->password),
         ]);
 
         $username = Gen::username($user->name);
@@ -32,10 +34,10 @@ class AuthService {
     }
 
 
-    public function login(array $data){
-        $user = User::where('email', $data['email'])->first();
+    public function login(LoginRequest $data){
+        $user = User::where('email', $data->email)->first();
 
-        if (!$user || !Hash::check($data['password'], $user->password)) {
+        if (!$user || !Hash::check($data->password, $user->password)) {
             return false;
         }
 

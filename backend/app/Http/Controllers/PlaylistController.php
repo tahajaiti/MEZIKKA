@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Res;
 use App\Models\Playlist;
-use Illuminate\Http\Request;
 use App\Services\PlaylistService;
 use App\Http\Requests\PlaylistPostRequest;
 use App\Http\Requests\PlaylistUpdateRequest;
