@@ -1,26 +1,22 @@
-FROM php:8.2-fpm-alpine
+FROM php:8.2-apache
 
 WORKDIR /var/www/html
 
-# Install system dependencies
-RUN apk add --no-cache \
-    postgresql-dev \
-    libpq \
-    curl \
-    nginx \
-    supervisor
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    libpq-dev \
+    && docker-php-ext-install pdo pdo_pgsql mbstring exif pcntl bcmath gd
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo pdo_pgsql
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-RUN apk add --no-cache postgresql-client
-
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Copy existing application directory contents
 COPY . .
 
-# Expose port 9000 and start php-fpm server
-EXPOSE 9000
-CMD ["php-fpm"]
+RUN composer install --no-dev --optimize-autoloader
+
+EXPOSE 80
+
+CMD ["apache2-foreground"]

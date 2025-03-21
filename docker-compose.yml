@@ -1,43 +1,45 @@
+
 services:
-  frontend:
-    build: ./frontend
-    ports:
-      - "5173:5173"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    environment:
-      - NODE_ENV=development
-    networks:
-      - app-network
+  # frontend:
+  #   build: ./frontend
+  #   ports:
+  #     - "5173:5173"
+  #   volumes:
+  #     - ./frontend:/app
+  #     - /app/node_modules
+  #   environment:
+  #     - NODE_ENV=development
+  #   networks:
+  #     - app
 
   backend:
     build: ./backend
-    ports:
-      - "8000:8000"
+    container_name: backend
+    restart: unless-stopped
+    working_dir: /var/www/html
     volumes:
       - ./backend:/var/www/html
-    environment:
-      - DB_CONNECTION=pgsql
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_DATABASE=mezzika
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=root
+    ports:
+      - "8000:80"
     depends_on:
       - postgres
     networks:
-      - app-network
+      - app
 
   postgres:
-    image: postgres:15-alpine
+    image: postgres:17
+    container_name: db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: mezikka
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=mezzika
-      - POSTGRES_PASSWORD=root
+    ports:
+      - "5432:5432"
     networks:
-      - app-network
+      - app
 
   pgadmin:
     image: dpage/pgadmin4
@@ -49,11 +51,11 @@ services:
     depends_on:
       - postgres
     networks:
-      - app-network
+      - app
 
 volumes:
   postgres_data:
 
 networks:
-  app-network:
+  app:
     driver: bridge
