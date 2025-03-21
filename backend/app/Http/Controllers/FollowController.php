@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Res;
 use App\Services\FollowService;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class FollowController extends Controller
 {
@@ -17,6 +19,7 @@ class FollowController extends Controller
 
     public function follow(string $id)
     {
+        Gate::authorize('follow', Auth::user());
         $res = $this->followService->follow($id);
 
         return $res
@@ -26,6 +29,7 @@ class FollowController extends Controller
 
     public function unfollow(string $id)
     {
+        Gate::authorize('unfollow', Auth::user());
         $res = $this->followService->unfollow($id);
 
         return $res

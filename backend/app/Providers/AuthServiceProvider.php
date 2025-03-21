@@ -2,12 +2,13 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use App\Models\Playlist;
 use App\Models\Song;
-use App\Policies\PlaylistPolicy;
+use App\Models\User;
+use App\Models\Playlist;
 use App\Policies\SongPolicy;
+use App\Policies\PlaylistPolicy;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -26,5 +27,6 @@ class AuthServiceProvider extends ServiceProvider
     {
         Gate::policy(Playlist::class, PlaylistPolicy::class);
         Gate::policy(Song::class, SongPolicy::class);
+        Gate::policy(User::class, SongPolicy::class);
     }
 }
