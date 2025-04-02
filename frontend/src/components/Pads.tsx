@@ -3,7 +3,7 @@ import { Pad } from "./Pad";
 import { STEPS } from "../util/DrumData";
 
 interface PadsProps {
-  id: number;
+  key: number;
   name?: string;
   volume?: number;
 }
