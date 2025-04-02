@@ -4,6 +4,8 @@ import { STEPS } from "../util/DrumData";
 
 interface PadsProps {
   name?: string;
+  soundUrl?: string;
+  volume?: number;
 }
 
 const Pads: React.FC<PadsProps> = ({name = 'Pad'}) => {
