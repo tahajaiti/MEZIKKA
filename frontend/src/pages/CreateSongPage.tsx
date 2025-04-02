@@ -4,6 +4,7 @@ import Pads from '../components/Pads'
 
 const CreateSongPage: React.FC = () => {
   const [drums, setDrums] = useState(DRUM_DATA);
+  const [bpm, setBpm] = useState(120);
   const [customSoundUrl, setCustomSoundUrl] = useState('');
   const [customSoundName, setCustomSoundName] = useState('');
 
@@ -23,6 +24,22 @@ const CreateSongPage: React.FC = () => {
 
   return (
     <>
+    <div>
+      <h1 className="text-2xl font-bold mb-4">Create Your Song</h1>
+      <div className="mb-4">
+        <label htmlFor="bpm" className="block mb-1">BPM: {bpm}</label>
+        <input
+          type="range"
+          min={50}
+          max={180}
+          id="bpm"
+          value={bpm}
+          onChange={(e) => setBpm(Number(e.target.value))}
+          className="py-2 rounded bg-gray-700 text-white"
+        />
+      </div>
+    </div>
+
       {drums.map((d) => (
         <Pads key={d.id}
           name={d.name}
