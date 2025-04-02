@@ -23,6 +23,14 @@ const CreateSongPage: React.FC = () => {
     setIsPlaying(!isPlaying);
   }
 
+  const updateVolume = (id: number | string, newVolume: number) => {
+    setDrums(pads => 
+      pads.map(pad => 
+        pad.id === id ? { ...pad, volume: newVolume } : pad
+      )
+    );
+  };
+
   const addCustomDrum = () => {
     if (customSoundUrl && customSoundName) {
       const newSound = {
@@ -72,6 +80,7 @@ const CreateSongPage: React.FC = () => {
           name={d.name}
           volume={d.volume}
           soundUrl={d.soundUrl}
+          onClick={(newVolume) => updateVolume(d.id, newVolume)}
         />
       ))}
 

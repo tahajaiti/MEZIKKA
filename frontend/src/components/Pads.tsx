@@ -8,9 +8,10 @@ interface PadsProps {
   name?: string;
   volume?: number;
   soundUrl?: string;
+  onClick?: (newVol: number) => void;
 }
 
-const Pads: React.FC<PadsProps> = ({ name = 'Pad', volume = 0, soundUrl = ''}) => {
+const Pads: React.FC<PadsProps> = ({ name = 'Pad', volume = 0, soundUrl = '', onClick}) => {
   const [activePads, setActivePads] = useState<boolean[]>(Array(STEPS).fill(false));
   const samplerRef = useRef<Tone.Sampler | null>(null);
 
@@ -29,7 +30,27 @@ const Pads: React.FC<PadsProps> = ({ name = 'Pad', volume = 0, soundUrl = ''}) =
           console.log(`Sampler loaded for ${name}`);
         }
     }).toDestination();
-  });
+
+    //initialize the volume
+    if (samplerRef.current) {
+      samplerRef.current.volume.value = volume;
+    }
+
+    return () => {
+      if (samplerRef.current) {
+        samplerRef.current.dispose();
+        samplerRef.current = null;
+      }
+    };
+  }, [name, soundUrl, volume]);
+
+  //updating the volume
+  useEffect(() => {
+    if (samplerRef.current) {
+      samplerRef.current.volume.value = volume;
+    }
+  }, [volume]);
+  
 
   return (
     <div className="mb-6">
@@ -45,6 +66,10 @@ const Pads: React.FC<PadsProps> = ({ name = 'Pad', volume = 0, soundUrl = ''}) =
             className="w-24"
             onChange={(e) => {
               console.log(`Volume changed for ${name}: ${e.target.value}`);
+              const newVolume = parseFloat(e.target.value);
+              if (onClick) {
+                onClick(newVolume);
+              }
             }}
           />
         </div>
