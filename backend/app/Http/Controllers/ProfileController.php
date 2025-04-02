@@ -21,11 +21,12 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
+
         if (!$user) {
             return Res::error('Unauthorized', 401);
         }
 
-        return Res::success($user);
+        return Res::success($user->load('profile'));
     }
 
     public function update(ProfileUpdateRequest $request){
