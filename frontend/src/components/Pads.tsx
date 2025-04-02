@@ -142,6 +142,7 @@ const Pads: React.FC<PadsProps> = ({
             key={i}
             isActive={isActive}
             onClick={() => togglePad(i)}
+            isCurrent={curStep === i}
           />
         ))}
       </div>
