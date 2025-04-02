@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Facades\JWT;
 use App\Models\Song;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\SongPostRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\SongUpdateRequest;
@@ -15,12 +15,13 @@ class SongService
 
     public function create(SongPostRequest $request): ?Song
     {
-        $user = JWT::user();
+        $user = Auth::user();
         $data = $request->validated();
         $data['user_id'] = $user->id;
 
         $song_path = $request->hasFile('song_file') ? $request->file('song_file')->store('songs/files', 'public') : null;
         $cover_path = $request->hasFile('cover_file') ? $request->file('cover_file')->store('songs/covers', 'public') : null;
+
 
         $data['file_path'] = $song_path;
         $data['cover_path'] = $cover_path;
@@ -32,7 +33,7 @@ class SongService
 
     public function update(SongUpdateRequest $request, string $songId): ?Song
     {
-        $user = JWT::user();
+        $user = Auth::user();
         $song = Song::where('id', $songId)->where('user_id', $user->id)->first();
 
         if (!$song) {
@@ -52,7 +53,7 @@ class SongService
 
     public function destroy(string $songId): bool
     {
-        $user = JWT::user();
+        $user = Auth::user();
         $song = Song::where('id', $songId)->where('user_id', $user->id)->first();
 
         if (!$song) {

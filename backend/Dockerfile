@@ -1,22 +1,22 @@
-FROM php:8.2-apache
+FROM php:8.2-fpm
+
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    libpq-dev \
+    libzip-dev \
+    libonig-dev \
+    libxml2-dev \
+    && docker-php-ext-install pdo pdo_pgsql zip mbstring exif pcntl bcmath
+
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
 
 WORKDIR /var/www/html
 
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    libpq-dev \
-    && docker-php-ext-install pdo pdo_pgsql mbstring exif pcntl bcmath gd
+RUN usermod -u 1000 www-data
+USER www-data
 
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+EXPOSE 9000
 
-COPY . .
-
-RUN composer install --no-dev --optimize-autoloader
-
-EXPOSE 80
-
-CMD ["apache2-foreground"]
+CMD ["php-fpm"]

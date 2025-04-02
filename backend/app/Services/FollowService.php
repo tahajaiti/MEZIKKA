@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Facades\JWT;
 use App\Models\Follow;
 use App\Models\Profile;
+use Illuminate\Support\Facades\Auth;
 
 
 class FollowService {
@@ -12,7 +12,7 @@ class FollowService {
 
 
     public function follow(string $id): bool{
-        $user = JWT::user();
+        $user = Auth::user();
 
         $toFollow = Profile::with('user')->where('id', $id)->first();
 
@@ -25,7 +25,7 @@ class FollowService {
     }
 
     public function unfollow(string $id): bool{
-        $user = JWT::user();
+        $user = Auth::user();
 
         $toFollow = Profile::with('user')->where('id', $id)->first();
 
@@ -37,13 +37,13 @@ class FollowService {
     }
 
     public function myFollows(){
-        $user = JWT::user();
+        $user = Auth::user();
         $follows = $user->following()->get();
         return $follows;
     }
 
     public function myFollowers(){
-        $user = JWT::user();
+        $user = Auth::user();
         $follows = $user->followers()->get();
         return $follows;
     }

@@ -1,7 +1,6 @@
 <?php
 namespace App\Services;
 
-use App\Facades\JWT;
 use App\Helpers\Gen;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
@@ -29,7 +28,7 @@ class AuthService {
         ]);
 
 
-        $token = JWT::generate($user);
+        $token = $user->createToken();
 
         return $this->toToken($token);
     }
@@ -42,7 +41,7 @@ class AuthService {
             return false;
         }
 
-        $token = JWT::generate($user);
+        $token = $user->createToken();
 
         return $this->toToken($token);
     }

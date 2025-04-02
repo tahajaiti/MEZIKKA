@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Facades\JWT;
 use App\Helpers\Res;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Services\ProfileService;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
@@ -19,13 +19,13 @@ class ProfileController extends Controller
 
     public function show()
     {
-        $user = JWT::user();
+        $user = Auth::user();
 
         if (!$user) {
             return Res::error('Unauthorized', 401);
         }
 
-        return Res::success($user->profile);
+        return Res::success($user);
     }
 
     public function update(ProfileUpdateRequest $request){

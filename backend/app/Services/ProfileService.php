@@ -1,9 +1,9 @@
 <?php
 namespace App\Services;
 
-use App\Facades\JWT;
 use App\Helpers\Gen;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ProfileService
@@ -12,7 +12,7 @@ class ProfileService
 
     public function update(Request $request)
     {
-        $user = JWT::user();
+        $user = Auth::user();
         $profile = $user->profile;
         $username = $request->get("username");
 
