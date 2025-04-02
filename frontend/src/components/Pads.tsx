@@ -12,9 +12,11 @@ interface PadsProps {
   onClick?: (newVol: number) => void;
 }
 
-const Pads: React.FC<PadsProps> = ({ name = 'Pad', volume = 0, soundUrl = '', onClick, isPlaying = false }) => {
+const Pads: React.FC<PadsProps> = (
+  { name = 'Pad', volume = 0, soundUrl = '', onClick, isPlaying = false }
+) => {
   const [activePads, setActivePads] = useState<boolean[]>(Array(STEPS).fill(false));
-  const [curStep, setCurStep] = useState(1);
+  const [curStep, setCurStep] = useState(0);
   const samplerRef = useRef<Tone.Sampler | null>(null);
   const sequenceRef = useRef<Tone.Sequence | null>(null);
 
@@ -45,8 +47,13 @@ const Pads: React.FC<PadsProps> = ({ name = 'Pad', volume = 0, soundUrl = '', on
         samplerRef.current.dispose();
         samplerRef.current = null;
       }
+
+      if (sequenceRef.current) {
+        sequenceRef.current.dispose();
+        sequenceRef.current = null;
+      }
     };
-  }, [name, soundUrl, volume]);
+  }, [soundUrl, name, volume]);
 
   //updating the volume
   useEffect(() => {
@@ -58,14 +65,15 @@ const Pads: React.FC<PadsProps> = ({ name = 'Pad', volume = 0, soundUrl = '', on
   useEffect(() => {
 
     // cleaning up
-    if (samplerRef.current) {
-      samplerRef.current.dispose();
+    if (sequenceRef.current) {
+      sequenceRef.current.dispose();
+      samplerRef.current = null;
     }
 
     sequenceRef.current = new Tone.Sequence(
       (time, step) => {
         setCurStep(step);
-        
+
         if (activePads[step] && samplerRef.current) {
           samplerRef.current.triggerAttackRelease("C4", "16n", time);
         }
@@ -73,6 +81,13 @@ const Pads: React.FC<PadsProps> = ({ name = 'Pad', volume = 0, soundUrl = '', on
       Array.from({ length: STEPS }, (_, i) => i),
       "16n"
     );
+
+    if (isPlaying) {
+      sequenceRef.current.start(0);
+    } else {
+      sequenceRef.current.stop();
+      setCurStep(0);
+    }
 
     return () => {
       if (sequenceRef.current) {
@@ -90,12 +105,12 @@ const Pads: React.FC<PadsProps> = ({ name = 'Pad', volume = 0, soundUrl = '', on
           <span className="mr-2 text-sm">Vol:</span>
           <input
             type="range"
-            min="-20"
-            max="10"
+            min="0"
+            max="0.5"
+            step={0.05}
             value={volume}
             className="w-24"
             onChange={(e) => {
-              console.log(`Volume changed for ${name}: ${e.target.value}`);
               const newVolume = parseFloat(e.target.value);
               if (onClick) {
                 onClick(newVolume);
