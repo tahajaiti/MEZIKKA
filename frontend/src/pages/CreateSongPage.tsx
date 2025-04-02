@@ -71,6 +71,7 @@ const CreateSongPage: React.FC = () => {
         <Pads key={d.id}
           name={d.name}
           volume={d.volume}
+          soundUrl={d.soundUrl}
         />
       ))}
 
