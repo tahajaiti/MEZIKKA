@@ -53,7 +53,7 @@ const Pads: React.FC<PadsProps> = (
         sequenceRef.current = null;
       }
     };
-  }, [soundUrl, name, volume]);
+  }, [soundUrl]);
 
   //updating the volume
   useEffect(() => {
@@ -105,9 +105,9 @@ const Pads: React.FC<PadsProps> = (
           <span className="mr-2 text-sm">Vol:</span>
           <input
             type="range"
-            min="0"
-            max="0.5"
-            step={0.05}
+            min="-20"
+            max="5"
+            step={0.1}
             value={volume}
             className="w-24"
             onChange={(e) => {
