@@ -81,6 +81,7 @@ const CreateSongPage: React.FC = () => {
           volume={d.volume}
           soundUrl={d.soundUrl}
           onClick={(newVolume) => updateVolume(d.id, newVolume)}
+          isPlaying={isPlaying}
         />
       ))}
 

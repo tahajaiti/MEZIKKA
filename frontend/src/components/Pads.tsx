@@ -8,12 +8,15 @@ interface PadsProps {
   name?: string;
   volume?: number;
   soundUrl?: string;
+  isPlaying: boolean;
   onClick?: (newVol: number) => void;
 }
 
-const Pads: React.FC<PadsProps> = ({ name = 'Pad', volume = 0, soundUrl = '', onClick}) => {
+const Pads: React.FC<PadsProps> = ({ name = 'Pad', volume = 0, soundUrl = '', onClick, isPlaying = false }) => {
   const [activePads, setActivePads] = useState<boolean[]>(Array(STEPS).fill(false));
+  const [curStep, setCurStep] = useState(1);
   const samplerRef = useRef<Tone.Sampler | null>(null);
+  const sequenceRef = useRef<Tone.Sequence | null>(null);
 
   const togglePad = (index: number) => {
     setActivePads((prev) =>
@@ -23,12 +26,12 @@ const Pads: React.FC<PadsProps> = ({ name = 'Pad', volume = 0, soundUrl = '', on
 
   useEffect(() => {
     samplerRef.current = new Tone.Sampler({
-        urls: {
-          C4: soundUrl,
-        },
-        onload: () => {
-          console.log(`Sampler loaded for ${name}`);
-        }
+      urls: {
+        C4: soundUrl,
+      },
+      onload: () => {
+        console.log(`Sampler loaded for ${name}`);
+      }
     }).toDestination();
 
     //initialize the volume
@@ -36,6 +39,7 @@ const Pads: React.FC<PadsProps> = ({ name = 'Pad', volume = 0, soundUrl = '', on
       samplerRef.current.volume.value = volume;
     }
 
+    //cleaning up
     return () => {
       if (samplerRef.current) {
         samplerRef.current.dispose();
@@ -50,7 +54,33 @@ const Pads: React.FC<PadsProps> = ({ name = 'Pad', volume = 0, soundUrl = '', on
       samplerRef.current.volume.value = volume;
     }
   }, [volume]);
-  
+
+  useEffect(() => {
+
+    // cleaning up
+    if (samplerRef.current) {
+      samplerRef.current.dispose();
+    }
+
+    sequenceRef.current = new Tone.Sequence(
+      (time, step) => {
+        setCurStep(step);
+        
+        if (activePads[step] && samplerRef.current) {
+          samplerRef.current.triggerAttackRelease("C4", "16n", time);
+        }
+      },
+      Array.from({ length: STEPS }, (_, i) => i),
+      "16n"
+    );
+
+    return () => {
+      if (sequenceRef.current) {
+        sequenceRef.current.dispose();
+        sequenceRef.current = null;
+      }
+    };
+  }, [activePads, isPlaying]);
 
   return (
     <div className="mb-6">
