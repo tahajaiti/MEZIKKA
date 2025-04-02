@@ -21,7 +21,6 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
-
         if (!$user) {
             return Res::error('Unauthorized', 401);
         }

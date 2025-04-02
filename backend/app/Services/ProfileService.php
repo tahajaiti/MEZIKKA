@@ -2,21 +2,24 @@
 namespace App\Services;
 
 use App\Helpers\Gen;
-use Illuminate\Http\Request;
+use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ProfileService
 {
-
-
-    public function update(Request $request)
+    public function update(ProfileUpdateRequest $request)
     {
         $user = Auth::user();
-        $profile = $user->profile;
-        $username = $request->get("username");
 
-        if (!$username || Gen::check($username) || !$user){
+        if (!$user) {
+            return false;
+        }
+
+        $profile = $user->profile;
+        $username = $request->username;
+
+        if (!$username || Gen::check($username)) {
             return false;
         }
 
@@ -26,17 +29,15 @@ class ProfileService
             Storage::disk('public')->delete($profile->avatar);
         }
 
+        if ($path) {
+            $profile->avatar = $path;
+        }
 
         $profile->username = $username;
-        $profile->avatar = $path;
         $profile->bio = $request->bio;
 
         $profile->save();
 
         return $profile;
     }
-
-
-
-
 }

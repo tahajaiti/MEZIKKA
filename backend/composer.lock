@@ -2238,16 +2238,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "3.8.6",
+            "version": "3.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CarbonPHP/carbon.git",
-                "reference": "ff2f20cf83bd4d503720632ce8a426dc747bf7fd"
+                "reference": "6d16a8a015166fe54e22c042e0805c5363aef50d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CarbonPHP/carbon/zipball/ff2f20cf83bd4d503720632ce8a426dc747bf7fd",
-                "reference": "ff2f20cf83bd4d503720632ce8a426dc747bf7fd",
+                "url": "https://api.github.com/repos/CarbonPHP/carbon/zipball/6d16a8a015166fe54e22c042e0805c5363aef50d",
+                "reference": "6d16a8a015166fe54e22c042e0805c5363aef50d",
                 "shasum": ""
             },
             "require": {
@@ -2340,7 +2340,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-02-20T17:33:38+00:00"
+            "time": "2025-03-27T12:57:33+00:00"
         },
         {
             "name": "nette/schema",
@@ -5643,16 +5643,16 @@
         },
         {
             "name": "tahajaiti/jwt",
-            "version": "1.1.22",
+            "version": "1.1.23",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tahajaiti/jwt.git",
-                "reference": "58440a67054b141a6d90c0be21cff18caa245274"
+                "reference": "5abaa32280ed35b64dfb6e7f83720f013ad6f85a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tahajaiti/jwt/zipball/58440a67054b141a6d90c0be21cff18caa245274",
-                "reference": "58440a67054b141a6d90c0be21cff18caa245274",
+                "url": "https://api.github.com/repos/tahajaiti/jwt/zipball/5abaa32280ed35b64dfb6e7f83720f013ad6f85a",
+                "reference": "5abaa32280ed35b64dfb6e7f83720f013ad6f85a",
                 "shasum": ""
             },
             "require": {
@@ -5700,9 +5700,9 @@
             "description": "A laravel package for JWT Authentication",
             "support": {
                 "issues": "https://github.com/tahajaiti/jwt/issues",
-                "source": "https://github.com/tahajaiti/jwt/tree/1.1.22"
+                "source": "https://github.com/tahajaiti/jwt/tree/1.1.23"
             },
-            "time": "2025-04-01T18:05:06+00:00"
+            "time": "2025-04-02T15:24:34+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
