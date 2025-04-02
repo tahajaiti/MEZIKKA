@@ -12,11 +12,16 @@ interface PadsProps {
   onClick?: (newVol: number) => void;
 }
 
-const Pads: React.FC<PadsProps> = (
-  { name = 'Pad', volume = 0, soundUrl = '', onClick, isPlaying = false }
-) => {
+const Pads: React.FC<PadsProps> = ({
+  name = 'Pad',
+  volume = 0,
+  soundUrl = '',
+  onClick,
+  isPlaying = false,
+}) => {
   const [activePads, setActivePads] = useState<boolean[]>(Array(STEPS).fill(false));
   const [curStep, setCurStep] = useState(0);
+  const [isMuted, setIsMuted] = useState(false);
   const samplerRef = useRef<Tone.Sampler | null>(null);
   const sequenceRef = useRef<Tone.Sequence | null>(null);
 
@@ -38,7 +43,7 @@ const Pads: React.FC<PadsProps> = (
 
     //initialize the volume
     if (samplerRef.current) {
-      samplerRef.current.volume.value = volume;
+      samplerRef.current.volume.value = isMuted ? -Infinity : volume;
     }
 
     //cleaning up
@@ -54,6 +59,7 @@ const Pads: React.FC<PadsProps> = (
       }
     };
   }, [soundUrl]);
+
 
   //updating the volume
   useEffect(() => {
@@ -82,7 +88,7 @@ const Pads: React.FC<PadsProps> = (
       "16n"
     );
 
-    if (isPlaying) {
+    if (isPlaying && !isMuted) {
       sequenceRef.current.start(0);
     } else {
       sequenceRef.current.stop();
@@ -95,13 +101,14 @@ const Pads: React.FC<PadsProps> = (
         sequenceRef.current = null;
       }
     };
-  }, [activePads, isPlaying]);
+  }, [activePads, isPlaying, isMuted]);
 
   return (
     <div className="mb-6">
       <div className="flex items-center mb-2">
         <p className="font-medium w-24">{name}</p>
         <div className="flex items-center ml-4">
+
           <span className="mr-2 text-sm">Vol:</span>
           <input
             type="range"
@@ -115,8 +122,18 @@ const Pads: React.FC<PadsProps> = (
               if (onClick) {
                 onClick(newVolume);
               }
+
+              if (isMuted) {
+                setIsMuted(false);
+              }
             }}
           />
+          <button
+            className={`mr-4 px-2 py-1 rounded text-sm ${isMuted ? 'bg-red-500 text-white' : 'bg-gray-200'}`}
+            onClick={() => setIsMuted(!isMuted)}
+          >
+            {isMuted ? 'Unmute' : 'Mute'}
+          </button>
         </div>
       </div>
       <div className="flex gap-2">
