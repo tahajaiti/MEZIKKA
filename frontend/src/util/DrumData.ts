@@ -6,4 +6,7 @@ const DRUM_DATA = [
     { id: 'percussion', name: 'Percussion', soundUrl: 'https://cdn.pixabay.com/download/audio/2022/03/24/audio_3f94762948.mp3?filename=perc-screech-thinger-104898.mp3', volume: 0 },
 ]
 
+export const STEPS = 16;
+export const BPM = 120;
+
 export default DRUM_DATA;
