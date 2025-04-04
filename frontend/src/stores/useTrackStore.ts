@@ -73,6 +73,7 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
 
         setCustomSoundUrl: (url: string) => set({ customSoundUrl: url }),
         setCustomSoundName: (name: string) => set({ customSoundName: name }),
+        setCurrentStep: (step: number) => set({ currentStep: step }),
 
         togglePad: (padId: number | string, stepIndex: number) => {
             set(state => {
@@ -90,6 +91,6 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
             });
         },
 
-        
+
     }
 });
