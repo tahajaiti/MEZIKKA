@@ -15,7 +15,7 @@ const CreateSongPage: React.FC = () => {
     setCustomSoundUrl,
     setCustomSoundName,
     addCustomDrum
-  } = useTrackStore();
+  } = useTrackStore(); //we directly access the store here
 
   return (
     <>
@@ -44,11 +44,11 @@ const CreateSongPage: React.FC = () => {
       </div>
 
       {drums.map((d) => (
-        <Pads key={Number(d.id)}
+        <Pads
+          key={Number(d.id)}
+          id={Number(d.id)}
           name={d.name}
-          volume={d.volume}
           soundUrl={d.soundUrl}
-          isPlaying={isPlaying}
         />
       ))}
 

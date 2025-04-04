@@ -1,37 +1,41 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Pad } from "./Pad";
-import { STEPS } from "../util/DrumData";
 import * as Tone from 'tone';
 import { Volume2, VolumeOff } from "lucide-react";
+import useTrackStore from "../stores/useTrackStore";
 
 interface PadsProps {
-  key: number;
-  name?: string;
-  volume?: number;
-  soundUrl?: string;
-  isPlaying: boolean;
-  onClick?: (newVol: number) => void;
+  id: number;
+  name: string;
+  soundUrl: string;
 }
 
 const Pads: React.FC<PadsProps> = ({
+  id,
   name = 'Pad',
-  volume = 0,
   soundUrl = '',
-  onClick,
-  isPlaying = false,
 }) => {
-  const [activePads, setActivePads] = useState<boolean[]>(Array(STEPS).fill(false));
-  const [curStep, setCurStep] = useState(0);
-  const [isMuted, setIsMuted] = useState(false);
+  const {
+    isPlaying,
+    currentStep,
+    sequences,
+    drums,
+    mutedPads,
+    togglePad,
+    toggleMute,
+    updateVolume,
+    setCurrentStep
+  } = useTrackStore();
+
   const samplerRef = useRef<Tone.Sampler | null>(null);
   const sequenceRef = useRef<Tone.Sequence | null>(null);
 
-  const togglePad = (index: number) => {
-    setActivePads((prev) =>
-      prev.map((pad, i) => (i === index ? !pad : pad))
-    );
-  };
+  const currentDrum = drums.find(drum => drum.id === id);
+  const volume = currentDrum?.volume || 0;
+  const isMuted = mutedPads.has(id);
+  const activePads = sequences[id] || Array(16).fill(false);
 
+  // initializing the sampler
   useEffect(() => {
     samplerRef.current = new Tone.Sampler({
       urls: {
@@ -42,12 +46,10 @@ const Pads: React.FC<PadsProps> = ({
       }
     }).toDestination();
 
-    //initialize the volume
     if (samplerRef.current) {
       samplerRef.current.volume.value = isMuted ? -Infinity : volume;
     }
 
-    //cleaning up
     return () => {
       if (samplerRef.current) {
         samplerRef.current.dispose();
@@ -59,41 +61,39 @@ const Pads: React.FC<PadsProps> = ({
         sequenceRef.current = null;
       }
     };
-  }, [soundUrl]);
-
+  }, [soundUrl, id, name]);
 
   //updating the volume
   useEffect(() => {
     if (samplerRef.current) {
-      samplerRef.current.volume.value = volume;
+      samplerRef.current.volume.value = isMuted ? -Infinity : volume;
     }
-  }, [volume]);
+  }, [volume, isMuted]);
 
+  //setting up the sequencer
   useEffect(() => {
-
-    // cleaning up
     if (sequenceRef.current) {
       sequenceRef.current.dispose();
-      samplerRef.current = null;
+      sequenceRef.current = null;
     }
 
     sequenceRef.current = new Tone.Sequence(
       (time, step) => {
-        setCurStep(step);
+        setCurrentStep(step); //set the current step globally so they are in sync
 
-        if (activePads[step] && samplerRef.current) {
+        if (activePads[step] && samplerRef.current && !isMuted) {
           samplerRef.current.triggerAttackRelease("C4", "16n", time);
         }
       },
-      Array.from({ length: STEPS }, (_, i) => i),
+      Array.from({ length: 16 }, (_, i) => i),
       "16n"
     );
 
-    if (isPlaying && !isMuted) {
+    if (isPlaying) {
       sequenceRef.current.start(0);
     } else {
       sequenceRef.current.stop();
-      setCurStep(0);
+      setCurrentStep(0);
     }
 
     return () => {
@@ -102,14 +102,13 @@ const Pads: React.FC<PadsProps> = ({
         sequenceRef.current = null;
       }
     };
-  }, [activePads, isPlaying, isMuted]);
+  }, [activePads, isPlaying, isMuted, setCurrentStep]);
 
   return (
     <div className="mb-6">
       <div className="flex items-center mb-2">
         <p className="font-medium w-24">{name}</p>
         <div className="flex items-center ml-4">
-
           <span className="mr-2 text-sm">Vol:</span>
           <input
             type="range"
@@ -120,20 +119,14 @@ const Pads: React.FC<PadsProps> = ({
             className="w-24"
             onChange={(e) => {
               const newVolume = parseFloat(e.target.value);
-              if (onClick) {
-                onClick(newVolume);
-              }
-
-              if (isMuted) {
-                setIsMuted(false);
-              }
+              updateVolume(id, newVolume);
             }}
           />
           <button
-            className={`mr-4 px-2 py-1 rounded text-sm ${isMuted ? 'bg-red-500' : 'bg-gray-400 text-gray-900'}`}
-            onClick={() => setIsMuted(!isMuted)}
+            className={`mr-4 px-2 py-1 rounded text-sm ${isMuted ? 'bg-red-500 text-white' : 'bg-gray-200'}`}
+            onClick={() => toggleMute(id)}
           >
-            {isMuted ? <VolumeOff/> : <Volume2/>}
+            {isMuted ? <VolumeOff /> : <Volume2 />}
           </button>
         </div>
       </div>
@@ -142,8 +135,8 @@ const Pads: React.FC<PadsProps> = ({
           <Pad
             key={i}
             isActive={isActive}
-            onClick={() => togglePad(i)}
-            isCurrent={curStep === i}
+            onClick={() => togglePad(id, i)}
+            isCurrent={currentStep === i}
           />
         ))}
       </div>
