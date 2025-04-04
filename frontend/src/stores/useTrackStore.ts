@@ -42,7 +42,7 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
 
         updateVolume: (id: number | string, newVolume: number) => {
             set(state => ({
-                drums: state.drums.map(pad => 
+                drums: state.drums.map(pad =>
                     pad.id === id ? { ...pad, volume: newVolume } : pad
                 )
             }));
@@ -59,7 +59,7 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
                     volume: 0.5,
                 }
 
-                const newSequence = {...sequences};
+                const newSequence = { ...sequences };
                 newSequence[newDrum.id] = Array(STEPS).fill(false);
 
                 set(state => ({
@@ -69,6 +69,27 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
                     customSoundUrl: '',
                 }));
             }
-        }
+        },
+
+        setCustomSoundUrl: (url: string) => set({ customSoundUrl: url }),
+        setCustomSoundName: (name: string) => set({ customSoundName: name }),
+
+        togglePad: (padId: number | string, stepIndex: number) => {
+            set(state => {
+                const currSequence = state.sequences[padId];
+                if (!currSequence) return state;
+                const newSequence = [...currSequence];
+                newSequence[stepIndex] = !newSequence[stepIndex];
+
+                return {
+                    sequences: {
+                        ...state.sequences,
+                        [padId]: newSequence,
+                    }
+                };
+            });
+        },
+
+        
     }
 });
