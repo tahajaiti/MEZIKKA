@@ -33,6 +33,21 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
             }
 
             set(state => ({ isPlaying: !state.isPlaying }));
+        },
+
+        updateBpm: (newBpm: number) => {
+            set({ bpm: newBpm });
+            Tone.getTransport().bpm.value = newBpm;
+        },
+
+        updateVolume: (id: number | string, newVolume: number) => {
+            set(state => ({
+                drums: state.drums.map(pad => 
+                    pad.id === id ? { ...pad, volume: newVolume } : pad
+                )
+            }));
         }
+
+        
     }
 });

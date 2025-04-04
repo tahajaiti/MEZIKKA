@@ -22,6 +22,13 @@ export interface DrumSequencerState {
 
 
     startStopSequencer: () => Promise<void>
-    
+    updateBpm: (newBpm: number) => void
+    updateVolume: (id: number | string, newVolume: number) => void
+    addCustomDrum: () => void
+    setCustomSoundUrl: (url: string) => void
+    setCustomSoundName: (name: string) => void
+    togglePad: (padId: number | string, stepIndex: number) => void
+    toggleMute: (padId: number | string) => void
+    setCurrentStep: (step: number) => void
 }
 
