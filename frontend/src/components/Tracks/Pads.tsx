@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { Pad } from "./Pad";
 import * as Tone from 'tone';
 import { Volume2, VolumeOff } from "lucide-react";
-import useTrackStore from "../stores/useTrackStore";
+import useTrackStore from "../../stores/useTrackStore";
 
 interface PadsProps {
   id: number;
