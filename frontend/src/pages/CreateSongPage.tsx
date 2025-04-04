@@ -1,54 +1,21 @@
-import React, { useState, useEffect } from 'react'
-import DRUM_DATA from '../util/DrumData'
+import React from 'react'
 import Pads from '../components/Pads'
-import * as Tone from "tone";
 import { Pause, Play } from 'lucide-react';
+import useTrackStore from '../stores/useTrackStore';
 
 const CreateSongPage: React.FC = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [drums, setDrums] = useState(DRUM_DATA);
-  const [bpm, setBpm] = useState(120);
-  const [customSoundUrl, setCustomSoundUrl] = useState('');
-  const [customSoundName, setCustomSoundName] = useState('');
-
-  const startSequencer = async () => {
-    await Tone.start(); // starts the audio context
-    Tone.getTransport().bpm.value = bpm; // set the BPM
-
-    if (isPlaying) {
-      Tone.getTransport().stop();
-    } else {
-      Tone.getTransport().start();
-    }
-
-    setIsPlaying(!isPlaying);
-  }
-
-  const updateVolume = (id: number | string, newVolume: number) => {
-    setDrums(pads => 
-      pads.map(pad => 
-        pad.id === id ? { ...pad, volume: newVolume } : pad
-      )
-    );
-  };
-
-  const addCustomDrum = () => {
-    if (customSoundUrl && customSoundName) {
-      const newSound = {
-        id: Date.now(),
-        name: customSoundName,
-        soundUrl: customSoundUrl,
-        volume: 0.5,
-      };
-      setDrums(prevDrums => [...prevDrums, newSound]);
-      setCustomSoundUrl('');
-      setCustomSoundName('');
-    }
-  }
-
-  useEffect(() => { //change the bpm when the slider is moved
-    Tone.getTransport().bpm.value = bpm;
-  }, [bpm]);
+  const {
+    isPlaying,
+    bpm,
+    drums,
+    customSoundUrl,
+    customSoundName,
+    startStopSequencer,
+    updateBpm,
+    setCustomSoundUrl,
+    setCustomSoundName,
+    addCustomDrum
+  } = useTrackStore();
 
   return (
     <>
@@ -56,10 +23,10 @@ const CreateSongPage: React.FC = () => {
         <h1 className="text-2xl font-bold mb-4">Create Your Song</h1>
         <div className='mb-4'>
           <button
-            onClick={startSequencer}
+            onClick={startStopSequencer}
             className={`px-4 py-2 rounded-md ${isPlaying ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'}`}
           >
-            {isPlaying ? <Pause/> : <Play/>}
+            {isPlaying ? <Pause /> : <Play />}
           </button>
         </div>
         <div className="mb-4">
@@ -70,18 +37,17 @@ const CreateSongPage: React.FC = () => {
             max={180}
             id="bpm"
             value={bpm}
-            onChange={(e) => setBpm(Number(e.target.value))}
+            onChange={(e) => updateBpm(Number(e.target.value))}
             className="py-2 rounded bg-gray-700 text-white"
           />
         </div>
       </div>
 
       {drums.map((d) => (
-        <Pads key={d.id}
+        <Pads key={Number(d.id)}
           name={d.name}
           volume={d.volume}
           soundUrl={d.soundUrl}
-          onClick={(newVolume) => updateVolume(d.id, newVolume)}
           isPlaying={isPlaying}
         />
       ))}
