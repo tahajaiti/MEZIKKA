@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { Pad } from "./Pad";
 import { STEPS } from "../util/DrumData";
 import * as Tone from 'tone';
+import { Volume2, VolumeOff } from "lucide-react";
 
 interface PadsProps {
   key: number;
@@ -129,10 +130,10 @@ const Pads: React.FC<PadsProps> = ({
             }}
           />
           <button
-            className={`mr-4 px-2 py-1 rounded text-sm ${isMuted ? 'bg-red-500 text-white' : 'bg-gray-200'}`}
+            className={`mr-4 px-2 py-1 rounded text-sm ${isMuted ? 'bg-red-500' : 'bg-gray-400 text-gray-900'}`}
             onClick={() => setIsMuted(!isMuted)}
           >
-            {isMuted ? 'Unmute' : 'Mute'}
+            {isMuted ? <VolumeOff/> : <Volume2/>}
           </button>
         </div>
       </div>

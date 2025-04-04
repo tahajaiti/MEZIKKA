@@ -9,10 +9,10 @@ interface PadProps {
 export const Pad: React.FC<PadProps> = ({ isActive, onClick, isCurrent = false }) => {
   return (
     <button
-      className={`w-12 h-12 rounded-md transition-all ${isActive
-          ? 'bg-blue-500 hover:bg-blue-600'
+      className={`w-12 h-12 transition-all ${isActive
+          ? 'bg-red-500 hover:bg-red-600'
           : 'bg-gray-700 hover:bg-gray-600'
-        } ${isCurrent ? 'border-2 border-red-400 bg-red-500' : ''
+        } ${isCurrent ? 'border-2 border-red-400' : ''
         }
       `}
       onClick={onClick}

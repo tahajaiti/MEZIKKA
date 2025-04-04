@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import DRUM_DATA from '../util/DrumData'
 import Pads from '../components/Pads'
 import * as Tone from "tone";
+import { Pause, Play } from 'lucide-react';
 
 const CreateSongPage: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -58,7 +59,7 @@ const CreateSongPage: React.FC = () => {
             onClick={startSequencer}
             className={`px-4 py-2 rounded-md ${isPlaying ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'}`}
           >
-            {isPlaying ? 'Stop' : 'Play'}
+            {isPlaying ? <Pause/> : <Play/>}
           </button>
         </div>
         <div className="mb-4">
