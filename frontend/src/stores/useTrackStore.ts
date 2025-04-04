@@ -91,6 +91,19 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
             });
         },
 
+        toggleMute: (padId: number | string) => {
+            set(state => {
+                const newMutedPads = new Set(state.mutedPads);
+                if (newMutedPads.has(padId)){
+                    newMutedPads.delete(padId);
+                } else {
+                    newMutedPads.add(padId);
+                }
 
+                return { mutedPads: newMutedPads };
+            })
+        }
     }
 });
+
+export default useTrackStore;
