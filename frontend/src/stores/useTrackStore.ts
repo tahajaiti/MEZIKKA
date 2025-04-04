@@ -46,8 +46,29 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
                     pad.id === id ? { ...pad, volume: newVolume } : pad
                 )
             }));
-        }
+        },
 
-        
+        addCustomDrum: () => {
+            const { customSoundUrl, customSoundName, sequences } = get();
+
+            if (customSoundUrl && customSoundName) {
+                const newDrum = {
+                    id: Date.now(),
+                    name: customSoundName,
+                    soundUrl: customSoundUrl,
+                    volume: 0.5,
+                }
+
+                const newSequence = {...sequences};
+                newSequence[newDrum.id] = Array(STEPS).fill(false);
+
+                set(state => ({
+                    drums: [...state.drums, newDrum],
+                    sequences: newSequence,
+                    customSoundName: '',
+                    customSoundUrl: '',
+                }));
+            }
+        }
     }
 });
