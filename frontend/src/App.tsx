@@ -1,10 +1,10 @@
-import React from 'react'
-import CreateSongPage from './pages/CreateSongPage'
+import { RouterProvider } from '@tanstack/react-router'
+import { router } from './router'
 
 const App = () => {
   return (
     <div>
-        <CreateSongPage />
+        <RouterProvider router={router} />
     </div>
   )
 }
