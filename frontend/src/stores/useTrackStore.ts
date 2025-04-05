@@ -21,6 +21,8 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
         drums: DRUM_DATA,
         currentStep: 0,
         mutedPads: new Set<number | string>(),
+        isRecording: false,
+        recorder: null,
 
         startStopSequencer: async () => {
             await Tone.start();
@@ -103,6 +105,41 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
                 return { mutedPads: newMutedPads };
             })
         },
+
+        startRecording: async () => {
+            await Tone.start();
+
+            if (!get().isPlaying) {
+                await get().startStopSequencer();
+            }
+
+            const recorder = new Tone.Recorder();
+            Tone.getDestination().connect(recorder);
+            recorder.start();
+
+            set({ recorder, isRecording: true });
+        },
+
+        stopRecordingAndExport: async () => {
+            const { recorder, isPlaying } = get();
+
+            if (isPlaying) {
+                await get().startStopSequencer();
+            }
+
+            if (recorder) {
+                const recording = await recorder.stop();
+                const url = URL.createObjectURL(recording);
+                const a = document.createElement('a');
+                a.download = `track-${new Date().toISOString().split('T')[0]}.webm`;
+                a.href = url;
+                a.click();
+                URL.revokeObjectURL(url);
+                recorder.dispose();
+                a.remove();
+                set({ recorder: null, isRecording: false });
+            }
+        }
     }
 });
 

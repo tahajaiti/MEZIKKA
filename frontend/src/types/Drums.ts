@@ -1,3 +1,4 @@
+import * as Tone from 'tone'
 export interface DrumPad {
     id: number | string
     name: string
@@ -20,7 +21,7 @@ export interface DrumSequencerState {
     currentStep: number
     mutedPads: Set<number | string>
     isRecording: boolean
-
+    recorder: Tone.Recorder | null
 
     startStopSequencer: () => Promise<void>
     updateBpm: (newBpm: number) => void
