@@ -6,6 +6,12 @@ interface AuthData {
     user: User;
 }
 
+export interface creds {
+    name: string;
+    email: string;
+    password: string;
+}
+
 export interface AuthState {
     token: string | null;
     user: User | null;
