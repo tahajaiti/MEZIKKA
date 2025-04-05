@@ -47,7 +47,7 @@ apiClient.interceptors.request.use(
 
 apiClient.interceptors.response.use(
     (response: AxiosResponse) => {
-        return response.data;
+        return response;
     },
     (error: AxiosError<LaravelApiError>) => {
 
