@@ -1,4 +1,17 @@
-import axios, {AxiosError, InternalAxiosRequestConfig, AxiosResponse} from 'axios';
+import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
+
+interface LaravelValidationError {
+    message: string;
+    errors: Record<string, string[]>;
+}
+
+interface LaravelApiError {
+    message: string;
+    errors?: Record<string, string[]>;
+    exception?: string;
+}
+
+
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080/api';
 
@@ -35,6 +48,37 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
     (response: AxiosResponse) => {
         return response.data;
+    },
+    (error: AxiosError<LaravelApiError>) => {
+
+        if (!error.response) {
+            return Promise.reject({
+                message: 'Network error - The server is currently down please try again later',
+                status: 'network_error'
+            });
+        }
+
+        const { status, data } = error.response;
+
+        console.log(data);
+
+        switch (status) {
+            case 422: {
+                const validationErr = error.response.data as LaravelValidationError;
+                return Promise.reject({
+                    message: validationErr.message || 'Validation failed',
+                    errors: validationErr.errors,
+                    status: 'validation_error'
+                });
+            }
+            
+            default:
+                return Promise.reject({
+                    message: data?.message || 'An unexpected error occurred',
+                    status: 'unknown_error',
+                    error: data
+                });
+        }
     }
 )
 
