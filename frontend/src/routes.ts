@@ -6,12 +6,13 @@ import Login from "./pages/Login";
 interface RouteConfig {
     path: string;
     component: React.FC;
+    layout?: boolean;
 }
 
 const routeConfig: RouteConfig[] = [
-    {path: '/', component: Home},
-    {path: '/login', component: Login},
-    {path: '/create/song', component: CreateSongPage}
+    { path: '/', component: Home, layout: true },
+    { path: '/login', component: Login, layout: false },
+    { path: '/create/song', component: CreateSongPage, layout: true },
 ];
 
 export default routeConfig;
