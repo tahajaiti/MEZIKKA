@@ -34,5 +34,7 @@ export interface DrumSequencerState {
     setCurrentStep: (step: number) => void
     startRecording: () => Promise<void>
     stopRecordingAndExport: () => Promise<void>
+    saveSong: (songKey: string) => void
+    loadSong: (songKey: string) => void
 }
 

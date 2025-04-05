@@ -139,6 +139,40 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
                 a.remove();
                 set({ recorder: null, isRecording: false });
             }
+        },
+
+        saveSong: (songKey: string) => {
+            const state = get();
+            const songData = {
+                bpm: state.bpm,
+                sequences: state.sequences,
+                drums: state.drums,
+                currentStep: state.currentStep,
+                mutedPads: Array.from(state.mutedPads),
+            }
+
+
+            if (songKey) {
+                localStorage.setItem(songKey, JSON.stringify(songData));
+            }
+        },
+
+        loadSong: (songKey: string) => {
+            const songData = localStorage.getItem(songKey);
+            if (songData) {
+                const parsedData = JSON.parse(songData);
+                set({
+                    bpm: parsedData.bpm,
+                    sequences: parsedData.sequences,
+                    drums: parsedData.drums,
+                    currentStep: parsedData.currentStep,
+                    mutedPads: new Set(parsedData.mutedPads),
+                });
+                Tone.getTransport().bpm.value = parsedData.bpm;
+                alert(`Song loaded with ID: ${songKey}`);
+            } else {
+                alert(`No song found with ID: ${songKey}`);
+            }
         }
     }
 });
