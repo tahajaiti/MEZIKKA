@@ -24,7 +24,7 @@ const Login = () => {
     password: ''
   });
 
-  const {mutate: login, isPending, error: loginErr} = useLogin();
+  const { mutate: login, isPending, error: loginErr } = useLogin();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -46,13 +46,10 @@ const Login = () => {
 
     if (!emailError && !passwordError) {
       login(
-        {email: formData.email, password: formData.password},
+        { email: formData.email, password: formData.password },
         {
           onSuccess: (data) => {
             console.log('Login successful:', data);
-          },
-          onError: (error) => {
-            console.log('Login error:', error);
           }
         }
       );
@@ -94,6 +91,11 @@ const Login = () => {
 
           <ButtonLarge type='submit' />
         </form>
+
+        {loginErr && (
+          <p className="text-red-500 text-sm">{loginErr.message || 'An error occurred'}</p>
+        )}
+
         <p className='text-white/40 text-sm'>Don't have an account? <span className='text-white font-bold'>SIGN UP</span></p>
         <p>Reset Password</p>
         <div className='bg-white/40 w-full h-1'></div>
