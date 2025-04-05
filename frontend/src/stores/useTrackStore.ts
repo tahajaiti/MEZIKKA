@@ -94,7 +94,7 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
         toggleMute: (padId: number | string) => {
             set(state => {
                 const newMutedPads = new Set(state.mutedPads);
-                if (newMutedPads.has(padId)){
+                if (newMutedPads.has(padId)) {
                     newMutedPads.delete(padId);
                 } else {
                     newMutedPads.add(padId);
@@ -102,7 +102,7 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
 
                 return { mutedPads: newMutedPads };
             })
-        }
+        },
     }
 });
 

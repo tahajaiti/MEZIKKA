@@ -19,6 +19,7 @@ export interface DrumSequencerState {
     customSoundName: string
     currentStep: number
     mutedPads: Set<number | string>
+    isRecording: boolean
 
 
     startStopSequencer: () => Promise<void>
@@ -30,5 +31,7 @@ export interface DrumSequencerState {
     togglePad: (padId: number | string, stepIndex: number) => void
     toggleMute: (padId: number | string) => void
     setCurrentStep: (step: number) => void
+    startRecording: () => Promise<void>
+    stopRecordingAndExport: () => Promise<void>
 }
 
