@@ -27,3 +27,26 @@ export const useLogin = (): UseMutationResult<
         }
     });
 }
+
+export const useSignup = (): UseMutationResult<
+    AxiosResponse<Response<AuthData>>,
+    Error,
+    creds> => {
+
+    const { setAuth } = useAuthStore();
+
+    return useMutation({
+        mutationFn: authService.register,
+        onSuccess: (res) => {
+            if (!res.data.data) {
+                throw new Error("No data returned");
+            }
+
+            const { token, user } = res.data.data;
+            setAuth(token, user);
+        },
+        onError: (error) => {
+            console.log("Signup error:", error);
+        }
+    });
+}
