@@ -1,10 +1,39 @@
+import React, { useState } from 'react'
+import { EyeOff, Mail } from 'lucide-react'
 import authBg from '@assets/authBg.png'
 import MezikkaText from '../components/Texts/MezikkaText'
-import { EyeOff, Mail } from 'lucide-react'
 import ButtonLarge from '../components/Buttons/ButtonLarge'
 import AuthInput from '../components/Inputs/AuthInput'
+import { validateEmail, validatePassword } from '../util/Validators'
 
 const Login = () => {
+  const [formData, setFormData] = useState<{
+    email: string;
+    password: string;
+  }>({
+    email: '',
+    password: ''
+  });
+
+  const [errors, setErrors] = useState<{
+    email: string | null;
+    password: string | null;
+  }>({
+    email: '',
+    password: ''
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({ ...prev, [id]: value }));
+
+    if (id === 'email') {
+      setErrors(prev => ({ ...prev, email: validateEmail(value) }));
+    } else if (id === 'password') {
+      setErrors(prev => ({ ...prev, password: validatePassword(value) }));
+    }
+  };
+
   return (
     <main className='flex flex-col items-center justify-center min-h-screen bg-[#161515]'>
       <img
@@ -23,6 +52,9 @@ const Login = () => {
             type="email"
             icon={<Mail />}
             required
+            value={formData.email}
+            onChange={handleChange}
+            error={errors.email}
           />
           <AuthInput
             id="password"
@@ -30,6 +62,9 @@ const Login = () => {
             type="password"
             icon={<EyeOff />}
             required
+            value={formData.password}
+            onChange={handleChange}
+            error={errors.password}
           />
 
           <ButtonLarge type='submit' />
