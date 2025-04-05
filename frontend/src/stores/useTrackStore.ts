@@ -150,8 +150,7 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
                 currentStep: state.currentStep,
                 mutedPads: Array.from(state.mutedPads),
             }
-
-
+            
             if (songKey) {
                 localStorage.setItem(songKey, JSON.stringify(songData));
             }

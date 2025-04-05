@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Pads from '../components/Tracks/Pads'
-import { Pause, Play, Save, Upload } from 'lucide-react';
+import { Pause, Play} from 'lucide-react';
 import useTrackStore from '../stores/useTrackStore';
 import CustomSoundControls from '../components/Tracks/CustomSoundControls';
 import RecordingControls from '../components/Tracks/RecordingControls';
@@ -12,27 +12,10 @@ const CreateSongPage: React.FC = () => {
     drums,
     startStopSequencer,
     updateBpm,
-    saveSong,
-    loadSong,
+
   } = useTrackStore();
 
 
-  const [songKey, setSongKey] = useState<string>('');
-
-  const handleSaveSong = () => {
-    const newKey = new Date().toISOString();
-    saveSong(newKey);
-    setSongKey(newKey);
-    alert(`Song saved with key: ${newKey}`);
-  };
-
-  const handleLoadSong = () => {
-    const key = prompt('Enter the song key to load:');
-    if (key) {
-      loadSong(key);
-      setSongKey(key);
-    }
-  };
 
   return (
     <>
@@ -58,23 +41,8 @@ const CreateSongPage: React.FC = () => {
             className="py-2 rounded bg-gray-700 text-white"
           />
         </div>
-        <button
-          onClick={handleSaveSong}
-          className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-md flex items-center gap-2"
-        >
-          <Save /> Save Song
-        </button>
-        <button
-          onClick={handleLoadSong}
-          className="px-4 py-2 bg-purple-500 hover:bg-purple-600 rounded-md flex items-center gap-2"
-        >
-          <Upload /> Load Song
-        </button>
-      </div>
 
-      {songKey && (
-        <p className="text-sm text-gray-400 mb-4">Current Song Key: {songKey}</p>
-      )}
+      </div>
 
       <RecordingControls />
 
