@@ -1,6 +1,7 @@
 import { Home } from "lucide-react";
 import CreateSongPage from "./pages/CreateSongPage";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 
 interface RouteConfig {
@@ -12,6 +13,7 @@ interface RouteConfig {
 const routeConfig: RouteConfig[] = [
     { path: '/', component: Home, layout: true },
     { path: '/login', component: Login, layout: false },
+    { path: '/signup', component: Signup, layout: false },
     { path: '/create/song', component: CreateSongPage, layout: true },
 ];
 
