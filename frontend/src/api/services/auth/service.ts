@@ -1,6 +1,6 @@
-import api from "../api";
-import AuthData, { creds } from "../types/Auth";
-import Response from "../types/Response";
+import api from "../../index";
+import AuthData, { creds } from "../../../types/Auth";
+import Response from "../../../types/Response";
 
 
 const login = (creds: Pick<creds, 'email' | 'password'>) => api.post<Response<AuthData>>('/auth/login', creds);
