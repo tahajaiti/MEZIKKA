@@ -116,7 +116,7 @@ const Signup = () => {
                         error={errors.password}
                     />
 
-                    <ButtonLarge type='submit' isPending={isPending} />
+                    <ButtonLarge text='SIGN UP' type='submit' isPending={isPending} />
                 </form>
 
                 {signupErr && (
