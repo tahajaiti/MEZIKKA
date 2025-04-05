@@ -6,6 +6,7 @@ import ButtonLarge from '../components/Buttons/ButtonLarge';
 import AuthInput from '../components/Inputs/AuthInput';
 import { validateEmail, validatePassword } from '../util/Validators';
 import { useLogin } from '../api/services/auth/query';
+import { Link } from '@tanstack/react-router';
 
 const Login = () => {
   const [formData, setFormData] = useState<{
@@ -106,7 +107,7 @@ const Login = () => {
 
         <p className="text-white/40 text-sm text-center">
           Don't have an account?{' '}
-          <span className="text-white font-bold">SIGN UP</span>
+          <Link to="/signup" className="text-white font-bold">SIGN UP</Link>
         </p>
         <p className="text-white/40 text-sm text-center">Reset Password</p>
         {/* <div className="bg-white/40 w-full h-1"></div>

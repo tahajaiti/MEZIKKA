@@ -6,6 +6,7 @@ import MezikkaText from '../components/Texts/MezikkaText';
 import { validateEmail, validatePassword } from '../util/Validators';
 import AuthInput from '../components/Inputs/AuthInput';
 import ButtonLarge from '../components/Buttons/ButtonLarge';
+import { useSignup } from '../api/services/auth/query';
 
 
 const Signup = () => {
@@ -29,6 +30,8 @@ const Signup = () => {
         password: null,
     });
 
+    const { mutate: signup, isPending, error: signupErr } = useSignup();
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
         setFormData((prev) => ({ ...prev, [id]: value }));
@@ -39,6 +42,26 @@ const Signup = () => {
             setErrors((prev) => ({ ...prev, password: validatePassword(value) }));
         } else if (id === 'username') {
             setErrors((prev) => ({ ...prev, username: formData.username.length < 2 ? 'Username must be at least 3 characters long' : null }))
+        }
+    };
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const usernameErr = formData.username.length < 2 ? 'Username must be at least 3 characters long' : null;
+        const emailError = validateEmail(formData.email);
+        const passwordError = validatePassword(formData.password);
+
+        setErrors({ username: usernameErr, email: emailError, password: passwordError });
+
+        if (!emailError && !passwordError) {
+            signup(
+                { name: formData.username, email: formData.email, password: formData.password },
+                {
+                    onSuccess: (data) => {
+                        console.log('Signup successful:', data.data.data);
+                    },
+                }
+            );
         }
     };
 
@@ -56,7 +79,7 @@ const Signup = () => {
                     Explore music that's fun!
                 </h2>
 
-                <form action=""
+                <form onSubmit={handleSubmit}
                     className="flex flex-col items-center justify-center w-full gap-4"
                 >
 
@@ -93,8 +116,14 @@ const Signup = () => {
                         error={errors.password}
                     />
 
-                    <ButtonLarge type='submit' />
+                    <ButtonLarge type='submit' isPending={isPending} />
                 </form>
+
+                {signupErr && (
+                    <p className="text-red-500 text-sm text-center">
+                        {signupErr.message || 'An error occurred'}
+                    </p>
+                )}
 
                 <p className="text-white/40 text-sm text-center">
                     Already have an account?{' '}
