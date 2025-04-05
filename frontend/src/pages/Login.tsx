@@ -11,7 +11,7 @@ const Login = () => {
         src={authBg}
         alt="background image containing rap albums" />
 
-      <div className='p-4 px-16 flex flex-col items-center justify-between gap-10 z-10 bg-black h-1/2 w-1/3 rounded-[5px]'>
+      <div className='p-8 px-16 flex flex-col items-center justify-between gap-10 z-10 bg-black h-1/2 w-1/3 rounded-[5px]'>
         <MezikkaText />
         <h2 className='text-4xl font-semibold mb-4'>Music Made Fun</h2>
 
@@ -43,10 +43,12 @@ const Login = () => {
             <EyeOff className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/40 w-5 h-5" />
           </div>
 
-          <ButtonLarge type='submit'/>
+          <ButtonLarge type='submit' />
         </form>
         <p className='text-white/40 text-sm'>Don't have an account? <span className='text-white font-bold'>SIGN UP</span></p>
         <p>Reset Password</p>
+        <div className='bg-white/40 w-full h-1'></div>
+        <ButtonLarge type='button' text='LOG IN WITH GOOGLE' color='FFFFFF' textColor='black' />
       </div>
 
     </main>
