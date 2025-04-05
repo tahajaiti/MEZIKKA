@@ -5,6 +5,7 @@ import MezikkaText from '../components/Texts/MezikkaText'
 import ButtonLarge from '../components/Buttons/ButtonLarge'
 import AuthInput from '../components/Inputs/AuthInput'
 import { validateEmail, validatePassword } from '../util/Validators'
+import { useLogin } from '../api/services/auth/query'
 
 const Login = () => {
   const [formData, setFormData] = useState<{
@@ -23,6 +24,7 @@ const Login = () => {
     password: ''
   });
 
+  const {mutate: login, isPending, error: loginErr} = useLogin();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -35,7 +37,27 @@ const Login = () => {
     }
   };
 
-  
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const emailError = validateEmail(formData.email);
+    const passwordError = validatePassword(formData.password);
+
+    setErrors({ email: emailError, password: passwordError });
+
+    if (!emailError && !passwordError) {
+      login(
+        {email: formData.email, password: formData.password},
+        {
+          onSuccess: (data) => {
+            console.log('Login successful:', data);
+          },
+          onError: (error) => {
+            console.log('Login error:', error);
+          }
+        }
+      );
+    }
+  }
 
   return (
     <main className='flex flex-col items-center justify-center min-h-screen bg-[#161515]'>
@@ -48,7 +70,7 @@ const Login = () => {
         <MezikkaText />
         <h2 className='text-4xl font-semibold mb-4'>Music Made Fun</h2>
 
-        <form className='flex flex-col items-center justify-center w-full gap-2'>
+        <form onSubmit={handleSubmit} className='flex flex-col items-center justify-center w-full gap-2'>
           <AuthInput
             id="email"
             placeholder="Email"
