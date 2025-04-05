@@ -16,7 +16,7 @@ const ButtonLarge = ({ color = '#C70000', text = 'LOG IN', type = 'button', text
             disabled={isPending}
             type={type}
             style={{ backgroundColor: realColor, color: textColor }}
-            className={` w-full p-4 rounded-full text-xl font-bold transition duration-200 ease-in-out cursor-pointer hover:opacity-80`}
+            className={` w-full p-4 sm:p-4 sm:text-xl rounded-full text-xl font-bold transition duration-200 ease-in-out cursor-pointer hover:opacity-80`}
         >
             {isPending ? <LoaderCircleIcon className="animate-spin m-auto" /> : text}
         </button>
