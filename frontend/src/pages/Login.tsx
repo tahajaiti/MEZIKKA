@@ -23,6 +23,7 @@ const Login = () => {
     password: ''
   });
 
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData(prev => ({ ...prev, [id]: value }));
@@ -33,6 +34,8 @@ const Login = () => {
       setErrors(prev => ({ ...prev, password: validatePassword(value) }));
     }
   };
+
+  
 
   return (
     <main className='flex flex-col items-center justify-center min-h-screen bg-[#161515]'>
