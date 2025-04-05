@@ -3,6 +3,7 @@ import Pads from '../components/Tracks/Pads'
 import { Pause, Play } from 'lucide-react';
 import useTrackStore from '../stores/useTrackStore';
 import CustomSoundControls from '../components/Tracks/CustomSoundControls';
+import RecordingControls from '../components/Tracks/RecordingControls';
 
 const CreateSongPage: React.FC = () => {
   const {
@@ -39,6 +40,8 @@ const CreateSongPage: React.FC = () => {
           />
         </div>
       </div>
+
+      <RecordingControls />
 
       {drums.map((d) => (
         <Pads
