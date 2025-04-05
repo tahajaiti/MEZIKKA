@@ -1,12 +1,12 @@
-import { Home } from "lucide-react";
-import CreateSongPage from "./pages/CreateSongPage";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-
+import { FC } from 'react';
+import Home from './pages/Home';
+import CreateSongPage from './pages/CreateSongPage';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 
 interface RouteConfig {
     path: string;
-    component: React.FC;
+    component: FC;
     layout?: boolean;
 }
 

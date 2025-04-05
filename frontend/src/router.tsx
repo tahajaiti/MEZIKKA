@@ -25,4 +25,11 @@ declare module '@tanstack/react-router' {
     interface Register {
         router: typeof router;
     }
+
+    interface RoutePaths {
+        '/': '/';
+        '/login': '/login';
+        '/signup': '/signup';
+        '/create/song': '/create/song';
+    }
 }

@@ -1,9 +1,10 @@
+import { useState } from 'react';
+import { Link } from '@tanstack/react-router';
+import { Eye, Mail, User } from 'lucide-react';
 import authBg from '@assets/authBg.png';
 import MezikkaText from '../components/Texts/MezikkaText';
-import { useState } from 'react';
 import { validateEmail, validatePassword } from '../util/Validators';
 import AuthInput from '../components/Inputs/AuthInput';
-import { Eye, Mail, User } from 'lucide-react';
 import ButtonLarge from '../components/Buttons/ButtonLarge';
 
 
@@ -94,6 +95,11 @@ const Signup = () => {
 
                     <ButtonLarge type='submit' />
                 </form>
+
+                <p className="text-white/40 text-sm text-center">
+                    Already have an account?{' '}
+                    <Link to="/login" className="text-white font-bold">LOG IN</Link>
+                </p>
             </div>
         </main>
     )

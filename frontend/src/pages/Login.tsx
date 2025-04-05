@@ -109,13 +109,13 @@ const Login = () => {
           <span className="text-white font-bold">SIGN UP</span>
         </p>
         <p className="text-white/40 text-sm text-center">Reset Password</p>
-        <div className="bg-white/40 w-full h-1"></div>
+        {/* <div className="bg-white/40 w-full h-1"></div>
         <ButtonLarge
           type="button"
           text="LOG IN WITH GOOGLE"
           color="FFFFFF"
           textColor="black"
-        />
+        /> */}
       </div>
     </main>
   );
