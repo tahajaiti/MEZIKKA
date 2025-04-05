@@ -1,13 +1,21 @@
-import React from 'react'
-
-const ButtonLarge = () => {
-    return (
-        <button
-            className='bg-[#C70000] text-white w-full p-4 rounded-full 
-            text-xl font-bold hover:bg-[#C70000]/80 transition duration-200 ease-in-out cursor-pointer'
-        >
-            LOG IN</button>
-    )
+interface ButtonProps {
+    color?: string;
+    text?: string;
+    type?: 'button' | 'submit' | 'reset';
 }
 
-export default ButtonLarge
+const ButtonLarge = ({ color = '#C70000', text = 'LOG IN', type = 'button', }: ButtonProps) => {
+    const realColor = color.startsWith('#') ? color : `#${color}`;
+
+    return (
+        <button
+            type={type}
+            style={{ backgroundColor: realColor }}
+            className={`text-white w-full p-4 rounded-full text-xl font-bold transition duration-200 ease-in-out cursor-pointer hover:opacity-80`}
+        >
+            {text}
+        </button>
+    );
+};
+
+export default ButtonLarge;

@@ -43,7 +43,7 @@ const Login = () => {
             <EyeOff className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/40 w-5 h-5" />
           </div>
 
-          <ButtonLarge />
+          <ButtonLarge type='submit'/>
         </form>
         <p className='text-white/40 text-sm'>Don't have an account? <span className='text-white font-bold'>SIGN UP</span></p>
         <p>Reset Password</p>
