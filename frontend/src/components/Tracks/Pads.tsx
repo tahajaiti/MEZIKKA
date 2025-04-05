@@ -42,7 +42,7 @@ const Pads: React.FC<PadsProps> = ({
         C4: soundUrl,
       },
       onload: () => {
-        console.log(`Sampler loaded for ${name}`);
+        console.log(`Sampler loaded for`);
       }
     }).toDestination();
 
@@ -61,7 +61,7 @@ const Pads: React.FC<PadsProps> = ({
         sequenceRef.current = null;
       }
     };
-  }, [soundUrl, id, name]);
+  }, [soundUrl, id]);
 
   //updating the volume
   useEffect(() => {

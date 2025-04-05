@@ -1,35 +1,21 @@
-import {
-    createRootRoute,
-    createRoute,
-    createRouter,
-} from '@tanstack/react-router';
-
-
-
+import { createRootRoute, createRoute, createRouter, } from '@tanstack/react-router';
 import MainLayout from './layouts/MainLayout';
-import Home from './pages/Home';
-import CreateSongPage from './pages/CreateSongPage';
+import routeConfig from './routes';
+
 
 const rootRoute = createRootRoute({
     component: MainLayout,
 });
 
-const homeRoute = createRoute({
-    getParentRoute: () => rootRoute,
-    path: '/',
-    component: Home
-});
+const childRoutes = routeConfig.map((r) =>
+    createRoute({
+        getParentRoute: () => rootRoute,
+        path: r.path,
+        component: r.component,
+    })
+);
 
-const createSongRoute = createRoute({
-    getParentRoute: () => rootRoute,
-    path: '/create-song',
-    component: CreateSongPage
-});
-
-const routeTree = rootRoute.addChildren([
-    homeRoute, 
-    createSongRoute
-]);
+const routeTree = rootRoute.addChildren(childRoutes);
 
 export const router = createRouter({
     routeTree,
