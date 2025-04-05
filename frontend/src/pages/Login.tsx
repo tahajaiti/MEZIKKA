@@ -89,7 +89,7 @@ const Login = () => {
             error={errors.password}
           />
 
-          <ButtonLarge type='submit' />
+          <ButtonLarge type='submit' isPending={isPending}/>
         </form>
 
         {loginErr && (
