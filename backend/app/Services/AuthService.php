@@ -30,7 +30,7 @@ class AuthService {
 
         $token = $user->createToken();
 
-        return $this->toToken($token);
+        return $this->toToken($token, $user);
     }
 
 
@@ -43,12 +43,13 @@ class AuthService {
 
         $token = $user->createToken();
 
-        return $this->toToken($token);
+        return $this->toToken($token, $user);
     }
 
 
-    private function toToken($token){
+    private function toToken($token, User $user){
         return [
+            'user' => $user->with('role')->find($user->id),
             'token' => $token,
             'token_type' => 'bearer',
         ];
