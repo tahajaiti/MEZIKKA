@@ -5,7 +5,7 @@ import { useGetGenres } from '../../api/services/genre/query';
 import Genre from '../../types/Genre';
 
 const SaveBeatForm: React.FC = () => {
-    const { openCloseForm, soundUrl } = useTrackStore();
+    const { openCloseForm, soundUrl, getSongData } = useTrackStore();
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -39,7 +39,19 @@ const SaveBeatForm: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(soundUrl);
+        
+        const { title, description, genre, coverFile } = formData;
+
+        const form = new FormData();
+        form.append('name', title);
+        form.append('description', description);
+        form.append('genre_id', genre);
+        if (coverFile) {
+            form.append('cover_file', coverFile);
+        }
+        form.append('song_file', soundUrl || '');
+        form.append('metadata', JSON.stringify(getSongData()));
+        
     };
 
 

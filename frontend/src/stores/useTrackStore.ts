@@ -168,6 +168,17 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
             }
         },
 
+        getSongData: () => {
+            const state = get();
+            return {
+                bpm: state.bpm,
+                sequences: state.sequences,
+                drums: state.drums,
+                currentStep: state.currentStep,
+                mutedPads: Array.from(state.mutedPads),
+            };
+        },
+
         loadSong: (songKey: string) => {
             const songData = localStorage.getItem(songKey);
             if (songData) {

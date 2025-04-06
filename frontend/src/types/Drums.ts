@@ -37,6 +37,7 @@ export interface DrumSequencerState {
     setCurrentStep: (step: number) => void
     startRecording: () => Promise<void>
     stopRecordingAndExport: () => Promise<void>
+    getSongData: () => unknown
     saveSong: (songKey: string) => void
     loadSong: (songKey: string) => void
     deleteDrum: (id: number) => void
