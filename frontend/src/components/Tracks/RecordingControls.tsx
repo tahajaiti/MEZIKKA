@@ -18,7 +18,7 @@ const RecordingControls = () => {
     if (!data?.data) return;
     console.log(data.data);
 
-    loadSong(data.data.metadata);
+    loadSong(data.data.metadata, String(data.data.id));
   }
 
   return (

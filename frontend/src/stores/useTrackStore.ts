@@ -174,9 +174,10 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
 
         setSongId: (id: string) => set({ songId: id }),
 
-        loadSong: (songData: DrumData) => {
-            if (songData) {
+        loadSong: (songData: DrumData, id: string) => {
+            if (songData && id) {
                 set({
+                    songId: `MEZ-${id}`,
                     bpm: songData.bpm,
                     sequences: songData.sequences,
                     drums: songData.drums,

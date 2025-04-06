@@ -3,6 +3,7 @@ import useTrackStore from "../stores/useTrackStore"
 import CustomSoundControls from "../components/Tracks/CustomSoundControls"
 import RecordingControls from "../components/Tracks/RecordingControls"
 import SaveBeatForm from "../components/Tracks/SaveBeatForm"
+import SongInfo from "../components/Tracks/SongInfo"
 // import DrumsHeader from "../components/Tracks/DrumsHeader"
 
 const CreateSongPage: React.FC = () => {
@@ -13,6 +14,9 @@ const CreateSongPage: React.FC = () => {
 
 
       <div className="space-y-6">
+        <div className="px-4">
+          <SongInfo />
+        </div>
         <div className="w-full grid md:grid-cols-2 grid-rows-1 gap-4 p-4">
           <RecordingControls />
           <CustomSoundControls />
@@ -36,10 +40,10 @@ const CreateSongPage: React.FC = () => {
           </div>
         </section>
 
-        {saveFormOpen && 
-        (<SaveBeatForm 
-        
-        />)}
+        {saveFormOpen &&
+          (<SaveBeatForm
+
+          />)}
 
       </div>
     </div>

@@ -44,7 +44,7 @@ export interface DrumSequencerState {
     getSongData: () => DrumData
     // saveSong: (formData: FormData) => Promise<void>
     setSongId: (id: string) => void
-    loadSong: (songData: DrumData) => void
+    loadSong: (songData: DrumData, id: string) => void
     deleteDrum: (id: number) => void
 }
 
