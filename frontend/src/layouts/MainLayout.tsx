@@ -1,21 +1,11 @@
-import { Outlet, useLocation } from '@tanstack/react-router';
-import routeConfig from '../routes';
+import { ReactNode } from 'react';
 
-const MainLayout = () => {
-  const location = useLocation();
-  const currRoute = routeConfig.find(r => r.path === location.pathname);
-
-  if (!currRoute || currRoute.layout === false) {
-    return <Outlet />
-  }
+const MainLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   return (
-    <div>
-      <Outlet />
-      <footer>
-        <h2>footer</h2>
-      </footer>
-    </div>
+    <main className='min-h-screen'>
+      {children}
+    </main>
   )
 }
 

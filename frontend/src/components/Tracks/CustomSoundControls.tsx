@@ -7,7 +7,7 @@ const CustomSoundControls = () => {
     const isFormValid = customSoundUrl && customSoundName;
 
     return (
-        <div className="bg-zinc-900 p-5 rounded-xl mb-8 border border-zinc-800 shadow-lg">
+        <div className="bg-zinc-900 p-5 rounded-xl mb-8 border border-zinc-800 shadow-lg h-full w-full flex justify-between flex-col">
             <div className="flex items-center gap-2 mb-5">
                 <Music className="w-5 h-5 text-red-500" />
                 <h2 className="text-lg font-bold text-white">Add Custom Sound</h2>

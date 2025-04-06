@@ -7,14 +7,14 @@ import Signup from './pages/Signup';
 interface RouteConfig {
     path: string;
     component: FC;
-    layout?: boolean;
+    layout: string;
 }
 
 const routeConfig: RouteConfig[] = [
-    { path: '/', component: Home, layout: true },
-    { path: '/login', component: Login, layout: false },
-    { path: '/signup', component: Signup, layout: false },
-    { path: '/create/song', component: CreateSongPage, layout: true },
+    { path: '/', component: Home, layout: 'main' },
+    { path: '/login', component: Login, layout: 'none' },
+    { path: '/signup', component: Signup, layout: 'none' },
+    { path: '/create/song', component: CreateSongPage, layout: 'drum' },
 ];
 
 export default routeConfig;

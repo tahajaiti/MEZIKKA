@@ -1,5 +1,3 @@
-"use client"
-
 import { Mic, Square } from "lucide-react"
 import useTrackStore from "../../stores/useTrackStore"
 
@@ -7,7 +5,7 @@ const RecordingControls = () => {
   const { isRecording, startRecording, stopRecordingAndExport } = useTrackStore()
 
   return (
-    <div className="bg-zinc-900 p-5 rounded-xl mb-8 border border-zinc-800 shadow-lg  w-fit m-auto flex flex-col items-center justify-center">
+    <div className="bg-zinc-900 p-5 rounded-xl border border-zinc-800 shadow-lg  w-full h-full flex flex-col items-center justify-between">
       <div className="flex items-center gap-2 mb-5">
         <Mic className="w-5 h-5 text-red-500" />
         <h2 className="text-lg font-bold text-white">Record & Export</h2>

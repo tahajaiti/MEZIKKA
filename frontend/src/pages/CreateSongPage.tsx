@@ -1,64 +1,45 @@
-import React from 'react'
-import Pads from '../components/Tracks/Pads'
-import { Pause, Play} from 'lucide-react';
-import useTrackStore from '../stores/useTrackStore';
-import CustomSoundControls from '../components/Tracks/CustomSoundControls';
-import RecordingControls from '../components/Tracks/RecordingControls';
+import type React from "react"
+import Pads from "../components/Tracks/Pads"
+import useTrackStore from "../stores/useTrackStore"
+import CustomSoundControls from "../components/Tracks/CustomSoundControls"
+import RecordingControls from "../components/Tracks/RecordingControls"
+// import DrumsHeader from "../components/Tracks/DrumsHeader"
 
 const CreateSongPage: React.FC = () => {
-  const {
-    isPlaying,
-    bpm,
-    drums,
-    startStopSequencer,
-    updateBpm,
-
-  } = useTrackStore();
-
-
+  const { drums } = useTrackStore();
 
   return (
-    <>
-      <div>
-        <h1 className="text-2xl font-bold mb-4">Create Your Song</h1>
-        <div className='mb-4'>
-          <button
-            onClick={startStopSequencer}
-            className={`px-4 py-2 rounded-md ${isPlaying ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'}`}
-          >
-            {isPlaying ? <Pause /> : <Play />}
-          </button>
-        </div>
-        <div className="mb-4">
-          <label htmlFor="bpm" className="block mb-1">BPM: {bpm}</label>
-          <input
-            type="range"
-            min={50}
-            max={180}
-            id="bpm"
-            value={bpm}
-            onChange={(e) => updateBpm(Number(e.target.value))}
-            className="py-2 rounded bg-gray-700 text-white"
-          />
-        </div>
+      <div className="min-h-screen bg-zinc-950 text-white p-4 md:p-6 lg:p-8 ">
 
+
+        <div className="space-y-6">
+          <div className="w-full grid grid-cols-2 grid-rows-1 gap-4 p-4">
+            <RecordingControls />
+            <CustomSoundControls />
+          </div>
+
+          <section>
+            <div className="flex items-center gap-2 mb-4">
+              <h2 className="text-xl font-bold">Drum Tracks</h2>
+              <div className="h-px flex-1 bg-zinc-800"></div>
+            </div>
+
+            <div className="space-y-4 h-screen overflow-auto">
+              {drums.map((d) => (
+                <Pads
+                  key={Number(d.id)}
+                  id={Number(d.id)}
+                  name={d.name || `Track ${d.id}`}
+                  soundUrl={d.soundUrl || ""}
+                />
+              ))}
+            </div>
+          </section>
+
+        </div>
       </div>
-
-      <RecordingControls />
-
-      {drums.map((d) => (
-        <Pads
-          key={Number(d.id)}
-          id={Number(d.id)}
-          name={d.name}
-          soundUrl={d.soundUrl}
-        />
-      ))}
-
-      <CustomSoundControls />
-
-    </>
   )
 }
 
 export default CreateSongPage
+
