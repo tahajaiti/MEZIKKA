@@ -7,6 +7,7 @@ import { validateEmail, validatePassword } from '../util/Validators';
 import AuthInput from '../components/Inputs/AuthInput';
 import ButtonLarge from '../components/Buttons/ButtonLarge';
 import { useSignup } from '../api/services/auth/query';
+import { router } from '../router';
 
 
 const Signup = () => {
@@ -57,8 +58,8 @@ const Signup = () => {
             signup(
                 { name: formData.username, email: formData.email, password: formData.password },
                 {
-                    onSuccess: (data) => {
-                        console.log('Signup successful:', data.data.data);
+                    onSuccess: () => {
+                        router.navigate({ to: '/create/song' });
                     },
                 }
             );

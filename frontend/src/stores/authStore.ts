@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { AuthState } from "../types/Auth";
+import { router } from "../router";
 
 
 const useAuthStore = create<AuthState>((set) => ({
@@ -15,6 +16,7 @@ const useAuthStore = create<AuthState>((set) => ({
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         set({ token: null, user: null, isAuthenticated: false });
+        router.navigate({to: "/login", replace: true});
     },
 }));
 

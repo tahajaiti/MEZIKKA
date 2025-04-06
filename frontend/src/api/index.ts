@@ -1,4 +1,5 @@
 import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
+import useAuthStore from '../stores/authStore';
 
 interface LaravelValidationError {
     message: string;
@@ -59,9 +60,6 @@ apiClient.interceptors.response.use(
         }
 
         const { status, data } = error.response;
-
-        console.log(data);
-
         switch (status) {
             case 422: {
                 const validationErr = error.response.data as LaravelValidationError;
@@ -72,7 +70,21 @@ apiClient.interceptors.response.use(
                 });
             }
 
+            case 401: {
+                const unauthorizedErr = error.response.data as LaravelApiError;
+
+                const { clearAuth } = useAuthStore.getState();
+                console.log('Unauthorized - clearing auth store');
+                clearAuth();
+                
+                return Promise.reject({
+                    message: unauthorizedErr.message || 'Unauthorized',
+                    status: 'unauthorized'
+                });
+            }
+
             default:
+                console.log('hehehe')
                 return Promise.reject({
                     message: data?.message || 'An unexpected error occurred',
                     status: 'unknown_error',

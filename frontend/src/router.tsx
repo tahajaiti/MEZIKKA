@@ -1,7 +1,8 @@
-import { createRootRoute, createRoute, createRouter, } from '@tanstack/react-router';
+import { createRootRoute, createRoute, createRouter, redirect, } from '@tanstack/react-router';
 import MainLayout from './layouts/MainLayout';
 import routeConfig from './routes';
 import DrumLayout from './layouts/DrumLayout';
+import useAuthStore from './stores/authStore';
 
 
 const rootRoute = createRootRoute({});
@@ -16,6 +17,19 @@ const layouts: Record<string, React.FC<LayoutProps>> = {
     none: ({ children }) => <>{children}</>,
 }
 
+
+const requireAuth = async () => {
+    const state = useAuthStore.getState();
+    const isAuthenticated = state.isAuthenticated;
+
+    if (!isAuthenticated) {
+        throw redirect({
+            to: '/login',
+            replace: true,
+        })
+    }
+}
+
 const childRoutes = routeConfig.map((r) => {
     const RouteComponent = r.component;
     const LayoutComponent = layouts[r.layout || 'none'];
@@ -23,6 +37,7 @@ const childRoutes = routeConfig.map((r) => {
     return createRoute({
         getParentRoute: () => rootRoute,
         path: r.path,
+        beforeLoad: r.auth ? requireAuth : undefined,
         component: () => (
             <LayoutComponent>
                 <RouteComponent />

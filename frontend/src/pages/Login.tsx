@@ -7,6 +7,7 @@ import AuthInput from '../components/Inputs/AuthInput';
 import { validateEmail, validatePassword } from '../util/Validators';
 import { useLogin } from '../api/services/auth/query';
 import { Link } from '@tanstack/react-router';
+import { router } from '../router';
 
 const Login = () => {
   const [formData, setFormData] = useState<{
@@ -49,8 +50,8 @@ const Login = () => {
       login(
         { email: formData.email, password: formData.password },
         {
-          onSuccess: (data) => {
-            console.log('Login successful:', data);
+          onSuccess: () => {
+            router.navigate({to: '/create/song'});
           },
         }
       );
