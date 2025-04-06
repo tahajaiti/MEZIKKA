@@ -6,7 +6,7 @@ const DrumLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
         <div className='flex flex-col min-h-screen'>
             <DrumsHeader />
-            <main className='mt-[3rem] p-10'>
+            <main className='md:mt-[3rem] p-10 mt-[7rem]'>
                 {children}
             </main>
         </div>

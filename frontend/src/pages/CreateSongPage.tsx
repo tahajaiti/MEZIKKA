@@ -13,7 +13,7 @@ const CreateSongPage: React.FC = () => {
 
 
         <div className="space-y-6">
-          <div className="w-full grid grid-cols-2 grid-rows-1 gap-4 p-4">
+          <div className="w-full grid md:grid-cols-2 grid-rows-1 gap-4 p-4">
             <RecordingControls />
             <CustomSoundControls />
           </div>

@@ -7,7 +7,7 @@ const DrumsHeader = () => {
 
 
     return (
-        <header className="px-18 bg-zinc-950 fixed grid grid-cols-3 items-center gap-4 border border-zinc-800/50 rounded z-50 w-full shadow-lg">
+        <header className="p-4 md:px-18 md:py-0 bg-zinc-950 fixed grid-rows-1 grid md:grid-cols-3 items-center gap-4 border border-zinc-800/50 rounded z-50 w-full shadow-lg">
             <MezikkaText />
 
             <div className="flex items-center gap-4">
@@ -45,7 +45,7 @@ const DrumsHeader = () => {
                 </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
+            <div className="md:grid grid-cols-1 md:grid-cols-2 gap-1 hidden">
                 <div className="bg-zinc-900/50 p-4 border-r border-l border-zinc-800/50 flex items-center gap-2 w-full">
                     <Sliders className="w-5 h-5 text-zinc-500" />
                     <p className="text-lg font-bold">{drums.length} Drum Sounds</p>
