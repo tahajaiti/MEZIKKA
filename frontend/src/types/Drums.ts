@@ -24,6 +24,7 @@ export interface DrumSequencerState {
     recorder: Tone.Recorder | null
     saveFormOpen: boolean
     soundFile: File | null
+    songId: string | null
 
     openCloseForm: () => void
     startStopSequencer: () => Promise<void>
@@ -38,7 +39,8 @@ export interface DrumSequencerState {
     startRecording: () => Promise<void>
     stopRecordingAndExport: () => Promise<void>
     getSongData: () => unknown
-    saveSong: (songKey: string) => void
+    // saveSong: (formData: FormData) => Promise<void>
+    setSongId: (id: string) => void
     loadSong: (songKey: string) => void
     deleteDrum: (id: number) => void
 }

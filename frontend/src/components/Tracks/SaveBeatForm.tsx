@@ -6,7 +6,7 @@ import Genre from '../../types/Genre';
 import { useCreateSong } from '../../api/services/song/query';
 
 const SaveBeatForm: React.FC = () => {
-    const { openCloseForm, soundFile, getSongData } = useTrackStore();
+    const { openCloseForm, soundFile, getSongData, setSongId } = useTrackStore();
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -46,7 +46,7 @@ const SaveBeatForm: React.FC = () => {
     
         const form = new FormData();
         form.append('name', title);
-        form.append('description', description);
+        form.append('description', description === '' ? 'No description' : description);
         form.append('genre_id', genre);
     
         if (coverFile) {
@@ -65,7 +65,24 @@ const SaveBeatForm: React.FC = () => {
             return;
         }
     
-        mutate(form);
+        mutate(form, {
+            onSuccess: (data) => {
+                if (data.data){
+                    const id = `MEZ-${data.data.id}`;
+                    setSongId(id);
+                }
+                openCloseForm();
+                setFormData({
+                    title: '',
+                    description: '',
+                    genre: '',
+                    coverFile: null,
+                });
+            },
+            onError: (error) => {
+                console.error('Failed to save song:', error);
+            },
+        });
     };
 
 

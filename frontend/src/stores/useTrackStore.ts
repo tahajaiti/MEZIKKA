@@ -25,6 +25,7 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
         recorder: null,
         saveFormOpen: false,
         soundFile: null,
+        songId: null,
 
         openCloseForm: () => {
             set(state => {
@@ -157,33 +158,6 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
                 } catch (error) {
                     console.error('Error stopping the recorder:', error);
                 }
-
-                // const recording = await recorder.stop();
-                // const url = URL.createObjectURL(recording);
-                // const a = document.createElement('a');
-                // a.download = `track-${new Date().toISOString().split('T').join('-')}.webm`;
-                // a.href = url;
-                // set({ soundUrl: url });
-                // console.log(get().soundUrl);
-                // URL.revokeObjectURL(url);
-                // recorder.dispose();
-                // a.remove();
-                // set({ recorder: null, isRecording: false });
-            }
-        },
-
-        saveSong: (songKey: string) => {
-            const state = get();
-            const songData = {
-                bpm: state.bpm,
-                sequences: state.sequences,
-                drums: state.drums,
-                currentStep: state.currentStep,
-                mutedPads: Array.from(state.mutedPads),
-            }
-
-            if (songKey) {
-                localStorage.setItem(songKey, JSON.stringify(songData));
             }
         },
 
@@ -197,6 +171,8 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
                 mutedPads: Array.from(state.mutedPads),
             };
         },
+
+        setSongId: (id: string) => set({ songId: id }),
 
         loadSong: (songKey: string) => {
             const songData = localStorage.getItem(songKey);

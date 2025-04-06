@@ -2,7 +2,7 @@ import { Disc, Mic, Square, Save, Upload } from "lucide-react"
 import useTrackStore from "../../stores/useTrackStore"
 
 const RecordingControls = () => {
-  const { isRecording, startRecording, stopRecordingAndExport, openCloseForm } = useTrackStore();
+  const { isRecording, startRecording, stopRecordingAndExport, openCloseForm, songId } = useTrackStore();
 
   return (
     <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 shadow-lg w-full h-full flex flex-col gap-6">
@@ -67,7 +67,7 @@ const RecordingControls = () => {
 
         <div className="flex flex-col gap-4">
           <div className="text-center">
-            <p className="text-zinc-500 font-medium">MEZIKKA Key: <span className="font-bold text-red-500">MEZ-1</span></p>
+            <p className="text-zinc-500 font-medium">MEZIKKA Key: <span className="font-bold text-red-500">{songId}</span></p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
