@@ -8,14 +8,13 @@ interface ButtonProps {
     isPending?: boolean;
 }
 
-const ButtonLarge = ({ color = '#C70000', text = 'LOG IN', type = 'button', textColor = 'white', isPending = false }: ButtonProps) => {
-    const realColor = color.startsWith('#') ? color : `#${color}`;
+const ButtonLarge = ({ color = "red", text = 'LOG IN', type = 'button', textColor = 'white', isPending = false }: ButtonProps) => {
 
     return (
         <button
             disabled={isPending}
             type={type}
-            style={{ backgroundColor: realColor, color: textColor }}
+            style={{ backgroundColor: color, color: textColor }}
             className={` w-full p-4 sm:p-4 sm:text-xl rounded-full text-xl font-bold transition duration-200 ease-in-out cursor-pointer hover:opacity-80`}
         >
             {isPending ? <LoaderCircleIcon className="animate-spin m-auto" /> : text}
