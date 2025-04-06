@@ -2,7 +2,7 @@ import { Disc, Mic, Square, Save, Upload } from "lucide-react"
 import useTrackStore from "../../stores/useTrackStore"
 
 const RecordingControls = () => {
-  const { isRecording, startRecording, stopRecordingAndExport } = useTrackStore();
+  const { isRecording, startRecording, stopRecordingAndExport, openCloseForm } = useTrackStore();
 
   return (
     <div className="bg-zinc-900 p-5 rounded-xl border border-zinc-800 shadow-lg  w-full h-full grid grid-rows-2  gap-2">
@@ -62,9 +62,11 @@ const RecordingControls = () => {
 
         <div className="flex justify-between items-center w-full gap-2">
           <button
+            onClick={() => openCloseForm()}
             className="w-1/3 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/20 transition-all"
           >
-            <Save className="w-4 h-4" />
+            <Save className="w-4 h-4"
+            />
             Save Beat
           </button>
           <div className="flex justify-between items-center gap-2 w-2/3">
@@ -75,7 +77,7 @@ const RecordingControls = () => {
               Load Beat
             </button>
             <input type="text"
-            placeholder="MEZIKKA Key"
+              placeholder="MEZIKKA Key"
               className="w-full pl-3 pr-3 py-2.5 rounded-lg bg-zinc-900 border border-zinc-700 text-white 
               focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all
               "

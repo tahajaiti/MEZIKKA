@@ -22,7 +22,9 @@ export interface DrumSequencerState {
     mutedPads: Set<number | string>
     isRecording: boolean
     recorder: Tone.Recorder | null
+    saveFormOpen: boolean
 
+    openCloseForm: () => void
     startStopSequencer: () => Promise<void>
     updateBpm: (newBpm: number) => void
     updateVolume: (id: number | string, newVolume: number) => void

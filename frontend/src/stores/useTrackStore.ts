@@ -23,6 +23,16 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
         mutedPads: new Set<number | string>(),
         isRecording: false,
         recorder: null,
+        saveFormOpen: false,
+
+        openCloseForm: () => {
+            set(state => {
+                const newVal = !state.saveFormOpen;
+                return {
+                    saveFormOpen: newVal
+                }
+            })
+        },
 
         startStopSequencer: async () => {
             await Tone.start();
