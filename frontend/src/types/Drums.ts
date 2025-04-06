@@ -36,5 +36,6 @@ export interface DrumSequencerState {
     stopRecordingAndExport: () => Promise<void>
     saveSong: (songKey: string) => void
     loadSong: (songKey: string) => void
+    deleteDrum: (id: number) => void
 }
 

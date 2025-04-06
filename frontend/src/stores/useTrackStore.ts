@@ -149,7 +149,7 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
                 currentStep: state.currentStep,
                 mutedPads: Array.from(state.mutedPads),
             }
-            
+
             if (songKey) {
                 localStorage.setItem(songKey, JSON.stringify(songData));
             }
@@ -171,6 +171,25 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
             } else {
                 alert(`No song found with ID: ${songKey}`);
             }
+        },
+
+        deleteDrum: (id: number) => {
+            set(state => {
+                if (!state.drums.some((d) => d.id === id)) return state;
+                const newDrums = state.drums.filter((d) => d.id !== id);
+
+                const newSequences = { ...state.sequences };
+                delete newSequences[id];
+
+                const newMutedPads = new Set(state.mutedPads);
+                newMutedPads.delete(id);
+
+                return {
+                    drums: newDrums,
+                    sequences: newSequences,
+                    mutedPads: newMutedPads,
+                };
+            })
         }
     }
 });

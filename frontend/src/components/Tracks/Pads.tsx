@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react"
 import Pad from "./Pad"
 import * as Tone from "tone"
-import { Volume2, VibrateOff, CircleGauge } from "lucide-react"
+import { Volume2, VibrateOff, CircleGauge, Trash } from "lucide-react"
 import useTrackStore from "../../stores/useTrackStore"
 
 interface PadsProps {
@@ -11,7 +11,7 @@ interface PadsProps {
 }
 
 const Pads: React.FC<PadsProps> = ({ id, name = "Pad", soundUrl = "" }) => {
-  const { isPlaying, currentStep, sequences, drums, mutedPads, togglePad, toggleMute, updateVolume, setCurrentStep } =
+  const { isPlaying, currentStep, sequences, drums, mutedPads, togglePad, toggleMute, updateVolume, setCurrentStep, deleteDrum } =
     useTrackStore()
 
   const samplerRef = useRef<Tone.Sampler | null>(null)
@@ -132,6 +132,9 @@ const Pads: React.FC<PadsProps> = ({ id, name = "Pad", soundUrl = "" }) => {
             {isMuted ? <VibrateOff size={18} /> : <Volume2 size={18} />}
           </button>
         </div>
+        <Trash size={30} className="text-red-500 cursor-pointer hover:text-red-600"
+          onClick={() => deleteDrum(id)}
+        />
       </div>
 
       <div className="grid grid-cols-8 sm:grid-cols-16 gap-1.5">
