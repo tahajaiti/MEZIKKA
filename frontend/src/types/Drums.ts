@@ -6,11 +6,6 @@ export interface DrumPad {
     volume: number
 }
 
-export interface DrumPadSequence {
-    padId: number | string
-    steps: boolean[]
-}
-
 export interface DrumData {
     bpm: number;
     sequences: Record<string | number, boolean[]>;
