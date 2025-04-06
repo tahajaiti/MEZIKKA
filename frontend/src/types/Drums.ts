@@ -11,6 +11,14 @@ export interface DrumPadSequence {
     steps: boolean[]
 }
 
+export interface DrumData {
+    bpm: number;
+    sequences: Record<string | number, boolean[]>;
+    drums: DrumPad[];
+    currentStep: number;
+    mutedPads: (string | number)[];
+}
+
 export interface DrumSequencerState {
     isPlaying: boolean
     bpm: number
@@ -38,10 +46,10 @@ export interface DrumSequencerState {
     setCurrentStep: (step: number) => void
     startRecording: () => Promise<void>
     stopRecordingAndExport: () => Promise<void>
-    getSongData: () => unknown
+    getSongData: () => DrumData
     // saveSong: (formData: FormData) => Promise<void>
     setSongId: (id: string) => void
-    loadSong: (songKey: string) => void
+    loadSong: (songData: DrumData) => void
     deleteDrum: (id: number) => void
 }
 

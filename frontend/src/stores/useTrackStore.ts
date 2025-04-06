@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import * as Tone from 'tone';
 import DRUM_DATA, { STEPS } from '../util/DrumData';
-import { DrumSequencerState } from '../types/Drums';
+import { DrumData, DrumSequencerState } from '../types/Drums';
 
 
 
@@ -174,21 +174,16 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
 
         setSongId: (id: string) => set({ songId: id }),
 
-        loadSong: (songKey: string) => {
-            const songData = localStorage.getItem(songKey);
+        loadSong: (songData: DrumData) => {
             if (songData) {
-                const parsedData = JSON.parse(songData);
                 set({
-                    bpm: parsedData.bpm,
-                    sequences: parsedData.sequences,
-                    drums: parsedData.drums,
-                    currentStep: parsedData.currentStep,
-                    mutedPads: new Set(parsedData.mutedPads),
+                    bpm: songData.bpm,
+                    sequences: songData.sequences,
+                    drums: songData.drums,
+                    currentStep: songData.currentStep,
+                    mutedPads: new Set(songData.mutedPads),
                 });
-                Tone.getTransport().bpm.value = parsedData.bpm;
-                alert(`Song loaded with ID: ${songKey}`);
-            } else {
-                alert(`No song found with ID: ${songKey}`);
+                Tone.getTransport().bpm.value = songData.bpm;
             }
         },
 

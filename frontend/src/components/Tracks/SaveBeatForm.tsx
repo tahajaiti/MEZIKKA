@@ -41,22 +41,22 @@ const SaveBeatForm: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-    
-        const { title, description, genre, coverFile } = formData
-    
+
+        const { title, description, genre, coverFile } = formData;
+
         const form = new FormData();
-        form.append('name', title);
-        form.append('description', description === '' ? 'No description' : description);
+        form.append('name', title.trim());
+        form.append('description', description.trim() || 'No description');
         form.append('genre_id', genre);
-    
+
         if (coverFile) {
             form.append('cover_file', coverFile);
         }
-    
+
         if (soundFile) {
             form.append('song_file', soundFile);
         }
-    
+
         try {
             const songData = getSongData();
             form.append('metadata', JSON.stringify(songData));
@@ -64,10 +64,10 @@ const SaveBeatForm: React.FC = () => {
             console.error('Failed to get song data:', error);
             return;
         }
-    
+
         mutate(form, {
             onSuccess: (data) => {
-                if (data.data){
+                if (data.data) {
                     const id = `MEZ-${data.data.id}`;
                     setSongId(id);
                 }

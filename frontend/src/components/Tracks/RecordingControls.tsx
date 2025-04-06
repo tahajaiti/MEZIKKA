@@ -1,8 +1,24 @@
 import { Disc, Mic, Square, Save, Upload } from "lucide-react"
 import useTrackStore from "../../stores/useTrackStore"
+import { useState } from "react";
+import { useGetSong } from "../../api/services/song/query";
 
 const RecordingControls = () => {
-  const { isRecording, startRecording, stopRecordingAndExport, openCloseForm, songId } = useTrackStore();
+  const { isRecording, startRecording, stopRecordingAndExport, openCloseForm, songId, loadSong } = useTrackStore();
+  const [inputKey, setInputKey] = useState<string>("");
+
+  const { data } = useGetSong(inputKey ? inputKey.split("-")[1] : "");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setInputKey(value);
+  }
+
+  const handleSubmit = () => {
+    if (!data?.data) return;
+
+    loadSong(data.data.metadata);
+  }
 
   return (
     <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 shadow-lg w-full h-full flex flex-col gap-6">
@@ -79,17 +95,21 @@ const RecordingControls = () => {
               Save Beat
             </button>
 
-              <button
-                className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/20 transition-all w-full"
-              >
-                <Upload className="w-4 h-4" />
-                Load
-              </button>
-              <input
-                type="text"
-                placeholder="MEZIKKA Key"
-                className="w-full px-3 py-3 rounded-lg bg-zinc-800 border border-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
-              />
+            <button
+              onClick={handleSubmit}
+              className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/20 transition-all w-full"
+            >
+              <Upload className="w-4 h-4" />
+              Load
+            </button>
+
+            <input
+              type="text"
+              placeholder="MEZIKKA Key"
+              value={inputKey}
+              onChange={handleChange}
+              className="w-full px-3 py-3 rounded-lg bg-zinc-800 border border-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
+            />
           </div>
 
           <div className="p-4 bg-zinc-800/30 rounded-lg border border-zinc-700/20 text-center">
@@ -105,4 +125,3 @@ const RecordingControls = () => {
 }
 
 export default RecordingControls
-

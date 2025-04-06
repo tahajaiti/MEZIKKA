@@ -1,3 +1,5 @@
+import { DrumData } from "./Drums";
+
 interface SongData {
     id: number;
     name: string
@@ -5,7 +7,7 @@ interface SongData {
     file_path: string;
     cover_path: string;
     genre_id: number;
-    metadata: JSON;
+    metadata: DrumData;
     created_at: string;
     updated_at: string;
 }
