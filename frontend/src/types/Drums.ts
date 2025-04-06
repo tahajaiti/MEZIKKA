@@ -23,6 +23,7 @@ export interface DrumSequencerState {
     isRecording: boolean
     recorder: Tone.Recorder | null
     saveFormOpen: boolean
+    soundUrl: string | null
 
     openCloseForm: () => void
     startStopSequencer: () => Promise<void>

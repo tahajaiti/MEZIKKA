@@ -5,7 +5,7 @@ import { useGetGenres } from '../../api/services/genre/query';
 import Genre from '../../types/Genre';
 
 const SaveBeatForm: React.FC = () => {
-    const { openCloseForm } = useTrackStore();
+    const { openCloseForm, soundUrl } = useTrackStore();
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -39,7 +39,7 @@ const SaveBeatForm: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(formData);
+        console.log(soundUrl);
     };
 
 
@@ -47,6 +47,12 @@ const SaveBeatForm: React.FC = () => {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <form onSubmit={handleSubmit} className="bg-zinc-900 p-6 rounded-lg w-full max-w-md text-white">
                 <h3 className="text-xl font-bold mb-4">Save Your Beat</h3>
+
+                {soundUrl === null && (
+                    <p className="text-red-500 mb-4 font-medium">
+                        Please record a sound before saving.
+                    </p>
+                )}
 
                 <div className="mb-4">
                     <label htmlFor="title" className="block mb-1">
@@ -118,6 +124,7 @@ const SaveBeatForm: React.FC = () => {
                         Cancel
                     </button>
                     <button
+                        disabled={soundUrl === null}
                         type="submit"
                         className="px-4 py-2 rounded bg-red-500 hover:bg-red-600 text-white"
                     >

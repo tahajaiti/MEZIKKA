@@ -24,6 +24,7 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
         isRecording: false,
         recorder: null,
         saveFormOpen: false,
+        soundUrl: null,
 
         openCloseForm: () => {
             set(state => {
@@ -143,6 +144,8 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
                 const a = document.createElement('a');
                 a.download = `track-${new Date().toISOString().split('T').join('-')}.webm`;
                 a.href = url;
+                set({ soundUrl: url });
+                console.log(get().soundUrl);
                 URL.revokeObjectURL(url);
                 recorder.dispose();
                 a.remove();
