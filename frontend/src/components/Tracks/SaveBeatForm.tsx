@@ -1,8 +1,8 @@
 // src/components/SaveBeatForm.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useTrackStore from '../../stores/useTrackStore';
 import { useGetGenres } from '../../api/services/genre/query';
-
+import Genre from '../../types/Genre';
 
 const SaveBeatForm: React.FC = () => {
     const { openCloseForm } = useTrackStore();
@@ -12,10 +12,15 @@ const SaveBeatForm: React.FC = () => {
         genre: '',
         coverFile: null as File | null,
     });
+    const [genres, setGenres] = useState<Genre[]>([]);
 
-    const { data, isPending } = useGetGenres();
+    const { data } = useGetGenres();
 
-    const availableGenres = data?.data || [];
+    useEffect(() => {
+        if (data?.data) {
+            setGenres(data.data);
+        }
+    }, [data]);
 
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -27,16 +32,20 @@ const SaveBeatForm: React.FC = () => {
         setFormData((prev) => ({ ...prev, coverFile: file }));
     };
 
-    const handleGenreChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleGenreChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const genre = e.target.value;
-        setFormData((prev) => ({ ...prev, genre: genre }))
+        setFormData((prev) => ({ ...prev, genre }));
     };
 
-    if (isPending) return <p>Loading...</p>
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        console.log(formData);
+    };
+
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <form className="bg-zinc-900 p-6 rounded-lg w-full max-w-md text-white">
+            <form onSubmit={handleSubmit} className="bg-zinc-900 p-6 rounded-lg w-full max-w-md text-white">
                 <h3 className="text-xl font-bold mb-4">Save Your Beat</h3>
 
                 <div className="mb-4">
@@ -69,7 +78,7 @@ const SaveBeatForm: React.FC = () => {
                 </div>
 
                 <div className="mb-4">
-                    <label className="block mb-1">
+                    <label htmlFor="cover" className="block mb-1">
                         Cover Image <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -83,27 +92,28 @@ const SaveBeatForm: React.FC = () => {
                 </div>
 
                 <div className="mb-4">
-                    <label className="block mb-1">Genres</label>
-                    <div className="flex flex-wrap gap-2">
-                        {availableGenres.map((genre) => (
-                            <label key={genre.id} className="flex items-center gap-1">
-                                <input
-                                    type="checkbox"
-                                    value={genre.id}
-                                    onChange={handleGenreChange}
-                                    className="accent-red-500"
-                                />
+                    <label htmlFor="genre" className="block mb-1">Genres</label>
+                    <select
+                        id="genre"
+                        name="genre"
+                        value={formData.genre}
+                        onChange={handleGenreChange}
+                        className="w-full p-2 rounded bg-zinc-800 border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                    >
+                        <option value="" disabled>{genres.length ? 'Select a genre' : 'No genres available'}</option>
+                        {genres.map((genre) => (
+                            <option key={genre.id} value={genre.id}>
                                 {genre.name}
-                            </label>
+                            </option>
                         ))}
-                    </div>
+                    </select>
                 </div>
 
                 <div className="flex justify-end gap-2">
                     <button
                         type="button"
                         className="px-4 py-2 rounded bg-zinc-700 hover:bg-zinc-600 text-white"
-                        onClick={() => openCloseForm()}
+                        onClick={openCloseForm}
                     >
                         Cancel
                     </button>
