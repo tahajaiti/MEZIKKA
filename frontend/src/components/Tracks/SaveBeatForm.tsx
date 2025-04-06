@@ -1,6 +1,7 @@
 // src/components/SaveBeatForm.tsx
 import React, { useState } from 'react';
 import useTrackStore from '../../stores/useTrackStore';
+import { useGetGenres } from '../../api/services/genre/query';
 
 
 const SaveBeatForm: React.FC = () => {
@@ -11,6 +12,10 @@ const SaveBeatForm: React.FC = () => {
         genre: '',
         coverFile: null as File | null,
     });
+
+    const { data, isPending } = useGetGenres();
+
+    const availableGenres = data?.data || [];
 
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -26,6 +31,8 @@ const SaveBeatForm: React.FC = () => {
         const genre = e.target.value;
         setFormData((prev) => ({ ...prev, genre: genre }))
     };
+
+    if (isPending) return <p>Loading...</p>
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -78,15 +85,15 @@ const SaveBeatForm: React.FC = () => {
                 <div className="mb-4">
                     <label className="block mb-1">Genres</label>
                     <div className="flex flex-wrap gap-2">
-                        {['Hip-Hop', 'Trap', 'Electronic', 'Pop', 'Rock'].map((genre) => (
-                            <label key={genre} className="flex items-center gap-1">
+                        {availableGenres.map((genre) => (
+                            <label key={genre.id} className="flex items-center gap-1">
                                 <input
                                     type="checkbox"
-                                    value={genre}
+                                    value={genre.id}
                                     onChange={handleGenreChange}
                                     className="accent-red-500"
                                 />
-                                {genre}
+                                {genre.name}
                             </label>
                         ))}
                     </div>

@@ -47,7 +47,7 @@ apiClient.interceptors.request.use(
 
 apiClient.interceptors.response.use(
     (response: AxiosResponse) => {
-        return response;
+        return response.data;
     },
     (error: AxiosError<LaravelApiError>) => {
 
@@ -71,7 +71,7 @@ apiClient.interceptors.response.use(
                     status: 'validation_error'
                 });
             }
-            
+
             default:
                 return Promise.reject({
                     message: data?.message || 'An unexpected error occurred',
@@ -83,20 +83,20 @@ apiClient.interceptors.response.use(
 )
 
 const api = {
-    get: <T>(url: string, config = {}) =>
-        apiClient.get<T>(url, config),
+    get: <T>(url: string, config = {}): Promise<T> =>
+        apiClient.get<T>(url, config) as unknown as Promise<T>,
 
-    post: <T>(url: string, data = {}, config = {}) =>
-        apiClient.post<T>(url, data, config),
+    post: <T>(url: string, data = {}, config = {}): Promise<T> =>
+        apiClient.post<T>(url, data, config) as unknown as Promise<T>,
 
-    put: <T>(url: string, data = {}, config = {}) =>
-        apiClient.put<T>(url, data, config),
+    put: <T>(url: string, data = {}, config = {}): Promise<T> =>
+        apiClient.put<T>(url, data, config) as unknown as Promise<T>,
 
-    patch: <T>(url: string, data = {}, config = {}) =>
-        apiClient.patch<T>(url, data, config),
+    patch: <T>(url: string, data = {}, config = {}): Promise<T> =>
+        apiClient.patch<T>(url, data, config) as unknown as Promise<T>,
 
-    delete: <T>(url: string, config = {}) =>
-        apiClient.delete<T>(url, config)
+    delete: <T>(url: string, config = {}): Promise<T> =>
+        apiClient.delete<T>(url, config) as unknown as Promise<T>
 };
 
 export default api;
