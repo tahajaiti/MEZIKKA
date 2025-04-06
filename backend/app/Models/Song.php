@@ -15,6 +15,7 @@ class Song extends Model
         'cover_path',
         'description',
         'metadata',
+        'genre_id',
         'parent_id',
         'remix_id',
         'user_id'

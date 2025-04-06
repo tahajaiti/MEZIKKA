@@ -23,7 +23,7 @@ class SongPostRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'song_file' => 'required|file|mimes:mp3,ogg,wav,flac',
+            'song_file' => 'required|file|mimes:mp3,ogg,wav,flac,webm',
             'cover_file' => 'required|file|mimes:jpeg,png|max:2048',
             'description' => 'sometimes|string',
             'metadata' => 'sometimes|json',
