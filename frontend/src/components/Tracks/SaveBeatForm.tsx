@@ -3,9 +3,10 @@ import React, { useEffect, useState } from 'react';
 import useTrackStore from '../../stores/useTrackStore';
 import { useGetGenres } from '../../api/services/genre/query';
 import Genre from '../../types/Genre';
+import { useCreateSong } from '../../api/services/song/query';
 
 const SaveBeatForm: React.FC = () => {
-    const { openCloseForm, soundUrl, getSongData } = useTrackStore();
+    const { openCloseForm, soundFile, getSongData } = useTrackStore();
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -15,6 +16,7 @@ const SaveBeatForm: React.FC = () => {
     const [genres, setGenres] = useState<Genre[]>([]);
 
     const { data } = useGetGenres();
+    const { mutate } = useCreateSong();
 
     useEffect(() => {
         if (data?.data) {
@@ -39,19 +41,31 @@ const SaveBeatForm: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        
-        const { title, description, genre, coverFile } = formData;
-
+    
+        const { title, description, genre, coverFile } = formData
+    
         const form = new FormData();
         form.append('name', title);
         form.append('description', description);
         form.append('genre_id', genre);
+    
         if (coverFile) {
             form.append('cover_file', coverFile);
         }
-        form.append('song_file', soundUrl || '');
-        form.append('metadata', JSON.stringify(getSongData()));
-        
+    
+        if (soundFile) {
+            form.append('song_file', soundFile);
+        }
+    
+        try {
+            const songData = getSongData();
+            form.append('metadata', JSON.stringify(songData));
+        } catch (error) {
+            console.error('Failed to get song data:', error);
+            return;
+        }
+    
+        mutate(form);
     };
 
 
@@ -60,7 +74,7 @@ const SaveBeatForm: React.FC = () => {
             <form onSubmit={handleSubmit} className="bg-zinc-900 p-6 rounded-lg w-full max-w-md text-white">
                 <h3 className="text-xl font-bold mb-4">Save Your Beat</h3>
 
-                {soundUrl === null && (
+                {soundFile === null && (
                     <p className="text-red-500 mb-4 font-medium">
                         Please record a sound before saving.
                     </p>
@@ -136,7 +150,7 @@ const SaveBeatForm: React.FC = () => {
                         Cancel
                     </button>
                     <button
-                        disabled={soundUrl === null}
+                        disabled={soundFile === null}
                         type="submit"
                         className="px-4 py-2 rounded bg-red-500 hover:bg-red-600 text-white"
                     >

@@ -24,7 +24,7 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
         isRecording: false,
         recorder: null,
         saveFormOpen: false,
-        soundUrl: null,
+        soundFile: null,
 
         openCloseForm: () => {
             set(state => {
@@ -139,17 +139,36 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
             }
 
             if (recorder) {
-                const recording = await recorder.stop();
-                const url = URL.createObjectURL(recording);
-                const a = document.createElement('a');
-                a.download = `track-${new Date().toISOString().split('T').join('-')}.webm`;
-                a.href = url;
-                set({ soundUrl: url });
-                console.log(get().soundUrl);
-                URL.revokeObjectURL(url);
-                recorder.dispose();
-                a.remove();
-                set({ recorder: null, isRecording: false });
+                try {
+                    const recordingBlob = await recorder.stop();
+
+                    const fileName = `track-${new Date().toISOString().split('T').join('-')}.webm`;
+                    const audioFile = new File([recordingBlob], fileName, {
+                        type: 'audio/webm',
+                    });
+
+                    if (audioFile) {
+                        set({ soundFile: audioFile });
+                    }
+
+                    recorder.dispose();
+                    set({ recorder: null, isRecording: false });
+
+                } catch (error) {
+                    console.error('Error stopping the recorder:', error);
+                }
+
+                // const recording = await recorder.stop();
+                // const url = URL.createObjectURL(recording);
+                // const a = document.createElement('a');
+                // a.download = `track-${new Date().toISOString().split('T').join('-')}.webm`;
+                // a.href = url;
+                // set({ soundUrl: url });
+                // console.log(get().soundUrl);
+                // URL.revokeObjectURL(url);
+                // recorder.dispose();
+                // a.remove();
+                // set({ recorder: null, isRecording: false });
             }
         },
 
