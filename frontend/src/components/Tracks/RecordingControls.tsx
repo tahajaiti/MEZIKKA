@@ -16,8 +16,6 @@ const RecordingControls = () => {
 
   const handleSubmit = () => {
     if (!data?.data) return;
-    console.log(data.data);
-
     loadSong(data.data.metadata, String(data.data.id));
   }
 

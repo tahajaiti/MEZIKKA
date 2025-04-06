@@ -4,6 +4,7 @@ import useTrackStore from '../../stores/useTrackStore';
 import { useGetGenres } from '../../api/services/genre/query';
 import Genre from '../../types/Genre';
 import { useCreateSong } from '../../api/services/song/query';
+import useToastStore from '../../stores/useToastStore';
 
 const SaveBeatForm: React.FC = () => {
     const { openCloseForm, soundFile, getSongData, setSongId } = useTrackStore();
@@ -17,6 +18,7 @@ const SaveBeatForm: React.FC = () => {
 
     const { data } = useGetGenres();
     const { mutate } = useCreateSong();
+    const {showToast} = useToastStore();
 
     useEffect(() => {
         if (data?.data) {
@@ -40,7 +42,7 @@ const SaveBeatForm: React.FC = () => {
     };
 
     const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+        e.preventDefault();        
 
         const { title, description, genre, coverFile } = formData;
 
@@ -78,6 +80,7 @@ const SaveBeatForm: React.FC = () => {
                     genre: '',
                     coverFile: null,
                 });
+                showToast('Song saved successfully!', 'success', 10000);
             },
             onError: (error) => {
                 console.error('Failed to save song:', error);
