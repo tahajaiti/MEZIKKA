@@ -7,7 +7,7 @@ const DrumsHeader = () => {
 
 
     return (
-        <header className="px-8 bg-zinc-950 fixed grid grid-cols-3 items-center gap-4 border border-zinc-800/50 rounded z-50 w-full shadow-lg">
+        <header className="px-18 bg-zinc-950 fixed grid grid-cols-3 items-center gap-4 border border-zinc-800/50 rounded z-50 w-full shadow-lg">
             <MezikkaText />
 
             <div className="flex items-center gap-4">
@@ -24,7 +24,7 @@ const DrumsHeader = () => {
                         id="bpm"
                         value={bpm}
                         onChange={(e) => updateBpm(Number(e.target.value))}
-                        className="w-full h-2 appearance-none accent-red-500 bg-zinc-800 rounded outline-none"
+                        className="w-full h-2 appearance-none accent-red-500 hover:accent-red-600 bg-zinc-800 cursor-pointer rounded outline-none"
                     />
                     <div
                         className="absolute top-2 left-0 h-2 bg-red-500 rounded pointer-events-none"
@@ -34,7 +34,7 @@ const DrumsHeader = () => {
 
                 <button
                     onClick={startStopSequencer}
-                    className={`flex items-center justify-center w-12 h-12 rounded-full transition-all shadow-lg
+                    className={`flex items-center justify-center cursor-pointer w-12 h-12 rounded-full transition-all shadow-lg
                                 ${isPlaying
                             ? "bg-zinc-800 hover:bg-zinc-700 text-red-500 shadow-zinc-900/50"
                             : "bg-red-500 hover:bg-red-600 text-white shadow-red-500/30"
