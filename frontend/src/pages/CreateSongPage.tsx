@@ -2,7 +2,7 @@ import Pads from "../components/Tracks/Pads"
 import useTrackStore from "../stores/useTrackStore"
 import CustomSoundControls from "../components/Tracks/CustomSoundControls"
 import RecordingControls from "../components/Tracks/RecordingControls"
-import SaveBeatForm from "../components/Tracks/SaveBeatForn"
+import SaveBeatForm from "../components/Tracks/SaveBeatForm"
 // import DrumsHeader from "../components/Tracks/DrumsHeader"
 
 const CreateSongPage: React.FC = () => {

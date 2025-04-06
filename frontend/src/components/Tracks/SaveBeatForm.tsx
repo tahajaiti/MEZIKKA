@@ -1,12 +1,14 @@
 // src/components/SaveBeatForm.tsx
 import React, { useState } from 'react';
+import useTrackStore from '../../stores/useTrackStore';
 
 
 const SaveBeatForm: React.FC = () => {
+    const { openCloseForm } = useTrackStore();
     const [formData, setFormData] = useState({
         title: '',
         description: '',
-        genres: [] as string[],
+        genre: '',
         coverFile: null as File | null,
     });
 
@@ -22,12 +24,7 @@ const SaveBeatForm: React.FC = () => {
 
     const handleGenreChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const genre = e.target.value;
-        setFormData((prev) => {
-            const genres = prev.genres.includes(genre)
-                ? prev.genres.filter((g) => g !== genre)
-                : [...prev.genres, genre];
-            return { ...prev, genres };
-        });
+        setFormData((prev) => ({ ...prev, genre: genre }))
     };
 
     return (
@@ -86,7 +83,6 @@ const SaveBeatForm: React.FC = () => {
                                 <input
                                     type="checkbox"
                                     value={genre}
-                                    checked={formData.genres.includes(genre)}
                                     onChange={handleGenreChange}
                                     className="accent-red-500"
                                 />
@@ -100,6 +96,7 @@ const SaveBeatForm: React.FC = () => {
                     <button
                         type="button"
                         className="px-4 py-2 rounded bg-zinc-700 hover:bg-zinc-600 text-white"
+                        onClick={() => openCloseForm()}
                     >
                         Cancel
                     </button>
