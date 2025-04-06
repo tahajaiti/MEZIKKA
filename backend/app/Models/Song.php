@@ -25,6 +25,16 @@ class Song extends Model
         'metadata' => 'json',
     ];
 
+    public function genre()
+    {
+        return $this->belongsTo(Genre::class, 'genre_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     /**
      * Get the original song if this song is a remix.
      */

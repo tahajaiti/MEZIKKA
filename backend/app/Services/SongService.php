@@ -22,10 +22,9 @@ class SongService
         $song_path = $request->hasFile('song_file') ? $request->file('song_file')->store('songs/files', 'public') : null;
         $cover_path = $request->hasFile('cover_file') ? $request->file('cover_file')->store('songs/covers', 'public') : null;
 
-
         $data['file_path'] = $song_path;
         $data['cover_path'] = $cover_path;
-        $data['metadata'] = json_encode($data['metadata']);
+        $data['metadata'] = json_decode($data['metadata']);
         $data['description'] = $request->has('description') ? $request->input('description') : null;
         $data['genre_id'] = $request->has('genre_id') ? $request->input('genre_id') : null;
 

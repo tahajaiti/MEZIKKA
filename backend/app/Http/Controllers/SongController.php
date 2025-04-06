@@ -48,7 +48,7 @@ class SongController extends Controller
      */
     public function show(Song $song)
     {
-        return Res::success($song);
+        return Res::success($song->load(['user', 'genre']));
     }
 
     /**
