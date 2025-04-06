@@ -27,6 +27,7 @@ class SongPostRequest extends FormRequest
             'cover_file' => 'required|file|mimes:jpeg,png|max:2048',
             'description' => 'sometimes|string',
             'metadata' => 'sometimes|json',
+            'genre_id' => 'required|exists:genres,id',
         ];
     }
 }
