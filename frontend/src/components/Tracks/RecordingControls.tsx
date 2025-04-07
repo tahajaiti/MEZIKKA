@@ -1,38 +1,49 @@
-import { Disc, Mic, Square, Save, Upload, Lock } from "lucide-react"
-import useTrackStore from "../../stores/useTrackStore"
-import { useState } from "react";
+import { Disc, Mic, Square, Save, Upload, Lock } from "lucide-react";
+import useTrackStore from "../../stores/useTrackStore";
+import { useState, useCallback } from "react";
 import { useGetSong } from "../../api/services/song/query";
 import useToastStore from "../../stores/useToastStore";
 
 const RecordingControls = () => {
   const { isRecording, startRecording, stopRecordingAndExport, openCloseForm, songId, loadSong, soundFile } = useTrackStore();
   const { showToast } = useToastStore();
-  const [inputKey, setInputKey] = useState<string>("");
+  const [inputKey, setInputKey] = useState("");
+  const { isLoading, refetch } = useGetSong(inputKey ? inputKey.split("-")[1] : "");
 
-  const { data } = useGetSong(inputKey ? inputKey.split("-")[1] : "");
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputKey(e.target.value);
+  }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setInputKey(value);
-  }
-
-  const handleSaveClick = () => {
+  const handleSaveClick = useCallback(() => {
     if (!soundFile) {
       showToast('Please record a beat first', 'error');
       return;
     }
     openCloseForm();
-  }
+  }, [soundFile, openCloseForm, showToast]);
 
-  const handleSubmit = () => {
-    if (!data?.data) return;
-    loadSong(data.data.metadata, String(data.data.id));
-  }
+  const handleSubmit = useCallback(async () => {
+    if (!inputKey) {
+      showToast('Please enter a MEZIKKA Key', 'error');
+      return;
+    }
+
+    const result = await refetch();
+
+    if (!result.data?.data) {
+      showToast('Invalid or missing MEZIKKA Key', 'error');
+      return;
+    }
+
+    loadSong(result.data.data.metadata, String(result.data.data.id));
+    showToast('Beat loaded successfully', 'success');
+    setInputKey("");
+  }, [inputKey, refetch, loadSong, showToast]);
 
   return (
     <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 shadow-lg w-full h-full flex flex-col gap-6">
-      {/* Record & Export Section */}
-      <div className="flex flex-col gap-4">
+      {/* Record & Export */}
+      <section className="flex flex-col gap-4">
         <div className="flex items-center gap-2">
           <Mic className="w-5 h-5 text-red-500" />
           <h2 className="text-lg font-bold text-white">Record & Export</h2>
@@ -42,7 +53,8 @@ const RecordingControls = () => {
           {!isRecording ? (
             <button
               onClick={startRecording}
-              className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/20 transition-all"
+              className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isRecording}
             >
               <span className="relative flex h-3 w-3">
                 <span className="absolute h-full w-full rounded-full bg-red-600 animate-ping" />
@@ -81,10 +93,10 @@ const RecordingControls = () => {
             )}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Load & Save Section */}
-      <div className="flex flex-col gap-4">
+      {/* Load & Save */}
+      <section className="flex flex-col gap-4" >
         <div className="flex items-center gap-2">
           <Disc className="w-5 h-5 text-red-500" />
           <h2 className="text-lg font-bold text-white">Load & Save</h2>
@@ -92,39 +104,41 @@ const RecordingControls = () => {
 
         <div className="flex flex-col gap-4">
           <div className="text-center">
-            <p className="text-zinc-500 font-medium">MEZIKKA Key: <span className="font-bold text-red-500">{songId}</span></p>
+            <p className="text-zinc-500 font-medium">
+              MEZIKKA Key:{" "}
+              <span className="font-bold text-red-500">{songId || "None"}</span>
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {!soundFile ? (
-              <button
-                onClick={handleSaveClick}
-                className="flex items-center justify-center gap-2 cursor-not-allowed px-6 py-3 rounded-lg font-medium bg-zinc-800 text-zinc-500 transition-all"
-              >
-                <Lock className="w-4 h-4" />
-                Record a Beat First
-              </button>
-            ) : (
-              <button
-                onClick={handleSaveClick}
-                className="flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/20 transition-all"
-              >
+            <button
+              onClick={handleSaveClick}
+              className={`flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${!soundFile
+                ? "bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                : "bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/20"
+                }`}
+              disabled={!soundFile}
+            >
+              {soundFile ? (
                 <Save className="w-4 h-4" />
-                Save Beat
-              </button>
-            )}
+              ) : (
+                <Lock className="w-4 h-4" />
+              )}
+              {soundFile ? "Save Beat" : "Record a Beat First"}
+            </button>
 
             <button
               onClick={handleSubmit}
-              className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/20 transition-all w-full"
+              className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/20 transition-all w-full disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isLoading || !inputKey}
             >
               <Upload className="w-4 h-4" />
-              Load
+              {isLoading ? "Loading..." : "Load"}
             </button>
 
             <input
               type="text"
-              placeholder="MEZIKKA Key"
+              placeholder="Enter MEZIKKA Key"
               value={inputKey}
               onChange={handleChange}
               className="w-full px-3 py-3 rounded-lg bg-zinc-800 border border-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
@@ -138,9 +152,9 @@ const RecordingControls = () => {
             </p>
           </div>
         </div>
-      </div>
+      </section>
     </div>
-  )
-}
+  );
+};
 
-export default RecordingControls
+export default RecordingControls;

@@ -3,6 +3,7 @@ import MainLayout from './layouts/MainLayout';
 import routeConfig from './routes';
 import DrumLayout from './layouts/DrumLayout';
 import useAuthStore from './stores/authStore';
+import useToastStore from './stores/useToastStore';
 
 
 const rootRoute = createRootRoute({});
@@ -23,6 +24,8 @@ const requireAuth = async () => {
     const isAuthenticated = state.isAuthenticated;
 
     if (!isAuthenticated) {
+        const { showToast } = useToastStore.getState();
+        showToast('Session expired. Please log in again.', 'error');
         throw redirect({
             to: '/login',
             replace: true,

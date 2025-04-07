@@ -28,6 +28,6 @@ export const useGetSong = (id: string): UseQueryResult<Response<SongData>, Error
         staleTime: 5 * 60 * 1000,
         retry: 1,
         refetchOnWindowFocus: false,
-        enabled: !!id,
+        enabled: false,
     });
 };
