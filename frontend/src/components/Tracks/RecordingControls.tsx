@@ -1,14 +1,20 @@
 import { Disc, Mic, Square, Save, Upload, Lock } from "lucide-react";
 import useTrackStore from "../../stores/useTrackStore";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useGetSong } from "../../api/services/song/query";
 import useToastStore from "../../stores/useToastStore";
 
 const RecordingControls = () => {
-  const { isRecording, startRecording, stopRecordingAndExport, openCloseForm, songId, loadSong, soundFile } = useTrackStore();
+  const { isRecording, startRecording, stopRecordingAndExport, openCloseForm, songId, loadSong, soundFile, getSequences } = useTrackStore();
   const { showToast } = useToastStore();
   const [inputKey, setInputKey] = useState("");
   const { isLoading, refetch } = useGetSong(inputKey ? inputKey.split("-")[1] : "");
+
+  const sequences = getSequences();
+
+  const areSequencesEmpty = useMemo(() => {
+    return Object.values(sequences).every((s) => s.every(step => step === false))
+  }, [sequences]);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setInputKey(e.target.value);
@@ -40,6 +46,8 @@ const RecordingControls = () => {
     setInputKey("");
   }, [inputKey, refetch, loadSong, showToast]);
 
+  console.log(getSequences());
+
   return (
     <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 shadow-lg w-full h-full flex flex-col gap-6">
       {/* Record & Export */}
@@ -53,8 +61,10 @@ const RecordingControls = () => {
           {!isRecording ? (
             <button
               onClick={startRecording}
-              className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={isRecording}
+              className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium bg-red-500 
+              hover:bg-red-600 text-white shadow-lg shadow-red-500/20 transition-all 
+              disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-zinc-800 disabled:shadow-none"
+              disabled={isRecording || areSequencesEmpty}
             >
               <span className="relative flex h-3 w-3">
                 <span className="absolute h-full w-full rounded-full bg-red-600 animate-ping" />

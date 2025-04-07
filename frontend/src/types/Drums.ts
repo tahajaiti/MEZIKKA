@@ -29,6 +29,7 @@ export interface DrumSequencerState {
     soundFile: File | null
     songId: string | null
 
+    getSequences: () => Record<string | number, boolean[]>
     openCloseForm: () => void
     startStopSequencer: () => Promise<void>
     updateBpm: (newBpm: number) => void

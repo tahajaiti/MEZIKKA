@@ -27,6 +27,11 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
         soundFile: null,
         songId: null,
 
+        getSequences: () => {
+            const state = get();
+            return state.sequences;
+        },
+
         openCloseForm: () => {
             set(state => {
                 const newVal = !state.saveFormOpen;
