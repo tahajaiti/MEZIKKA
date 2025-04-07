@@ -46,8 +46,6 @@ const RecordingControls = () => {
     setInputKey("");
   }, [inputKey, refetch, loadSong, showToast]);
 
-  console.log(getSequences());
-
   return (
     <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 shadow-lg w-full h-full flex flex-col gap-6">
       {/* Record & Export */}

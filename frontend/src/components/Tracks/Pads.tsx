@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import React, { useCallback, useEffect, useMemo, useRef } from "react"
 import Pad from "./Pad"
 import * as Tone from "tone"
 import { Volume2, VibrateOff, CircleGauge, Trash } from "lucide-react"
@@ -17,10 +17,20 @@ const Pads: React.FC<PadsProps> = ({ id, name = "Pad", soundUrl = "" }) => {
   const samplerRef = useRef<Tone.Sampler | null>(null)
   const sequenceRef = useRef<Tone.Sequence | null>(null)
 
-  const currentDrum = drums.find((drum) => drum.id === id)
-  const volume = currentDrum?.volume || 0
-  const isMuted = mutedPads.has(id)
-  const activePads = sequences[id] || Array(16).fill(false)
+  const currentDrum = useMemo(() => drums.find((drum) => drum.id === id), [drums, id]);
+  const volume = currentDrum?.volume || 0;
+  const isMuted = mutedPads.has(id);
+  const activePads = useMemo(() => sequences[id] || Array(16).fill(false), [sequences, id]);
+
+  const handleTogglePad = useCallback((step: number) => togglePad(id, step), [id, togglePad]);
+  const handleToggleMute = useCallback(() => toggleMute(id), [id, toggleMute]);
+  const handleDeleteDrum = useCallback(() => deleteDrum(id), [id, deleteDrum]);
+  const handleUpdateVolume = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVol = Number.parseFloat(e.target.value);
+    updateVolume(id, newVol);
+  }, [id, updateVolume]);
+
+
 
   // initializing the sampler
   useEffect(() => {
@@ -108,10 +118,7 @@ const Pads: React.FC<PadsProps> = ({ id, name = "Pad", soundUrl = "" }) => {
               max="5"
               step={0.5}
               value={volume}
-              onChange={(e) => {
-                const newVolume = Number.parseFloat(e.target.value)
-                updateVolume(id, newVolume)
-              }}
+              onChange={handleUpdateVolume}
               className="w-full h-2 appearance-none accent-red-500 bg-zinc-800 rounded outline-none"
             />
             <div
@@ -127,19 +134,19 @@ const Pads: React.FC<PadsProps> = ({ id, name = "Pad", soundUrl = "" }) => {
           <button
             className={`flex items-center justify-center w-10 h-10 rounded-full transition-colors ${isMuted ? "bg-red-500 text-white hover:bg-red-600" : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
               }`}
-            onClick={() => toggleMute(id)}
+            onClick={handleToggleMute}
           >
             {isMuted ? <VibrateOff size={18} /> : <Volume2 size={18} />}
           </button>
         </div>
         <Trash size={30} className="text-red-500 cursor-pointer hover:text-red-600"
-          onClick={() => deleteDrum(id)}
+          onClick={handleDeleteDrum}
         />
       </div>
 
       <div className="grid grid-cols-8 sm:grid-cols-16 gap-1.5">
         {activePads.map((isActive, i) => (
-          <Pad key={i} isActive={isActive} onClick={() => togglePad(id, i)} isCurrent={currentStep === i} />
+          <Pad key={i} isActive={isActive} onClick={() => handleTogglePad(i)} isCurrent={currentStep === i} />
         ))}
       </div>
     </div>
