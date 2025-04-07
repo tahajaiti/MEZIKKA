@@ -4,8 +4,10 @@ const opt: Intl.DateTimeFormatOptions = {
     hourCycle: "h12", // | "h12" | "h23" | "h24" | "h11"
 }
 
+const apiUrl = import.meta.env.VITE_API_PUBLIC_URL;
 
-export const FormatDate = (dateStr: string) => {
+
+export const formatDate = (dateStr: string) => {
     try {
 
         const date = new Date(dateStr);
@@ -13,4 +15,8 @@ export const FormatDate = (dateStr: string) => {
     } catch (error) {
         console.error(error);
     }
+}
+
+export const formatUrl = (url?: string) => {
+    return url ? apiUrl + url : "https://placehold.co/600x400/webp";
 }
