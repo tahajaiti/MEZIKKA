@@ -12,17 +12,29 @@ const getLocalUser = () => {
         return null;
     }
 };
+const getLocalProfile = () => {
+    try {
+        const profile = localStorage.getItem("profile");
+        return profile ? JSON.parse(profile) : null;
+    } catch (err) {
+        console.error("Failed to parse local profile:", err);
+        return null;
+    }
+};
+
 
 const useAuthStore = create<AuthState>((set) => ({
     token: getLocalToken(),
     user: getLocalUser(),
+    profile: getLocalProfile(),
     isAuthenticated: !!getLocalToken(),
 
     setAuth: (token, user) => {
         try {
             localStorage.setItem("token", token);
             localStorage.setItem("user", JSON.stringify(user));
-            set({ token, user, isAuthenticated: true });
+            localStorage.setItem("profile", JSON.stringify(user.profile));
+            set({ token, user, profile: user.profile , isAuthenticated: true });
         } catch (error) {
             console.error("Error saving authentication data:", error);
         }
@@ -32,7 +44,8 @@ const useAuthStore = create<AuthState>((set) => ({
         try {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
-            set({ token: null, user: null, isAuthenticated: false });
+            localStorage.removeItem("profile");
+            set({ token: null, user: null, profile: null ,isAuthenticated: false });
 
             resetAll();
 
