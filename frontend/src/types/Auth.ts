@@ -1,3 +1,4 @@
+import Profile from "./Profile";
 import User from "./User";
 
 interface AuthData {
@@ -15,6 +16,7 @@ export interface creds {
 export interface AuthState {
     token: string | null;
     user: User | null;
+    profile: Profile | null;
     isAuthenticated: boolean;
     setAuth: (token: string, user: User) => void;
     clearAuth: () => void;
