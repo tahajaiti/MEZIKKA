@@ -41,7 +41,7 @@ const Aside: React.FC = () => {
                     initial="closed"
                     animate="open"
                     exit="closed"
-                    className="bg-gradient-to-bl from-zinc-950 to-zinc-900 w-[22rem] h-screen"
+                    className="bg-gradient-to-bl from-zinc-950 z-20 to-zinc-900 w-[22rem]"
                 >
                     <div className="flex justify-between items-center p-2">
                         <div className="m-auto">
@@ -60,7 +60,7 @@ const Aside: React.FC = () => {
                     initial="closed" 
                     animate="open"
                     exit="closed"
-                    className="py-6 px-10"
+                    className="p-4"
                 >
                     <ChevronRight
                         onClick={handleClose}
