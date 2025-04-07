@@ -1,7 +1,7 @@
 import { Calendar, Disc, User } from 'lucide-react';
 import useTrackStore from '../../stores/useTrackStore';
 import { useGetSong } from '../../api/services/song/query';
-import { FormatDate } from '../../util/Formatters';
+import { formatDate, formatUrl } from '../../util/Formatters';
 
 const apiUrl = import.meta.env.VITE_API_PUBLIC_URL;
 
@@ -33,9 +33,9 @@ const SongInfo = () => {
     }
 
     const { name, cover_path, description, user, genre, created_at } = data.data;
-    const coverUrl = apiUrl + cover_path;
+    const coverUrl = formatUrl(cover_path);
 
-    const formattedDate = created_at ? FormatDate(created_at) : "Unknown date";
+    const formattedDate = created_at ? formatDate(created_at) : "Unknown date";
 
     return (
         <div className="bg-zinc-900 p-5 rounded-xl border border-zinc-800 shadow-lg">
