@@ -47,5 +47,6 @@ export interface DrumSequencerState {
     setSongId: (id: string) => void
     loadSong: (songData: DrumData, id: string) => void
     deleteDrum: (id: number) => void
+    reset: () => void;
 }
 

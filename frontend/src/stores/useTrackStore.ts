@@ -2,30 +2,53 @@ import { create } from 'zustand';
 import * as Tone from 'tone';
 import DRUM_DATA, { STEPS } from '../util/DrumData';
 import { DrumData, DrumSequencerState } from '../types/Drums';
+import { registerStoreReset } from './resetStores';
 
 
+const initialSequences: Record<string | number, boolean[]> = {};
+DRUM_DATA.forEach(p => {
+    initialSequences[p.id] = Array(STEPS).fill(false);
+});
+
+const initialState = {
+    isPlaying: false,
+    bpm: 120,
+    sequences: initialSequences,
+    customSoundUrl: '',
+    customSoundName: '',
+    drums: DRUM_DATA,
+    currentStep: 0,
+    mutedPads: new Set<number | string>(),
+    isRecording: false,
+    recorder: null,
+    saveFormOpen: false,
+    soundFile: null,
+    songId: null,
+}
 
 const useTrackStore = create<DrumSequencerState>((set, get) => {
 
-    const initialSequences: Record<string | number, boolean[]> = {};
-    DRUM_DATA.forEach(p => {
-        initialSequences[p.id] = Array(STEPS).fill(false);
-    });
+    registerStoreReset(() => set(initialState));
 
     return {
-        isPlaying: false,
-        bpm: 120,
-        sequences: initialSequences,
-        customSoundUrl: '',
-        customSoundName: '',
-        drums: DRUM_DATA,
-        currentStep: 0,
-        mutedPads: new Set<number | string>(),
-        isRecording: false,
-        recorder: null,
-        saveFormOpen: false,
-        soundFile: null,
-        songId: null,
+        ...initialState,
+        reset: () => {
+            set({
+                isPlaying: false,
+                bpm: 120,
+                sequences: initialSequences,
+                customSoundUrl: '',
+                customSoundName: '',
+                drums: DRUM_DATA,
+                currentStep: 0,
+                mutedPads: new Set<number | string>(),
+                isRecording: false,
+                recorder: null,
+                saveFormOpen: false,
+                soundFile: null,
+                songId: null,
+            })
+        },
 
         getSequences: () => {
             const state = get();

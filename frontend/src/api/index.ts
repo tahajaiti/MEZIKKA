@@ -1,5 +1,5 @@
 import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
-import useAuthStore from '../stores/authStore';
+import { logout } from '../stores/authStore';
 
 interface LaravelValidationError {
     message: string;
@@ -73,10 +73,7 @@ apiClient.interceptors.response.use(
             case 401: {
                 const unauthorizedErr = error.response.data as LaravelApiError;
 
-                const { clearAuth } = useAuthStore.getState();
-                console.log('Unauthorized - clearing auth store');
-                clearAuth();
-                
+                logout();
                 return Promise.reject({
                     message: unauthorizedErr.message || 'Unauthorized',
                     status: 'unauthorized'
