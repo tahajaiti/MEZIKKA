@@ -30,6 +30,8 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
 
     registerStoreReset(() => set(initialState));
 
+    const transport = Tone.getTransport();
+
     return {
         ...initialState,
         reset: () => {
@@ -66,20 +68,20 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
 
         startStopSequencer: async () => {
             await Tone.start();
-            Tone.getTransport().bpm.value = get().bpm;
+            transport.bpm.value = get().bpm;
 
             if (get().isPlaying) {
-                Tone.getTransport().stop();
+                transport.stop();
             } else {
-                Tone.getTransport().start();
+                transport.start();
             }
 
             set(state => ({ isPlaying: !state.isPlaying }));
         },
 
         updateBpm: (newBpm: number) => {
+            transport.bpm.value = newBpm;
             set({ bpm: newBpm });
-            Tone.getTransport().bpm.value = newBpm;
         },
 
         updateVolume: (id: number | string, newVolume: number) => {
@@ -91,7 +93,7 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
         },
 
         addCustomDrum: () => {
-            const { customSoundUrl, customSoundName, sequences } = get();
+            const { customSoundUrl, customSoundName } = get();
 
             if (customSoundUrl && customSoundName) {
                 const newDrum = {
@@ -101,12 +103,12 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
                     volume: 0.5,
                 }
 
-                const newSequence = { ...sequences };
-                newSequence[newDrum.id] = Array(STEPS).fill(false);
-
                 set(state => ({
                     drums: [...state.drums, newDrum],
-                    sequences: newSequence,
+                    sequences: {
+                        ...state.sequences,
+                        [newDrum.id]: Array(STEPS).fill(false)
+                    },
                     customSoundName: '',
                     customSoundUrl: '',
                 }));
@@ -163,29 +165,29 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
         stopRecordingAndExport: async () => {
             const { recorder, isPlaying } = get();
 
+            if (!recorder) return;
+
             if (isPlaying) {
                 await get().startStopSequencer();
             }
 
-            if (recorder) {
-                try {
-                    const recordingBlob = await recorder.stop();
+            try {
+                const recordingBlob = await recorder.stop();
 
-                    const fileName = `track-${new Date().toISOString().split('T').join('-')}.webm`;
-                    const audioFile = new File([recordingBlob], fileName, {
-                        type: 'audio/webm',
-                    });
+                const fileName = `track-${new Date().toISOString().split('T').join('-')}.webm`;
+                const audioFile = new File([recordingBlob], fileName, {
+                    type: 'audio/webm',
+                });
 
-                    if (audioFile) {
-                        set({ soundFile: audioFile });
-                    }
-
-                    recorder.dispose();
-                    set({ recorder: null, isRecording: false });
-
-                } catch (error) {
-                    console.error('Error stopping the recorder:', error);
+                if (audioFile) {
+                    set({ soundFile: audioFile });
                 }
+
+                recorder.dispose();
+                set({ recorder: null, isRecording: false });
+
+            } catch (error) {
+                console.error('Error stopping the recorder:', error);
             }
         },
 
@@ -203,17 +205,16 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
         setSongId: (id: string) => set({ songId: id }),
 
         loadSong: (songData: DrumData, id: string) => {
-            if (songData && id) {
-                set({
-                    songId: `MEZ-${id}`,
-                    bpm: songData.bpm,
-                    sequences: songData.sequences,
-                    drums: songData.drums,
-                    currentStep: songData.currentStep,
-                    mutedPads: new Set(songData.mutedPads),
-                });
-                Tone.getTransport().bpm.value = songData.bpm;
-            }
+            if (!songData || !id) return;
+            transport.bpm.value = songData.bpm;
+            set({
+                songId: `MEZ-${id}`,
+                bpm: songData.bpm,
+                sequences: songData.sequences,
+                drums: songData.drums,
+                currentStep: songData.currentStep,
+                mutedPads: new Set(songData.mutedPads),
+            });
         },
 
         deleteDrum: (id: number) => {

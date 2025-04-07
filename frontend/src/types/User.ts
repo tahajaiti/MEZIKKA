@@ -9,8 +9,8 @@ interface User {
     email: string,
     role_id: number,
     role: Role,
-    created_at: Date,
-    updated_at: Date
+    created_at: string,
+    updated_at: string
 }
 
 export default User;
