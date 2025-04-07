@@ -63,7 +63,8 @@ const SaveBeatForm: React.FC = () => {
             const songData = getSongData();
             form.append('metadata', JSON.stringify(songData));
         } catch (error) {
-            console.error('Failed to get song data:', error);
+            showToast('Failed to get song data. Please try again.', 'error', 5000);
+            console.error('Error getting song data:', error);
             return;
         }
 
@@ -80,10 +81,18 @@ const SaveBeatForm: React.FC = () => {
                     genre: '',
                     coverFile: null,
                 });
-                showToast('Song saved successfully!', 'success', 10000);
+                showToast('Song saved successfully!', 'success', 5000);
             },
             onError: (error) => {
-                console.error('Failed to save song:', error);
+                showToast('Failed to save song. Please try again.', 'error', 5000);
+                console.error('Error saving song:', error);
+                openCloseForm();
+                setFormData({
+                    title: '',
+                    description: '',
+                    genre: '',
+                    coverFile: null,
+                });
             },
         });
     };

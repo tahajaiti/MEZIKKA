@@ -1,10 +1,12 @@
-import { Disc, Mic, Square, Save, Upload } from "lucide-react"
+import { Disc, Mic, Square, Save, Upload, Lock } from "lucide-react"
 import useTrackStore from "../../stores/useTrackStore"
 import { useState } from "react";
 import { useGetSong } from "../../api/services/song/query";
+import useToastStore from "../../stores/useToastStore";
 
 const RecordingControls = () => {
-  const { isRecording, startRecording, stopRecordingAndExport, openCloseForm, songId, loadSong } = useTrackStore();
+  const { isRecording, startRecording, stopRecordingAndExport, openCloseForm, songId, loadSong, soundFile } = useTrackStore();
+  const { showToast } = useToastStore();
   const [inputKey, setInputKey] = useState<string>("");
 
   const { data } = useGetSong(inputKey ? inputKey.split("-")[1] : "");
@@ -12,6 +14,14 @@ const RecordingControls = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setInputKey(value);
+  }
+
+  const handleSaveClick = () => {
+    if (!soundFile) {
+      showToast('Please record a beat first', 'error');
+      return;
+    }
+    openCloseForm();
   }
 
   const handleSubmit = () => {
@@ -86,13 +96,23 @@ const RecordingControls = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button
-              onClick={() => openCloseForm()}
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/20 transition-all"
-            >
-              <Save className="w-4 h-4" />
-              Save Beat
-            </button>
+            {!soundFile ? (
+              <button
+                onClick={handleSaveClick}
+                className="flex items-center justify-center gap-2 cursor-not-allowed px-6 py-3 rounded-lg font-medium bg-zinc-800 text-zinc-500 transition-all"
+              >
+                <Lock className="w-4 h-4" />
+                Record a Beat First
+              </button>
+            ) : (
+              <button
+                onClick={handleSaveClick}
+                className="flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/20 transition-all"
+              >
+                <Save className="w-4 h-4" />
+                Save Beat
+              </button>
+            )}
 
             <button
               onClick={handleSubmit}
