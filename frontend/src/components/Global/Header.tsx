@@ -1,9 +1,24 @@
-import React from 'react'
+import useAuthStore from '../../stores/authStore'
+import { formatUrl } from '../../util/Formatters';
 
 const Header = () => {
+  const { profile } = useAuthStore();
+
+  const img = formatUrl(profile?.avatar);
+
   return (
-    <div className='bg-yellow-400 w-full h-10'>Header</div>
+    <header className='bg-gradient-to-b from-zinc-800 to-70% to-transparent w-full h-16 flex justify-end px-16'>
+      <button
+        className="flex items-center gap-2 py-1 px-2 cursor-pointer"
+      >
+        <img
+          src={img} alt={`Avatar image for ${profile?.username}}`}
+          className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700"
+        />
+        <span className="text-zinc-300 hidden sm:block">{profile?.username}</span>
+      </button>
+    </header>
   )
 }
 
-export default Header
+export default Header;
