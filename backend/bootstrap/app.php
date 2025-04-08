@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\Res;
+use App\Http\Middleware\JwtMiddleware;
 use Illuminate\Foundation\Application;
 use App\Http\Middleware\ApiErrMiddleware;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -15,8 +16,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        //
+        $middleware->alias([
+            'jwt' => JwtMiddleware::class,
+        ]);
         $middleware->append(ApiErrMiddleware::class);
-        $middleware->append(\Illuminate\Http\Middleware\HandleCors::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
