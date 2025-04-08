@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'paths' => ['api/*'],
+    'paths' => ['api/*', 'storage/*', 'files/*'],
     'allowed_methods' => ['*'],
     'allowed_origins' => ['http://localhost:3000'],
     'allowed_origins_patterns' => [],

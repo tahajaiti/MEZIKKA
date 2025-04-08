@@ -1,4 +1,4 @@
-import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse, AxiosInstance } from 'axios';
 import { logout } from '../stores/authStore';
 
 interface LaravelValidationError {
@@ -12,6 +12,29 @@ interface LaravelApiError {
     exception?: string;
 }
 
+
+const addInterceptor = (client: AxiosInstance[]) => {
+    client.forEach(c => {
+        c.interceptors.request.use(
+            (config: InternalAxiosRequestConfig) => {
+                const token = localStorage.getItem('token');
+                if (token) {
+                    config.headers.Authorization = `Bearer ${token}`;
+                }
+    
+                if (config.data instanceof FormData) {
+                    delete config.headers['Content-Type'];
+                    config.headers['Content-Type'] = 'multipart/form-data';
+                }
+    
+                return config;
+            },
+            (error: AxiosError) => {
+                return Promise.reject(error);
+            }
+        );
+    })
+}
 
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080/api';
@@ -27,24 +50,15 @@ const apiClient = axios.create({
 });
 
 
-apiClient.interceptors.request.use(
-    (config: InternalAxiosRequestConfig) => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
+const fileClient = axios.create({
+    baseURL: API_URL,
+    timeout: 10000,
+    withCredentials: true,
+    responseType: 'arraybuffer'
+});
 
-        if (config.data instanceof FormData) {
-            delete config.headers['Content-Type'];
-            config.headers['Content-Type'] = 'multipart/form-data';
-        }
+addInterceptor([apiClient, fileClient]);
 
-        return config;
-    },
-    (error: AxiosError) => {
-        return Promise.reject(error);
-    }
-);
 
 apiClient.interceptors.response.use(
     (response: AxiosResponse) => {
@@ -91,6 +105,41 @@ apiClient.interceptors.response.use(
     }
 )
 
+fileClient.interceptors.response.use(
+    (response: AxiosResponse) => response.data,
+    (error: AxiosError) => {
+        if (!error.response) {
+            return Promise.reject({
+                message: 'Network error - The server is currently down please try again later',
+                status: 'network_error',
+            });
+        }
+
+        const { status, data } = error.response;
+        switch (status) {
+            case 401: {
+                logout();
+                return Promise.reject({
+                    message: 'Unauthorized - Please log in again',
+                    status: 'unauthorized',
+                });
+            }
+            case 404: {
+                return Promise.reject({
+                    message: 'File not found',
+                    status: 'not_found',
+                });
+            }
+            default:
+                return Promise.reject({
+                    message: 'An unexpected error occurred while fetching the file',
+                    status: 'unknown_error',
+                    error: data,
+                });
+        }
+    }
+);
+
 const api = {
     get: <T>(url: string, config = {}): Promise<T> =>
         apiClient.get<T>(url, config) as unknown as Promise<T>,
@@ -107,5 +156,10 @@ const api = {
     delete: <T>(url: string, config = {}): Promise<T> =>
         apiClient.delete<T>(url, config) as unknown as Promise<T>
 };
+
+export const file = {
+    get: <T>(url: string, config = {}): Promise<T> =>
+        fileClient.get<T>(url, config) as unknown as Promise<T>,
+}
 
 export default api;
