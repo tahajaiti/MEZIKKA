@@ -2,13 +2,14 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FileController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\SongController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\FollowController;
-use App\Http\Controllers\LikeController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\PlaylistItemController;
-use App\Http\Controllers\ProfileController;
 
 
 
@@ -19,6 +20,10 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::middleware('jwt')->group(function () {
+
+    Route::get('/files/{path}', [FileController::class, 'serve'])
+        ->where('path', '.*')
+        ->name('files.serve');
 
     Route::prefix('profile')->group(function () {
         Route::get('/', [ProfileController::class, 'show'])->name('profile.show');
