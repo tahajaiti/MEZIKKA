@@ -3,7 +3,6 @@ import useTrackStore from '../../stores/useTrackStore';
 import { useGetSong } from '../../api/services/song/query';
 import { formatDate, formatUrl } from '../../util/Formatters';
 
-const apiUrl = import.meta.env.VITE_API_PUBLIC_URL;
 
 const SongInfo = () => {
     const { songId } = useTrackStore();

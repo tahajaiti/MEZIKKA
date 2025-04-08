@@ -1,35 +1,55 @@
 import { create } from 'zustand';
 import * as Tone from 'tone';
-import { PlayerState } from '../types/Payer';
-
+import { PlayerState } from '../types/Player';
+import useToastStore from './useToastStore';
+import songService from '../api/services/song/service';
 
 const initialState = {
     isPlaying: false,
-    songFile: null,
-}
-
+    songUrl: null,
+};
 
 const usePlayerStore = create<PlayerState>((set, get) => {
+    const toastStore = useToastStore.getState();
 
-    const transport = Tone.getTransport();
+    const player = new Tone.Player().toDestination();
 
     return {
         ...initialState,
 
         startStopPlayer: async () => {
+            const state = get();
             await Tone.start();
+            console.log('Starting/stopping player:', state.isPlaying);
 
-            if (get().isPlaying){
-                transport.stop();
+            if (!state.songUrl) return;
+            const songUrl = state.songUrl;
+
+            const audioData = await songService.getSongFile(songUrl!);
+
+            if (!state.isPlaying) {
+                if (!audioData) {
+                    toastStore.showToast('Failed to load song', 'error');
+                    return;
+                }
+
+                const audio = await Tone.getContext().decodeAudioData(audioData);
+
+                player.buffer = new Tone.ToneAudioBuffer(audio);
+                player.start();
             } else {
-                transport.start();
+                player.stop();
             }
 
-            set(state => ({isPlaying: !state.isPlaying}));
-        }   
+            set({ isPlaying: !state.isPlaying });
+        },
 
-    }
+        setSong: async (songUrl: string) => {
+            if (!songUrl) return;
+            set({ songUrl: songUrl });
+
+        }
+    };
 });
-
 
 export default usePlayerStore;
