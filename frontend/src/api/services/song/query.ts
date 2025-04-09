@@ -28,7 +28,7 @@ export const useGetSong = (id: string | number): UseQueryResult<Response<SongDat
         staleTime: 5 * 60 * 1000,
         retry: 1,
         refetchOnWindowFocus: false,
-        enabled: false,
+        enabled: true,
     });
 };
 
@@ -36,6 +36,17 @@ export const useGetFile = (id: string | number): UseQueryResult<ArrayBuffer, Err
     return useQuery({
         queryKey: ['file', id],
         queryFn: () => songService.getSongFile(id),
+        staleTime: 5 * 60 * 1000,
+        retry: 1,
+        refetchOnWindowFocus: false,
+        enabled: true,
+    });
+}
+
+export const useGetAllSongs = (): UseQueryResult<Response<SongData[]>, Error> => {
+    return useQuery({
+        queryKey: ['songs'],
+        queryFn: () => songService.getAll(),
         staleTime: 5 * 60 * 1000,
         retry: 1,
         refetchOnWindowFocus: false,
