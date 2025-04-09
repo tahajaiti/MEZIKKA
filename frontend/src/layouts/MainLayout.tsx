@@ -5,15 +5,16 @@ import Player from '../components/Player/Player';
 
 const MainLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="h-screen w-screen overflow-hidden flex flex-col">
       <div className="flex flex-1 overflow-hidden">
         <Aside />
-        <main className="flex flex-col w-full overflow-hidden">
+
+        <div className="flex-1 flex flex-col h-full relative">
           <Header />
-          <div className="flex-1 overflow-y-auto">
-            {children}
-          </div>
-        </main>
+
+          {children}
+
+        </div>
       </div>
       <Player />
     </div>
