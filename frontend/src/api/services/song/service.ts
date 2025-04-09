@@ -6,11 +6,13 @@ import api, { file } from "../../index";
 const createSong = (song: FormData) => api.post<Response<SongData>>('/songs', song);
 const getSongById = (id: string | number) => api.get<Response<SongData>>(`/songs/${id}`);
 const getSongFile = (path: string | number): Promise<ArrayBuffer> => file.get<ArrayBuffer>(`/files/${path}`);
+const getAll = () => api.get<Response<SongData[]>>('/songs');
 
 const songService = {
     createSong,
     getSongById,
-    getSongFile
+    getSongFile,
+    getAll
 }
 
 export default songService;
