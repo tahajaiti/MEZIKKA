@@ -41,7 +41,7 @@ const Aside: React.FC = () => {
                     initial="closed"
                     animate="open"
                     exit="closed"
-                    className="bg-black w-[22rem] border-r border-zinc-900"
+                    className="bg-black w-[22rem] border-r border-zinc-900 flex-shrink-0 h-full sticky top-0 z-20"
                 >
                     <div className="flex justify-between items-center p-2">
                         <div className="m-auto">
