@@ -26,7 +26,7 @@ class SongController extends Controller
      */
     public function index()
     {
-        return Song::all();
+        return Res::success(Song::with(['user', 'genre'])->latest()->limit(10)->get());
     }
 
     /**
