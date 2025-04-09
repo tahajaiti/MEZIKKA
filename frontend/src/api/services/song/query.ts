@@ -31,3 +31,14 @@ export const useGetSong = (id: string): UseQueryResult<Response<SongData>, Error
         enabled: false,
     });
 };
+
+export const useGetFile = (id: string): UseQueryResult<ArrayBuffer, Error> => {
+    return useQuery({
+        queryKey: ['file', id],
+        queryFn: () => songService.getSongFile(id),
+        staleTime: 5 * 60 * 1000,
+        retry: 1,
+        refetchOnWindowFocus: false,
+        enabled: true,
+    });
+}
