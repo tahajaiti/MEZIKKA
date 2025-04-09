@@ -6,25 +6,33 @@ import { useEffect } from 'react';
 // import { formatTime } from '../../util/Formatters';
 
 const Player = () => {
-  const { isPlaying, loadAudio, playAndPause } = usePlayerStore();
-  const { data, refetch } = useGetSong('5');
-  const { data: songFIle } = useGetFile('5');
+  const {
+    isPlaying,
+    mount,
+    toggle,
+  } = usePlayerStore();
 
-  useEffect(() => {
-    if (!data || !data.data || !songFIle) return;
-    loadAudio(songFIle);
-  }, [songFIle, data, loadAudio]);
+  const { data, refetch } = useGetSong(5);
+  const { data: songFIle } = useGetFile(5);
 
+  
   useEffect(() => {
-    refetch();
-  }, [refetch]);
+    const init = async () => {
+      refetch();
+      if (songFIle){
+        await mount(songFIle);
+      }
+    }
+    init();
+  }, [mount, refetch, songFIle]);
 
   const handlePlay = async () => {
-    playAndPause();
+    if (songFIle) await mount(songFIle);
+    toggle();
   };
 
   return (
-    <div className="bg-black w-full h-24 z-40 grid grid-cols-3 items-center px-4 border-t border-zinc-900">
+    <div className="bg-black w-full h-24 grid grid-cols-3 items-center px-4 border-t border-zinc-900 sticky bottom-0 left-0 right-0 z-50">
 
       {/* Track info */}
       <div className="flex items-center gap-4">
