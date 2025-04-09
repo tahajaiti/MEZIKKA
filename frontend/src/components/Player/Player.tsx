@@ -4,6 +4,7 @@ import usePlayerStore from "../../stores/usePlayerStore";
 import { useGetSong } from "../../api/services/song/query";
 import { useEffect, useState } from "react";
 import SongData from "../../types/Song";
+import { formatUrl } from "../../util/Formatters";
 // import { formatTime } from '../../util/Formatters';
 
 const Player = () => {
@@ -36,7 +37,7 @@ const Player = () => {
     <div className="bg-black w-full h-24 grid grid-cols-3 items-center px-4 border-t border-zinc-900 sticky bottom-0 left-0 right-0 z-50">
       {/* Track info */}
       <div className="flex items-center gap-4">
-        <img className="h-16 w-16 object-cover" src="https://placehold.co/600x400/webp" alt="Track cover" />
+        <img className="h-16 w-16 object-cover" src={formatUrl(song.cover_path)} alt="Track cover" />
         <div className="flex flex-col justify-center overflow-hidden">
           <h1 className="text-lg font-bold text-white truncate max-w-[10rem]">{song.name}</h1>
           <h2 className="text-sm text-gray-300 truncate max-w-[10rem]">{song.user.name}</h2>
