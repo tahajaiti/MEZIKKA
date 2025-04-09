@@ -28,7 +28,7 @@ const CreateSongPage: React.FC = () => {
             <div className="h-px flex-1 bg-zinc-800"></div>
           </div>
 
-          <div className="space-y-4 h-screen overflow-auto">
+          <div className="grid grid-cols-2 gap-4 h-fit overflow-auto">
             {drums.map((d) => (
               <Pads
                 key={Number(d.id)}
