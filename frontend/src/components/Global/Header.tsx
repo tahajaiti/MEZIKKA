@@ -7,7 +7,7 @@ const Header = () => {
   const img = formatUrl(profile?.avatar);
 
   return (
-    <header className='bg-gradient-to-b from-zinc-800 to-70% to-transparent w-full h-16 flex justify-end px-16'>
+    <header className='sticky top-0 py-1 flex justify-end px-16 z-40'>
       <button
         className="flex items-center gap-2 py-1 px-2 cursor-pointer"
       >
