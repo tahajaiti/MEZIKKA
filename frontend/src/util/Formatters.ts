@@ -20,3 +20,9 @@ export const formatDate = (dateStr: string) => {
 export const formatUrl = (url?: string) => {
     return url ? apiUrl + url : "https://placehold.co/600x400/webp";
 }
+
+export const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+};
