@@ -102,7 +102,7 @@ const Pads: React.FC<PadsProps> = ({ id, name = "Pad", soundUrl = "" }) => {
   }, [activePads, isPlaying, isMuted, setCurrentStep])
 
   return (
-    <div className="mb-8 bg-zinc-900 rounded-xl p-4 border border-zinc-800 shadow-lg">
+    <div className="bg-zinc-900 rounded-xl p-4 border border-zinc-800 shadow-lg">
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-4">
         <div className="flex items-center">
           <CircleGauge className="w-5 h-5 text-red-500 mr-2" />
