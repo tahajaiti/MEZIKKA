@@ -1,55 +1,99 @@
 import { create } from 'zustand';
-import * as Tone from 'tone';
-import { PlayerState } from '../types/Player';
+// import { PlayerState } from '../types/Player';
 import useToastStore from './useToastStore';
-import songService from '../api/services/song/service';
 
 const initialState = {
+    context: new AudioContext(),
+    source: null,
+    buffer: null,
+    startTime: 0,
+    pausedAt: 0,
+    duration: 0,
     isPlaying: false,
-    songUrl: null,
 };
 
-const usePlayerStore = create<PlayerState>((set, get) => {
-    const toastStore = useToastStore.getState();
+interface State {
+    context: AudioContext | null;
+    source: AudioBufferSourceNode | null;
+    buffer: AudioBuffer | null;
+    startTime: number;
+    pausedAt: number;
+    duration: number;
+    isPlaying: boolean;
 
-    const player = new Tone.Player().toDestination();
+    loadAudio: (buffer: ArrayBuffer) => Promise<void>;
+    play: () => void;
+    pause: () => void;
+    playAndPause: () => void;
+
+}
+
+const usePlayerStore = create<State>((set, get) => {
+    const toastStore = useToastStore.getState();
 
     return {
         ...initialState,
+        context: new AudioContext(),
 
-        startStopPlayer: async () => {
-            const state = get();
-            await Tone.start();
-            console.log('Starting/stopping player:', state.isPlaying);
-
-            if (!state.songUrl) return;
-            const songUrl = state.songUrl;
-
-            const audioData = await songService.getSongFile(songUrl!);
-
-            if (!state.isPlaying) {
-                if (!audioData) {
-                    toastStore.showToast('Failed to load song', 'error');
-                    return;
-                }
-
-                const audio = await Tone.getContext().decodeAudioData(audioData);
-
-                player.buffer = new Tone.ToneAudioBuffer(audio);
-                player.start();
-            } else {
-                player.stop();
+        loadAudio: async (buffer: ArrayBuffer) => {
+            const ctx = get().context;
+            if (!ctx) return;
+            
+            try {
+                const decoded = await ctx.decodeAudioData(buffer);
+                set({buffer: decoded, duration: decoded.duration});
+            } catch (err) {
+                console.error('Error loading audio:', err);
             }
-
-            set({ isPlaying: !state.isPlaying });
         },
 
-        setSong: async (songUrl: string) => {
-            if (!songUrl) return;
-            set({ songUrl: songUrl });
+        play: () => {
+            const { context, buffer, isPlaying, pausedAt } = get();
+            if (!context || !buffer || isPlaying) return;
 
+            const source = context.createBufferSource();
+            source.buffer = buffer;
+            source.connect(context.destination);
+
+            const offset = pausedAt;
+            source.start(0, pausedAt);
+
+
+            source.onended = () => set({isPlaying: false, pausedAt: 0});
+
+            set({ 
+                source, 
+                isPlaying: true, 
+                startTime: context.currentTime - offset, 
+                pausedAt: 0 
+            });
+        },
+
+        pause: () => {
+            const {source, context, startTime} = get();
+            if (!source || !context) return;
+            console.log('Pausing audio');
+
+            const currentTime = context.currentTime;
+            const pausedAt = currentTime - startTime;
+            
+            console.log('Paused at:', pausedAt);
+
+            source.stop();
+            set({ isPlaying: false, pausedAt: pausedAt });
+        },
+
+        playAndPause: () => {
+            const { isPlaying } = get();
+            if (isPlaying) {
+                get().pause();
+                toastStore.showToast('Paused', 'info');
+            } else {
+                get().play();
+                toastStore.showToast('played', 'info');
+            }
         }
-    };
+    }
 });
 
 export default usePlayerStore;
