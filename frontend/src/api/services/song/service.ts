@@ -4,8 +4,8 @@ import api, { file } from "../../index";
 
 
 const createSong = (song: FormData) => api.post<Response<SongData>>('/songs', song);
-const getSongById = (id: string) => api.get<Response<SongData>>(`/songs/${id}`);
-const getSongFile = (path: string): Promise<ArrayBuffer> => file.get<ArrayBuffer>(`/files/${path}`);
+const getSongById = (id: string | number) => api.get<Response<SongData>>(`/songs/${id}`);
+const getSongFile = (path: string | number): Promise<ArrayBuffer> => file.get<ArrayBuffer>(`/files/${path}`);
 
 const songService = {
     createSong,
