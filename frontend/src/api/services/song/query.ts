@@ -21,7 +21,7 @@ export const useCreateSong = (): UseMutationResult<
     });
 }
 
-export const useGetSong = (id: string): UseQueryResult<Response<SongData>, Error> => {
+export const useGetSong = (id: string | number): UseQueryResult<Response<SongData>, Error> => {
     return useQuery({
         queryKey: ['song', id],
         queryFn: () => songService.getSongById(id), 
@@ -32,7 +32,7 @@ export const useGetSong = (id: string): UseQueryResult<Response<SongData>, Error
     });
 };
 
-export const useGetFile = (id: string): UseQueryResult<ArrayBuffer, Error> => {
+export const useGetFile = (id: string | number): UseQueryResult<ArrayBuffer, Error> => {
     return useQuery({
         queryKey: ['file', id],
         queryFn: () => songService.getSongFile(id),
