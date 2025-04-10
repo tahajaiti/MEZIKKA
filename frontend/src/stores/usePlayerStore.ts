@@ -36,6 +36,7 @@ interface State {
     toggle: () => void;
     setVolume: (vol: number) => void;
     load: (id: string | number) => Promise<void>;
+    seek: (time: number) => void;
     cleanup: () => void;
 }
 
@@ -60,7 +61,7 @@ const usePlayerStore = create<State>((set, get) => {
             }
 
             await get().mount(res);
-            set({ arrayBuffer: res , currentSong: id });
+            set({ arrayBuffer: res, currentSong: id });
         },
 
         mount: async (buffer) => {
@@ -145,6 +146,21 @@ const usePlayerStore = create<State>((set, get) => {
             }
 
             set({ volume: clampedVolume });
+        },
+
+        seek: (time) => {
+            const { context, buffer, isPlaying } = get();
+            if (!context || !buffer) return;
+
+            const clampedTime = Math.max(0, Math.min(buffer.duration, time));
+
+            if (isPlaying) {
+                get().pause();
+                set({ elapsedTime: clampedTime });
+                get().play();
+            } else {
+                set({ elapsedTime: clampedTime });
+            }
         },
 
         cleanup: () => {
