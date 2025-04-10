@@ -39,6 +39,18 @@ const Home = () => {
         </div>
       </section>
 
+      <section className='flex flex-col gap-4'>
+        <h2 className='text-3xl'>New Mezikka</h2>
+        <div className='flex items-center justify-between gap-4 h-fit w-full p-8'>
+          {songs.map((song) => (
+            <SongCard
+              key={song.id}
+              song={song}
+            />
+          ))}
+        </div>
+      </section>
+
     </div>
   )
 }

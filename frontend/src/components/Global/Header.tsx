@@ -1,5 +1,6 @@
 import useAuthStore from '../../stores/authStore'
 import { formatUrl } from '../../util/Formatters';
+import MezikkaText from '../Texts/MezikkaText';
 
 const Header = () => {
   const { profile } = useAuthStore();
@@ -7,7 +8,8 @@ const Header = () => {
   const img = formatUrl(profile?.avatar);
 
   return (
-    <header className='sticky top-0 py-1 flex justify-end px-16 z-40'>
+    <header className='sticky top-0 py-1 flex justify-between items-center px-16 z-50'>
+      <MezikkaText />
       <button
         className="flex items-center gap-2 py-1 px-2 cursor-pointer"
       >
