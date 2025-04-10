@@ -4,12 +4,13 @@ import usePlayerStore from "../../stores/usePlayerStore";
 import { useGetSong } from "../../api/services/song/query";
 import { useEffect, useState } from "react";
 import SongData from "../../types/Song";
-import { formatUrl } from "../../util/Formatters";
-// import { formatTime } from '../../util/Formatters';
+import { formatTime, formatUrl } from "../../util/Formatters";
+import PlayerSkeleton from "./PlayerSkeleton";
 
 const Player = () => {
   const [song, setSong] = useState<SongData | null>(null);
-  const { isPlaying, toggle, currentSong } = usePlayerStore();
+  const [currentTime, setCurrentTime] = useState(0);
+  const { isPlaying, toggle, currentSong, duration, elapsedTime, volume, setVolume } = usePlayerStore();
   const { data, refetch } = useGetSong(currentSong || "");
 
   useEffect(() => {
@@ -21,20 +22,35 @@ const Player = () => {
     }
   }, [currentSong, data, refetch]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (isPlaying) {
+        setCurrentTime((prevTime) => {
+          const newTime = prevTime + 1;
+          return newTime;
+        });
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [isPlaying]);
+
   const handlePlay = () => {
     toggle();
   };
 
+  const handleVolume = (_: unknown, val: number | number[]) => {
+    const vol = Array.isArray(val) ? val[0] : val;
+    setVolume(vol / 100);
+  }
+
   if (!song) {
     return (
-      <div className="bg-black w-full h-24 grid grid-cols-3 items-center px-4 border-t border-zinc-900 sticky bottom-0 left-0 right-0 z-50">
-        <h1 className="text-lg font-bold text-white">No song selected</h1>
-      </div>
+      <PlayerSkeleton />
     );
   }
 
   return (
-    <div className="bg-black w-full h-24 grid grid-cols-3 items-center px-4 border-t border-zinc-900 sticky bottom-0 left-0 right-0 z-50">
+    <div className="bg-black w-full h-24 grid grid-cols-3 items-center p-4 border-t border-zinc-900 sticky bottom-0 left-0 right-0 z-50">
       {/* Track info */}
       <div className="flex items-center gap-4">
         <img className="h-16 w-16 object-cover" src={formatUrl(song.cover_path)} alt="Track cover" />
@@ -57,16 +73,19 @@ const Player = () => {
           </button>
         )}
         <div className="flex justify-between items-center gap-6 w-full max-w-[37rem] px-4">
-          <span className="text-xs text-gray-400">1</span>
-          <RedSlider size="small" defaultValue={30} />
-          <span className="text-xs text-gray-400">1</span>
+          <span className="text-xs text-gray-400">{formatTime(elapsedTime)}</span>
+          <RedSlider
+            value={elapsedTime}
+            max={duration || 100}
+            size="small" defaultValue={0} />
+          <span className="text-xs text-gray-400">{formatTime(duration)}</span>
         </div>
       </div>
 
       {/* Volume control */}
       <div className="flex items-center justify-end gap-4 pr-10">
         <Volume2 className="text-white" size={24} />
-        <RedSlider defaultValue={50} sx={{ width: 100 }} valueLabelDisplay="auto" />
+        <RedSlider defaultValue={Math.floor(volume * 100)} value={Math.floor(volume * 100)} onChange={handleVolume} sx={{ width: 100 }} valueLabelDisplay="auto" />
       </div>
     </div>
   );
