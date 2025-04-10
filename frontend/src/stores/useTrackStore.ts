@@ -234,6 +234,16 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
                     mutedPads: newMutedPads,
                 };
             })
+        },
+
+        clearPad: (id: number) => {
+            set(state => {
+                const newSequences = { ...state.sequences };
+                if (newSequences[id]) {
+                    newSequences[id] = Array(STEPS).fill(false);
+                }
+                return { sequences: newSequences };
+            });
         }
     }
 });
