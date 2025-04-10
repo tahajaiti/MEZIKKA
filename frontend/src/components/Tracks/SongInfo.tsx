@@ -27,7 +27,7 @@ const SongInfo = () => {
         );
     }
 
-    if (!data || !data.data) {
+    if (!data || !data.data || realId === '') {
         return;
     }
 

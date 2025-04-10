@@ -4,10 +4,27 @@ import CustomSoundControls from "../components/Tracks/CustomSoundControls"
 import RecordingControls from "../components/Tracks/RecordingControls"
 import SaveBeatForm from "../components/Tracks/SaveBeatForm"
 import SongInfo from "../components/Tracks/SongInfo"
+import { useEffect } from "react"
 // import DrumsHeader from "../components/Tracks/DrumsHeader"
 
 const CreateSongPage: React.FC = () => {
-  const { drums, saveFormOpen } = useTrackStore();
+  const { drums, saveFormOpen, startStopSequencer} = useTrackStore();
+
+  useEffect(() => {
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        useTrackStore.setState({ saveFormOpen: false });
+      }
+      if (e.key === " ") {
+        startStopSequencer();
+      }
+    };
+
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white p-4 md:p-6 lg:p-8 ">
