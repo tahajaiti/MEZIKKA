@@ -1,8 +1,9 @@
 import { create } from 'zustand';
 import * as Tone from 'tone';
-import DRUM_DATA, { STEPS } from '../util/DrumData';
+import DRUM_DATA, { PRESETS, STEPS } from '../util/DrumData';
 import { DrumData, DrumSequencerState } from '../types/Drums';
 import { registerStoreReset } from './resetStores';
+import { recordGain } from '../util/CustomGain';
 
 
 const initialSequences: Record<string | number, boolean[]> = {};
@@ -73,7 +74,7 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
             if (get().isPlaying) {
                 transport.stop();
             } else {
-                transport.start();
+                transport.start(Tone.now());
             }
 
             set(state => ({ isPlaying: !state.isPlaying }));
@@ -151,13 +152,15 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
         startRecording: async () => {
             await Tone.start();
 
+            
+
+            const recorder = new Tone.Recorder();
+            recordGain.connect(recorder);
+            await recorder.start();
+
             if (!get().isPlaying) {
                 await get().startStopSequencer();
             }
-
-            const recorder = new Tone.Recorder();
-            Tone.getDestination().connect(recorder);
-            recorder.start();
 
             set({ recorder, isRecording: true });
         },
@@ -244,6 +247,11 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
                 }
                 return { sequences: newSequences };
             });
+        },
+        setPreset: (name: string ) => {
+            const preset = PRESETS.find(p => p.name === name);
+            if (!preset) return;
+            set({ drums: preset.sounds, sequences:  initialSequences});
         }
     }
 });
