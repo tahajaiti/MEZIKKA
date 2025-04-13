@@ -49,5 +49,6 @@ export interface DrumSequencerState {
     deleteDrum: (id: number) => void
     reset: () => void;
     clearPad: (id: number) => void;
+    setPreset: (name: string) => void;
 }
 
