@@ -3,6 +3,7 @@ import Pad from "./Pad"
 import * as Tone from "tone"
 import { Volume2, VibrateOff, CircleGauge, Trash, CircleDashedIcon } from "lucide-react"
 import useTrackStore from "../../stores/useTrackStore"
+import { matserGain, recordGain } from "../../util/CustomGain"
 
 interface PadsProps {
   id: number
@@ -45,9 +46,12 @@ const Pads: React.FC<PadsProps> = ({ id, name = "Pad", soundUrl = "" }) => {
       onload: () => {
         console.log(`Sampler loaded`);
       },
-    }).toDestination()
+    });
 
+    
     if (samplerRef.current) {
+      samplerRef.current.connect(matserGain);
+      samplerRef.current.connect(recordGain);
       samplerRef.current.volume.value = isMuted ? Number.NEGATIVE_INFINITY : volume
     }
 
