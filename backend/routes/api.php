@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FileController;
@@ -50,5 +51,6 @@ Route::middleware('jwt')->group(function () {
     Route::get('/followings', [FollowController::class, 'myFollows'])->name('followings');
     Route::get('/followers', [FollowController::class, 'myFollowers'])->name('followers');
 
+    Route::get('/users/{id}', [UserController::class, 'show'])->name('user.show');
 
 });
