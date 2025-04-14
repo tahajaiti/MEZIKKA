@@ -7,6 +7,7 @@ import useToastStore from "../../stores/useToastStore";
 import { useEffect, useState } from "react";
 import useAuthStore from "../../stores/authStore";
 import ProfileEdit from "./ProfileEdit";
+import ProfileStats from "./ProfileStats";
 
 const ProfileCard: React.FC = () => {
 
@@ -61,22 +62,7 @@ const ProfileCard: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-6 text-sm">
-                            <div className="flex flex-col items-center">
-                                <span className="text-white font-semibold">100</span>
-                                <span className="text-zinc-500">Followers</span>
-                            </div>
-                            <div className="w-px h-8 bg-zinc-800"></div>
-                            <div className="flex flex-col items-center">
-                                <span className="text-white font-semibold">238,832</span>
-                                <span className="text-zinc-500">Following</span>
-                            </div>
-                            <div className="w-px h-8 bg-zinc-800"></div>
-                            <div className="flex flex-col items-center">
-                                <span className="text-white font-semibold">42</span>
-                                <span className="text-zinc-500">Beats</span>
-                            </div>
-                        </div>
+                        <ProfileStats/>
 
                         {isMe ? (
                             <button
