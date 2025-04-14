@@ -1,12 +1,14 @@
-import { ReactNode } from 'react';
 import Header from '../components/Global/Header';
 import Player from '../components/Player/Player';
+import { Outlet } from 'react-router';
 
-const MainLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
+const MainLayout: React.FC = () => {
   return (
     <div className="h-screen w-screen overflow-hidden flex flex-col">
       <Header />
-      {children}
+      <main>
+        <Outlet/>
+      </main>
       <Player />
     </div>
   );
