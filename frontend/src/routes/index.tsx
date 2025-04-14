@@ -18,7 +18,7 @@ const routes: Route[] = [
     { path: '/', component: Home, layout: MainLayout, auth: true },
     { path: '/login', component: Login, layout: null, auth: false },
     { path: '/signup', component: Signup, layout: null, auth: false },
-    { path: '/profile', component: Profile, layout: MainLayout, auth: true },
+    { path: '/profile/:id', component: Profile, layout: MainLayout, auth: true },
     { path: '/create/song', component: CreateSong, layout: DrumLayout, auth: true },
 ];
 

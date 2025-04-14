@@ -5,7 +5,7 @@ import MezikkaText from '../Texts/MezikkaText';
 import { Link } from 'react-router';
 
 const Header = () => {
-  const { profile } = useAuthStore();
+  const { profile, user } = useAuthStore();
   const img = formatUrl(profile?.avatar);
 
   return (
@@ -22,7 +22,7 @@ const Header = () => {
       </div>
 
       <Link
-        to='/profile'
+        to={`/profile/${user?.id}`}
         className="flex items-center gap-2 py-1 px-2 cursor-pointer"
       >
         <img
