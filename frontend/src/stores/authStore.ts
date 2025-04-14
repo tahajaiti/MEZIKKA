@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { AuthState } from "../types/Auth";
-import { router } from "../router";
 import resetAll from "./resetStores";
 
 const getLocalToken = () => localStorage.getItem("token") || null;
@@ -23,41 +22,39 @@ const getLocalProfile = () => {
 };
 
 
-const useAuthStore = create<AuthState>((set) => ({
-    token: getLocalToken(),
-    user: getLocalUser(),
-    profile: getLocalProfile(),
-    isAuthenticated: !!getLocalToken(),
+const useAuthStore = create<AuthState>((set) => {
 
-    setAuth: (token, user) => {
-        try {
-            localStorage.setItem("token", token);
-            localStorage.setItem("user", JSON.stringify(user));
-            localStorage.setItem("profile", JSON.stringify(user.profile));
-            set({ token, user, profile: user.profile , isAuthenticated: true });
-        } catch (error) {
-            console.error("Error saving authentication data:", error);
-        }
-    },
+    return {
+        token: getLocalToken(),
+        user: getLocalUser(),
+        profile: getLocalProfile(),
+        isAuthenticated: !!getLocalToken(),
 
-    clearAuth: () => {
-        try {
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
-            localStorage.removeItem("profile");
-            set({ token: null, user: null, profile: null ,isAuthenticated: false });
+        setAuth: (token, user) => {
+            try {
+                localStorage.setItem("token", token);
+                localStorage.setItem("user", JSON.stringify(user));
+                localStorage.setItem("profile", JSON.stringify(user.profile));
+                set({ token, user, profile: user.profile, isAuthenticated: true });
+            } catch (error) {
+                console.error("Error saving authentication data:", error);
+            }
+        },
 
-            resetAll();
+        clearAuth: () => {
+            try {
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+                localStorage.removeItem("profile");
+                set({ token: null, user: null, profile: null, isAuthenticated: false });
 
-            setTimeout(() => {
-                router.navigate({ to: "/login", replace: true });
-            }, 0);
-        } catch (error) {
-            console.error("Error clearing authentication:", error);
-            router.navigate({ to: "/login", replace: true });
-        }
-    },
-}));
+                resetAll();
+            } catch (error) {
+                console.error("Error clearing authentication:", error);
+            }
+        },
+    }
+});
 
 export const logout = () => useAuthStore.getState().clearAuth();
 
