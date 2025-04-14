@@ -19,6 +19,7 @@ export interface AuthState {
     profile: Profile | null;
     isAuthenticated: boolean;
     setAuth: (token: string, user: User) => void;
+    setProfile: (profile: Profile) => void;
     clearAuth: () => void;
 }
 
