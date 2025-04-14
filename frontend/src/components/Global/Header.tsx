@@ -2,7 +2,7 @@ import { PlusIcon } from 'lucide-react';
 import useAuthStore from '../../stores/authStore';
 import { formatUrl } from '../../util/Formatters';
 import MezikkaText from '../Texts/MezikkaText';
-import { Link } from '@tanstack/react-router';
+import { Link } from 'react-router';
 
 const Header = () => {
   const { profile } = useAuthStore();

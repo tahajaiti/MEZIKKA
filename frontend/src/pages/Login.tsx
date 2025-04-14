@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router';
 import { EyeOff, Mail } from 'lucide-react';
 import authBg from '@assets/authBg.png';
 import MezikkaText from '../components/Texts/MezikkaText';
@@ -6,8 +7,6 @@ import ButtonLarge from '../components/Buttons/ButtonLarge';
 import AuthInput from '../components/Inputs/AuthInput';
 import { validateEmail, validatePassword } from '../util/Validators';
 import { useLogin } from '../api/services/auth/query';
-import { Link } from '@tanstack/react-router';
-import { router } from '../router';
 
 const Login = () => {
   const [formData, setFormData] = useState<{
@@ -25,6 +24,8 @@ const Login = () => {
     email: null,
     password: null,
   });
+
+  const navigate = useNavigate();
 
   const { mutate: login, isPending, error: loginErr } = useLogin();
 
@@ -51,7 +52,7 @@ const Login = () => {
         { email: formData.email, password: formData.password },
         {
           onSuccess: () => {
-            router.navigate({to: '/create/song'});
+            navigate('/');
           },
         }
       );

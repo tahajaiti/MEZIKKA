@@ -3,7 +3,7 @@ import SongCard from '../components/Song/SongCard'
 import { useGetAllSongs } from '../api/services/song/query'
 import SongData from '../types/Song';
 
-const Home = () => {
+const Home: React.FC = () => {
   const [songs, setSongs] = useState<SongData[]>([]);
 
   const { data, isPending } = useGetAllSongs();
