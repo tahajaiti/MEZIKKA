@@ -55,6 +55,15 @@ const useAuthStore = create<AuthState>((set) => {
                 goTo('/login');
             }
         },
+
+        setProfile: (profile) => {
+            try {
+                localStorage.setItem("profile", JSON.stringify(profile));
+                set({ profile });
+            } catch (error) {
+                console.error("Error saving profile data:", error);
+            }
+        }
     }
 });
 
