@@ -19,17 +19,21 @@ class ProfileService
         $profile = $user->profile;
         $username = $request->username;
 
-        if (!$username || Gen::check($username)) {
+        if ($username !== $profile->username && Gen::check($username)) {
             return false;
         }
 
-        $path = $request->hasFile('avatar') ? $request->file('avatar')->store('avatars', 'public') : null;
-
-        if ($profile->avatar && $path) {
-            Storage::disk('public')->delete($profile->avatar);
+        if ($username !== $profile->username) {
+            $username = Gen::username($username);
         }
 
-        if ($path) {
+        if ($request->hasFile('avatar')) {
+            $path = $request->file('avatar')->store('avatars', 'public');
+
+            if ($profile->avatar) {
+                Storage::disk('public')->delete($profile->avatar);
+            }
+
             $profile->avatar = $path;
         }
 

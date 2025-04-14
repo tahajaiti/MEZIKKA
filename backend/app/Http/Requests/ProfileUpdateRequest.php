@@ -25,7 +25,7 @@ class ProfileUpdateRequest extends FormRequest
         return [
             'bio' => 'string',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'username' => 'nullable|string|min:3|unique:profiles,username'
+            'username' => 'nullable|string|min:3'
         ];
     }
 }
