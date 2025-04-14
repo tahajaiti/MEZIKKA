@@ -1,5 +1,6 @@
 import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse, AxiosInstance } from 'axios';
-import { useAuth } from '../util/Auth';
+import { logout } from '../stores/authStore';
+
 
 interface LaravelValidationError {
     message: string;
@@ -21,12 +22,12 @@ const addInterceptor = (client: AxiosInstance[]) => {
                 if (token) {
                     config.headers.Authorization = `Bearer ${token}`;
                 }
-    
+
                 if (config.data instanceof FormData) {
                     delete config.headers['Content-Type'];
                     config.headers['Content-Type'] = 'multipart/form-data';
                 }
-    
+
                 return config;
             },
             (error: AxiosError) => {
@@ -86,8 +87,7 @@ apiClient.interceptors.response.use(
 
             case 401: {
                 const unauthorizedErr = error.response.data as LaravelApiError;
-
-                useAuth().logout();
+                logout();
                 return Promise.reject({
                     message: unauthorizedErr.message || 'Unauthorized',
                     status: 'unauthorized'
@@ -118,7 +118,7 @@ fileClient.interceptors.response.use(
         const { status, data } = error.response;
         switch (status) {
             case 401: {
-                useAuth().logout();
+                logout();
                 return Promise.reject({
                     message: 'Unauthorized - Please log in again',
                     status: 'unauthorized',

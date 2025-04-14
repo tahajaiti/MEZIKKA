@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { AuthState } from "../types/Auth";
 import resetAll from "./resetStores";
+import { goTo } from "../util/navigation";
 
 const getLocalToken = () => localStorage.getItem("token") || null;
 const getLocalUser = () => {
@@ -47,10 +48,11 @@ const useAuthStore = create<AuthState>((set) => {
                 localStorage.removeItem("user");
                 localStorage.removeItem("profile");
                 set({ token: null, user: null, profile: null, isAuthenticated: false });
-
                 resetAll();
+                goTo('/login');
             } catch (error) {
                 console.error("Error clearing authentication:", error);
+                goTo('/login');
             }
         },
     }
