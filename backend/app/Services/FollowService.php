@@ -7,11 +7,13 @@ use App\Models\Profile;
 use Illuminate\Support\Facades\Auth;
 
 
-class FollowService {
+class FollowService
+{
 
 
 
-    public function follow(string $id): bool{
+    public function follow(string $id): bool
+    {
         $user = Auth::user();
 
         $toFollow = Profile::with('user')->where('id', $id)->first();
@@ -24,7 +26,8 @@ class FollowService {
         return $follow ? true : false;
     }
 
-    public function unfollow(string $id): bool{
+    public function unfollow(string $id): bool
+    {
         $user = Auth::user();
 
         $toFollow = Profile::with('user')->where('id', $id)->first();
@@ -36,17 +39,42 @@ class FollowService {
         return $follow ? true : false;
     }
 
-    public function myFollows(){
+    public function myFollows()
+    {
         $user = Auth::user();
         $follows = $user->following()->get();
-        return $follows;
+        $followCount = $user->following()->count();
+        return [
+            'follows' => $follows,
+            'followCount' => $followCount
+        ];
     }
 
-    public function myFollowers(){
+    public function myFollowers()
+    {
         $user = Auth::user();
         $follows = $user->followers()->get();
-        return $follows;
+        $followCount = $user->followers()->count();
+        return [
+            'follows' => $follows,
+            'followCount' => $followCount
+        ];
     }
 
+    public function follows(){
+        $user = Auth::user();
+        $follows = $user->following()->get();
+        $followCount = $user->following()->count();
+
+        $followers = $user->followers()->get();
+        $followerCount = $user->followers()->count();
+
+        return [
+            'follows' => $follows,
+            'followCount' => $followCount,
+            'followers' => $followers,
+            'followerCount' => $followerCount
+        ];
+    }
 
 }

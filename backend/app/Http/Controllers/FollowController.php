@@ -53,4 +53,13 @@ class FollowController extends Controller
             : Res::error('Failed to get followers', 500);
     }
 
+    public function follows()
+    {
+        $follows = $this->followService->follows();
+
+        return $follows
+            ? Res::success($follows, 'Follows', 200)
+            : Res::error('Failed to get follows', 500);
+    }
+
 }
