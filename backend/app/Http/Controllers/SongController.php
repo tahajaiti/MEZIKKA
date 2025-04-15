@@ -46,9 +46,14 @@ class SongController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Song $song)
+    public function show(string $id)
     {
-        return Res::success($song->load(['user', 'genre']));
+        $song = Song::where('id', $id)->first();
+        $user = $song->user;
+        $profile = $user->profile;
+        $genre = $song->genre;
+
+        return Res::success($song);
     }
 
     /**
