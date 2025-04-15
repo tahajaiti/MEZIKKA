@@ -6,7 +6,7 @@ const MainLayout: React.FC = () => {
   return (
     <div className="h-screen w-screen overflow-hidden flex flex-col">
       <Header />
-      <main>
+      <main className='h-full w-full overflow-auto'>
         <Outlet/>
       </main>
       <Player />
