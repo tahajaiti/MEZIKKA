@@ -16,7 +16,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ profile, close }) => {
     const [image, setImage] = useState<File | null>(null)
     const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
-    const { mutate } = useUpdateProfile();
+    const { mutate } = useUpdateProfile();  
     const { showToast } = useToastStore();
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
