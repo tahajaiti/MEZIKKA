@@ -1,4 +1,4 @@
-import { Calendar, Edit, UserPlus } from "lucide-react"
+import { Calendar, Edit, UserMinus, UserPlus } from "lucide-react"
 import { formatDate, formatUrl } from "../../util/Formatters"
 import { useParams } from "react-router";
 import { useGetUser } from "../../api/services/user/query";
@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import useAuthStore from "../../stores/authStore";
 import ProfileEdit from "./ProfileEdit";
 import ProfileStats from "./ProfileStats";
+import { useToggleFollow } from "../../api/services/follow/query";
 
 const ProfileCard: React.FC = () => {
 
@@ -15,8 +16,11 @@ const ProfileCard: React.FC = () => {
     const { user: currentUser } = useAuthStore();
     const { data, isPending, isError } = useGetUser(id!);
     const { showToast } = useToastStore();
-
+    
     const [editMode, setEditMode] = useState(false);
+    const [isFollowing, setIsFollowing] = useState<boolean>(false)
+    
+    const followMutation = useToggleFollow(isFollowing);
 
     useEffect(() => {
         if (isError) {
@@ -24,19 +28,30 @@ const ProfileCard: React.FC = () => {
         }
     }, [isError, showToast]);
 
-    if (!data || isPending) {
-        return (
-            <ProfileSkeleton />
-        )
-    }
+    useEffect(() => {
+        if (data?.data) {
+            setIsFollowing(data.data.is_following)
+        }
+    }, [data])
 
-    const profile = data.profile;
-    const user = data;
+    if (!data?.data || isPending) return <ProfileSkeleton />
+
+    const profile = data.data.user.profile;
+    const user = data.data.user;
 
     const memberSince = formatDate(profile.created_at);
     const img = formatUrl(profile.avatar);
 
     const isMe = user.id === currentUser?.id;
+
+    const handleFollow = async () => {
+        followMutation.mutate(profile.id, {
+            onSuccess: () => {
+                setIsFollowing(!isFollowing);
+                showToast(isFollowing ? 'Unfollowed' : 'Followed', 'success');
+            }
+        })
+    }
 
     return (
         <div className="bg-zinc-900 rounded-xl border border-zinc-800 shadow-lg overflow-hidden p-4">
@@ -62,7 +77,7 @@ const ProfileCard: React.FC = () => {
                             </div>
                         </div>
 
-                        <ProfileStats/>
+                        <ProfileStats />
 
                         {isMe ? (
                             <button
@@ -72,8 +87,17 @@ const ProfileCard: React.FC = () => {
                                 <Edit className="w-4 h-4" />
                                 Edit Profile
                             </button>
+                        ) : isFollowing ? (
+                            <button
+                                onClick={handleFollow}
+                                className="flex items-center justify-center gap-2 px-6 py-2.5 w-full bg-zinc-600 hover:bg-zinc-700 text-white rounded-lg transition-all font-medium">
+                                <UserMinus className="w-4 h-4" />
+                                Unfollow
+                            </button>
                         ) : (
-                            <button className="flex items-center justify-center gap-2 px-6 py-2.5 w-full bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all font-medium">
+                            <button
+                                onClick={handleFollow}
+                                className="flex items-center justify-center gap-2 px-6 py-2.5 w-full bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all font-medium">
                                 <UserPlus className="w-4 h-4" />
                                 Follow
                             </button>
