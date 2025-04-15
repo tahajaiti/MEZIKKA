@@ -16,4 +16,10 @@ interface User {
     updated_at: string
 }
 
+
+export interface UserResponse {
+    user: User,
+    is_following: boolean,
+}
+
 export default User;
