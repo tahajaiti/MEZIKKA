@@ -1,0 +1,8 @@
+backend/vendor/** linguist-vendored
+
+frontend/node_modules/** linguist-vendored
+
+backend/public/** linguist-vendored
+
+frontend/** linguist-language=TypeScript
+backend/** linguist-language=PHP
