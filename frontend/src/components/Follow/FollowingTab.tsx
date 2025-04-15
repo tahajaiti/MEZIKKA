@@ -1,15 +1,16 @@
-import { UserRoundCheck } from 'lucide-react'
-import { useInfiniteFollows } from '../../api/services/follow/query';
-import { useEffect, useRef } from 'react';
-import ProfileUserCard from '../Profile/ProfileUserCard';
+import { UsersRoundIcon } from "lucide-react";
+import ProfileUserCard from "../Profile/ProfileUserCard";
+import { useInfiniteFollows } from "../../api/services/follow/query";
+import { useEffect, useRef } from "react";
 
 interface props {
     userId: string | number;
 }
 
-const FollowTab = ({ userId }: props) => {
+
+const FollowingTab = ({ userId }: props) => {
     const { data, isError, fetchNextPage, hasNextPage, isFetchingNextPage, isPending }
-        = useInfiniteFollows(userId, 'followers');
+        = useInfiniteFollows(userId, 'follows');
 
     const loadMoreRef = useRef(null);
 
@@ -20,10 +21,10 @@ const FollowTab = ({ userId }: props) => {
                 if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
                     fetchNextPage();
                 }
-            },
-            {
+            }, 
+            { 
                 rootMargin: '200px',
-                threshold: 1
+                threshold: 1 
             }
         );
 
@@ -42,21 +43,21 @@ const FollowTab = ({ userId }: props) => {
     if (isPending) return (<div>LOading...</div>)
     if (isError) return (<div>Failed to get followers</div>)
 
-    const allFollowers = data.pages.flatMap((p) => p.data?.followers.data || []);
+    const allFollows = data.pages.flatMap((p) => p.data?.follows.data || []);
 
-    console.log(allFollowers);
+    console.log(allFollows);
 
     return (
         <div className="flex flex-wrap gap-4 justify-start w-full max-w-6xl mx-auto px-4">
-            {allFollowers.length === 0 ? (
+            {allFollows.length === 0 ? (
                 <div className="text-center py-8 text-zinc-400 m-auto">
-                    <UserRoundCheck className="w-12 h-12 mx-auto mb-4 text-zinc-600" />
-                    <h3 className="text-lg font-medium mb-2">No followers yet</h3>
-                    <p className="text-sm">When users follow, they'll appear here.</p>
+                    <UsersRoundIcon className="w-12 h-12 mx-auto mb-4 text-zinc-600" />
+                    <h3 className="text-lg font-medium mb-2">This user does not follow anyone</h3>
+                    <p className="text-sm">followed users will appear here.</p>
                 </div>
             ) : (
                 <>
-                    {allFollowers.map((follower) => (
+                    {allFollows.map((follower) => (
                         <ProfileUserCard user={follower} key={follower.id} />
                     ))}
                     <div ref={loadMoreRef} className="text-center py-4 text-sm text-zinc-400">
@@ -68,4 +69,4 @@ const FollowTab = ({ userId }: props) => {
     )
 }
 
-export default FollowTab
+export default FollowingTab
