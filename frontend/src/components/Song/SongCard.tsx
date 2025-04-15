@@ -45,7 +45,8 @@ const SongCard = ({ song }: songProps) => {
 
     return (
         <div 
-        className="w-full max-w-xs bg-zinc-900  text-white rounded-lg overflow-hidden shadow-lg border border-zinc-800">
+        className=" hover:-translate-y-2 transition-all hover:border hover:border-zinc-700
+        w-full max-w-xs bg-zinc-900  text-white rounded-lg overflow-hidden shadow-lg border border-zinc-800">
             <div className="relative">
                 <img
                     src={formatUrl(song.cover_path)}
