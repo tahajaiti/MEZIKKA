@@ -1,24 +1,25 @@
 import { useState } from "react"
 import ProfileCard from "../components/Profile/ProfileCard"
-import { Disc, Heart, UserRoundCheck } from "lucide-react"
+import { Disc, Heart, UserRoundCheck, UsersRoundIcon } from "lucide-react"
 import FollowTab from "../components/Follow/FollowTab"
 import { useParams } from "react-router"
 import ProfileSkeleton from "../components/Profile/ProfileCardSkeleton"
+import FollowingTab from "../components/Follow/FollowingTab"
 
 const Profile: React.FC = () => {
-  const {id} = useParams();
-  const [activeTab, setActiveTab] = useState<"beats" | "liked" | "followers">("beats");
+  const { id } = useParams();
+  const [activeTab, setActiveTab] = useState<"beats" | "liked" | "followers" | "follows">("beats");
 
   if (!id) {
-    return <ProfileSkeleton/>
+    return <ProfileSkeleton />
   }
 
   return (
-    <div className="h-full w-full px-12 py-6 overflow-auto">
+    <div className="h-full w-full px-12 py-6">
       <div className="grid grid-cols-1 lg:grid-cols-[350px_1fr] gap-6">
         {/* Profile Card */}
         <div>
-          <ProfileCard  userId={id}/>
+          <ProfileCard userId={id} />
         </div>
 
         {/* Content Area */}
@@ -50,34 +51,19 @@ const Profile: React.FC = () => {
                 <UserRoundCheck className="w-4 h-4" />
                 Followers
               </button>
+              <button
+                className={`px-4 py-2 font-medium text-sm flex items-center gap-2 ${activeTab === "follows" ? "text-red-500 border-b-2 border-red-500" : "text-zinc-400 hover:text-white"
+                  }`}
+                onClick={() => setActiveTab("follows")}
+              >
+                <UsersRoundIcon className="w-4 h-4" />
+                Following
+              </button>
             </div>
 
-            <div className="pt-6">
+            <div className="pt-6 overflow-auto">
               {activeTab === "beats" && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {[1, 2, 3, 4, 5, 6].map((i) => (
-                    <div key={i} className="bg-zinc-800 rounded-lg overflow-hidden">
-                      <div className="aspect-square bg-zinc-700 relative group">
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button className="w-12 h-12 rounded-full bg-red-500 flex items-center justify-center">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 24 24"
-                              fill="currentColor"
-                              className="w-6 h-6 text-white"
-                            >
-                              <path d="M8 5v14l11-7z" />
-                            </svg>
-                          </button>
-                        </div>
-                      </div>
-                      <div className="p-3">
-                        <h3 className="font-medium text-white">Beat #{i}</h3>
-                        <p className="text-xs text-zinc-400">2 days ago</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <div>BEATS</div>
               )}
 
               {activeTab === "liked" && (
@@ -89,7 +75,11 @@ const Profile: React.FC = () => {
               )}
 
               {activeTab === "followers" && (
-                <FollowTab userId={id}/>
+                <FollowTab userId={id} />
+              )}
+
+              {activeTab === "follows" && (
+                <FollowingTab userId={id} />
               )}
             </div>
           </div>
