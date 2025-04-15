@@ -25,7 +25,8 @@ export const useUpdateProfile = (): UseMutationResult<Response<Profile>, Error, 
         onSuccess: (res) => {
             console.log(res);
             if (res.data) {
-                queryClient.invalidateQueries({ queryKey: ['user', res.data?.id] });
+                const id = res.data.id;
+                queryClient.invalidateQueries({ queryKey: ['user', id] });
                 setProfile(res.data);
             }
         },
