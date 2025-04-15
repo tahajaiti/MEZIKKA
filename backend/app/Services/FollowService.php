@@ -67,10 +67,10 @@ class FollowService
         if (!$user) {
             return null;
         }
-        $follows = $user->following()->get();
+        $follows = $user->following()->with('profile')->paginate(10);
         $followCount = $user->following()->count();
 
-        $followers = $user->followers()->get();
+        $followers = $user->followers()->with('profile')->paginate(10);
         $followerCount = $user->followers()->count();
 
         return [

@@ -95,7 +95,6 @@ apiClient.interceptors.response.use(
             }
 
             default:
-                console.log('hehehe')
                 return Promise.reject({
                     message: data?.message || 'An unexpected error occurred',
                     status: 'unknown_error',
