@@ -1,9 +1,11 @@
-import { useParams } from 'react-router';
 import { useGetFollows } from '../../api/services/follow/query';
 
-const ProfileStats = () => {
-    const { id } = useParams();
-    const { data, isError } = useGetFollows(id!);
+interface props {
+    userId: string | number;
+}
+
+const ProfileStats = ({ userId }: props) => {
+    const { data, isError } = useGetFollows(userId);
 
     if (isError) {
         return (
@@ -20,7 +22,6 @@ const ProfileStats = () => {
         )
     }
 
-
     return (
         <div className="flex items-center gap-6 text-sm">
             <div className="flex flex-col items-center">
@@ -32,7 +33,7 @@ const ProfileStats = () => {
                 <span className="text-white font-semibold">{data.data.followCount}</span>
                 <span className="text-zinc-500">Following</span>
             </div>
-            
+
         </div>
     )
 }
