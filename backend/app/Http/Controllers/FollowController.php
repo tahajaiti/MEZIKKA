@@ -19,7 +19,7 @@ class FollowController extends Controller
 
     public function follow(string $id)
     {
-        Gate::authorize('follow', Auth::user());
+        // Gate::authorize('follow', Auth::user());
         $res = $this->followService->follow($id);
 
         return $res
@@ -29,7 +29,7 @@ class FollowController extends Controller
 
     public function unfollow(string $id)
     {
-        Gate::authorize('unfollow', Auth::user());
+        // Gate::authorize('unfollow', Auth::user());
         $res = $this->followService->unfollow($id);
 
         return $res
@@ -53,9 +53,9 @@ class FollowController extends Controller
             : Res::error('Failed to get followers', 500);
     }
 
-    public function follows()
+    public function follows(string $id)
     {
-        $follows = $this->followService->follows();
+        $follows = $this->followService->follows($id);
 
         return $follows
             ? Res::success($follows, 'Follows', 200)
