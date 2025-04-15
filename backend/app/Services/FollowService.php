@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Follow;
 use App\Models\Profile;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -61,8 +62,11 @@ class FollowService
         ];
     }
 
-    public function follows(){
-        $user = Auth::user();
+    public function follows(string $id){
+        $user = User::where('id', $id)->first();
+        if (!$user) {
+            return null;
+        }
         $follows = $user->following()->get();
         $followCount = $user->following()->count();
 
