@@ -44,8 +44,8 @@ const Song = () => {
                             />
                         </div>
                         <div className="text-zinc-300 group-hover:text-white transition-colors">
-                            <span className="font-medium">{songData.user.name}</span>
-                            <span className="text-zinc-400 text-sm ml-2">@{songData.user.profile.username}</span>
+                            <span className="font-medium">{user.name}</span>
+                            <span className="text-zinc-400 text-sm ml-2">@{user.profile.username}</span>
                         </div>
                     </a>
                 </div>
