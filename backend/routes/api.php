@@ -48,7 +48,7 @@ Route::middleware('jwt')->group(function () {
     // Follow routes
     Route::post('/follow/{id}', [FollowController::class, 'follow'])->name('follow');
     Route::delete('/follow/{id}', [FollowController::class, 'unfollow'])->name('unfollow');
-    Route::get('/follows', [FollowController::class, 'follows'])->name('follows');
+    Route::get('/follow/{id}', [FollowController::class, 'follows'])->name('follows');
 
     Route::get('/users/{id}', [UserController::class, 'show'])->name('user.show');
 
