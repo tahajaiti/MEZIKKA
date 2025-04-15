@@ -16,7 +16,7 @@ const Header = () => {
         <MezikkaText />
 
         <Link
-          to='/create/song'
+          to='/song'
           className="flex items-center gap-2 py-1 cursor-pointer bg-red-500 hover:bg-red-600 px-2 rounded-sm font-bold"
         >
           <PlusIcon />
