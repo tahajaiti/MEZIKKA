@@ -1,7 +1,9 @@
+import { useParams } from 'react-router';
 import { useGetFollows } from '../../api/services/follow/query';
 
 const ProfileStats = () => {
-    const { data, isError } = useGetFollows();
+    const { id } = useParams();
+    const { data, isError } = useGetFollows(id!);
 
     if (isError) {
         return (
@@ -18,7 +20,6 @@ const ProfileStats = () => {
         )
     }
 
-    console.log(data);
 
     return (
         <div className="flex items-center gap-6 text-sm">
