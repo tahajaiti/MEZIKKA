@@ -38,7 +38,7 @@ const Header = () => {
 
         <button
           onClick={() => logout()}
-          className='bg-red-500 hover:bg-red-600 p-2 rounded-sm cursor-pointer'>
+          className='bg-transparent p-2 hover:text-white/50 transition-all cursor-pointer'>
           <DoorOpen />
         </button>
       </div>
