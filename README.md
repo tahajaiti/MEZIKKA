@@ -1,6 +1,6 @@
 # Mezikka
 
-![Mezikka Logo](./path-to-your-logo.png)
+![Mezikka Logo](./logo.png)
 
 **Mezikka** is a full-stack music creation and sharing platform where users can produce music directly in the browser, build public playlists, discover new songs by others, and interact through social features such as following, liking, and playlists. Built using modern technologies, Mezikka brings the music production and sharing experience to the web in an intuitive and powerful interface.
 
