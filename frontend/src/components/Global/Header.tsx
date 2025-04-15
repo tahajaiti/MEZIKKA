@@ -11,22 +11,27 @@ const Header = () => {
   const img = formatUrl(profile?.avatar);
 
   return (
-    <header className='sticky top-0 py-1 flex justify-between items-center px-16 z-50'>
+    <header className='sticky top-0 flex justify-between items-center px-16 py-2 z-50'>
       <div className='flex gap-4 items-center'>
         <MezikkaText />
 
         <Link
-          to='/song'
-          className="flex items-center gap-2 py-1 cursor-pointer bg-red-500 hover:bg-red-600 px-2 rounded-sm font-bold"
+          to="/song"
+          className="flex justify-center items-center gap-1.5 py-1.5 px-3
+            cursor-pointer bg-red-600 hover:bg-red-700 shadow-xl shadow-red-500/20 
+            rounded-full font-medium text-sm transition-colors"
+          aria-label="Create new song"
         >
-          <PlusIcon />
+          <PlusIcon className="w-4 h-4" />
+          <span className="hidden sm:inline">New Beat</span>
         </Link>
       </div>
 
       <div className='flex items-center gap-8'>
         <Link
           to={`/profile/${user?.id}`}
-          className="flex items-center gap-2 py-1 px-2 cursor-pointer"
+          className="flex items-center gap-2 py-1 px-2 cursor-pointer
+                    hover:bg-zinc-500/40 rounded-full transition-all"
         >
           <img
             src={img}
@@ -38,8 +43,8 @@ const Header = () => {
 
         <button
           onClick={() => logout()}
-          className='bg-transparent p-2 hover:text-white/50 transition-all cursor-pointer'>
-          <DoorOpen />
+          className='bg-transparent p-2 hover:bg-zinc-500/40 rounded-full  transition-all cursor-pointer'>
+          <DoorOpen className='shadow-xl shadow-red-500' />
         </button>
       </div>
     </header>
