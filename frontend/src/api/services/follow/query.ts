@@ -1,4 +1,4 @@
-import { useMutation, UseMutationResult, useQuery, UseQueryResult } from "@tanstack/react-query";
+import { InfiniteData, useInfiniteQuery, UseInfiniteQueryResult, useMutation, UseMutationResult, useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import followService from "./service";
 import { Follow } from "../../../types/Follow";
 import Response from "../../../types/Response";
@@ -12,6 +12,25 @@ export const useGetFollows = (id: string | number): UseQueryResult<Response<Foll
         retry: 1,
     })
 }
+
+export const useInfiniteFollows = (id: string | number, type: 'followers' | 'follows' = 'follows')
+    : UseInfiniteQueryResult<InfiniteData<Response<Follow>>, Error> => {
+    return useInfiniteQuery({
+        queryKey: ['followers', id],
+        queryFn: ({ pageParam = 1 }) => followService.getFollows(id, pageParam),
+        initialPageParam: 1,
+        getNextPageParam: (lastPage) => {
+            const paginationData = lastPage.data?.[type];
+
+            if (!paginationData) return undefined;
+
+            const { current_page, last_page } = paginationData;
+            return current_page < last_page ? current_page + 1 : undefined;
+        },
+        staleTime: 5 * 60 * 1000,
+        retry: 1,
+    });
+};
 
 export const useFollow = (): UseMutationResult<Response<null>, Error, string | number> => {
     return useMutation({
@@ -38,8 +57,20 @@ export const useUnfollow = (): UseMutationResult<Response<null>, Error, string |
 }
 
 export const useToggleFollow = (isFollowing: boolean) => {
-    const follow = useFollow()
-    const unfollow = useUnfollow()
+    const queryClient = useQueryClient();
 
-    return isFollowing ? unfollow : follow
-}
+    const mutationFn = isFollowing
+        ? followService.follow
+        : followService.unfollow;
+
+    return useMutation({
+        mutationFn: (id: string | number) => mutationFn(id),
+        onSuccess: (_res, userId,) => {
+            queryClient.invalidateQueries({ queryKey: ['followers', userId] });
+            queryClient.invalidateQueries({ queryKey: ['user', userId] });
+        },
+        onError: (err) => {
+            console.error("Follow toggle failed", err);
+        },
+    });
+};
