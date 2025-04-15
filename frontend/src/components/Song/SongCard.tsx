@@ -5,6 +5,7 @@ import { IoPauseCircle } from "react-icons/io5";
 import SongData from '../../types/Song';
 import { formatDate, formatUrl } from '../../util/Formatters';
 import usePlayerStore from '../../stores/usePlayerStore';
+import { useNavigate } from 'react-router';
 
 interface songProps {
     song: SongData;
@@ -14,6 +15,7 @@ const SongCard = ({ song }: songProps) => {
     const [playing, setPlaying] = useState(false);
     const { load, play, pause, toggle, currentSong, isPlaying } = usePlayerStore();
 
+    const navigation = useNavigate();
 
     const handlePlay = async () => {
         if (currentSong === song.id) {
@@ -33,11 +35,17 @@ const SongCard = ({ song }: songProps) => {
         setPlaying(false);
     }
 
+    const handleNav = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        navigation(`/song/${song.id}`)
+    }
+
     const yes = playing && isPlaying ? true : false;
 
 
     return (
-        <div className="w-full max-w-xs bg-zinc-900 text-white rounded-lg overflow-hidden shadow-lg border border-zinc-800">
+        <div 
+        className="w-full max-w-xs bg-zinc-900  text-white rounded-lg overflow-hidden shadow-lg border border-zinc-800">
             <div className="relative">
                 <img
                     src={formatUrl(song.cover_path)}
@@ -66,7 +74,9 @@ const SongCard = ({ song }: songProps) => {
                 </div>
             </div>
 
-            <div className="p-4">
+            <div 
+            onClick={(e) => handleNav(e)}
+            className="p-4 cursor-pointer">
                 <h3 className="font-bold text-lg text-white truncate">{song.name}</h3>
 
                 <p className="text-gray-400 text-sm mb-2">{song.user.name}</p>
