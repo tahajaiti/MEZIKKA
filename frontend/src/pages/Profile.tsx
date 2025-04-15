@@ -1,16 +1,24 @@
 import { useState } from "react"
 import ProfileCard from "../components/Profile/ProfileCard"
-import { Disc, Heart } from "lucide-react"
+import { Disc, Heart, UserRoundCheck } from "lucide-react"
+import FollowTab from "../components/Follow/FollowTab"
+import { useParams } from "react-router"
+import ProfileSkeleton from "../components/Profile/ProfileCardSkeleton"
 
 const Profile: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<"beats" | "liked">("beats")
+  const {id} = useParams();
+  const [activeTab, setActiveTab] = useState<"beats" | "liked" | "followers">("beats");
+
+  if (!id) {
+    return <ProfileSkeleton/>
+  }
 
   return (
     <div className="h-full w-full px-12 py-6 overflow-auto">
       <div className="grid grid-cols-1 lg:grid-cols-[350px_1fr] gap-6">
         {/* Profile Card */}
         <div>
-          <ProfileCard />
+          <ProfileCard  userId={id}/>
         </div>
 
         {/* Content Area */}
@@ -33,6 +41,14 @@ const Profile: React.FC = () => {
               >
                 <Heart className="w-4 h-4" />
                 Liked
+              </button>
+              <button
+                className={`px-4 py-2 font-medium text-sm flex items-center gap-2 ${activeTab === "followers" ? "text-red-500 border-b-2 border-red-500" : "text-zinc-400 hover:text-white"
+                  }`}
+                onClick={() => setActiveTab("followers")}
+              >
+                <UserRoundCheck className="w-4 h-4" />
+                Followers
               </button>
             </div>
 
@@ -70,6 +86,10 @@ const Profile: React.FC = () => {
                   <h3 className="text-lg font-medium mb-2">No liked beats yet</h3>
                   <p className="text-sm">When you like beats, they'll appear here.</p>
                 </div>
+              )}
+
+              {activeTab === "followers" && (
+                <FollowTab userId={id}/>
               )}
             </div>
           </div>
