@@ -48,4 +48,13 @@ class Gen
         return Profile::where("username", $username)->exists();
     }
 
+    /**
+     * Generate a random refresh token
+     * @return string
+     *
+     */
+    public static function refreshToken()
+    {
+        return Str::random(64);
+    }
 }
