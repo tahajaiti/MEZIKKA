@@ -1,5 +1,6 @@
 import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse, AxiosInstance } from 'axios';
-import { logout } from '../stores/authStore';
+import useAuthStore, { logout } from '../stores/authStore';
+import authService from './services/auth/service';
 
 
 interface LaravelValidationError {
@@ -60,12 +61,16 @@ const fileClient = axios.create({
 
 addInterceptor([apiClient, fileClient]);
 
+let isRefreshing = false;
+
+let pendingRequests: Array<() => void> = [];
 
 apiClient.interceptors.response.use(
     (response: AxiosResponse) => {
         return response.data;
     },
-    (error: AxiosError<LaravelApiError>) => {
+    async (error: AxiosError<LaravelApiError>) => {
+        const originalRequest = error.config;
 
         if (!error.response) {
             return Promise.reject({
@@ -75,6 +80,56 @@ apiClient.interceptors.response.use(
         }
 
         const { status, data } = error.response;
+
+
+        if (status === 401 && originalRequest) {
+
+            if (isRefreshing) {
+                return new Promise((resolve) => {
+                    pendingRequests.push(() => {
+                        resolve(apiClient(originalRequest));
+                    });
+                });
+            }
+
+            isRefreshing = true;
+
+            try {
+
+                const refreshResponse = await authService.refreshToken();
+                if (!refreshResponse.data) {
+                    throw new Error('No data returned');
+                }
+
+                const data = refreshResponse.data;
+
+                useAuthStore.getState().setAuth(data.token, data.user);
+                
+                pendingRequests.forEach(callback => callback());
+                pendingRequests = [];
+
+                console.log('Token refreshed successfully');
+
+                return apiClient(originalRequest);
+            } catch (e) {
+                console.error('Refresh token error:', e);
+                useAuthStore.getState().clearAuth();
+                pendingRequests.forEach(() => {});
+                pendingRequests = [];
+
+                return Promise.reject({
+                    message: 'Session_expired - Please log in again',
+                    status: 'session_expired',
+                })
+            } finally {
+                isRefreshing = false;
+            }
+
+        }
+
+
+
+
         switch (status) {
             case 422: {
                 const validationErr = error.response.data as LaravelValidationError;
