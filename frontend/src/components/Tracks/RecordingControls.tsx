@@ -3,9 +3,11 @@ import useTrackStore from "../../stores/useTrackStore";
 import { useState, useCallback, useMemo } from "react";
 import { useGetSong } from "../../api/services/song/query";
 import useToastStore from "../../stores/useToastStore";
+import useRecordStore from "../../stores/useRecordStore";
 
 const RecordingControls = () => {
-  const { isRecording, startRecording, stopRecordingAndExport, openCloseForm, songId, loadSong, soundFile, getSequences } = useTrackStore();
+  const { openCloseForm, songId, loadSong, getSequences, startStopSequencer, isPlaying } = useTrackStore();
+  const { isRecording, startRecording, stopRecordingAndExport, soundFile } = useRecordStore();
   const { showToast } = useToastStore();
   const [inputKey, setInputKey] = useState("");
   const { isLoading, refetch } = useGetSong(inputKey ? inputKey.split("-")[1] : "");
@@ -46,6 +48,18 @@ const RecordingControls = () => {
     setInputKey("");
   }, [inputKey, refetch, loadSong, showToast]);
 
+  const handleRecord = async () => {
+    if (isRecording) {
+      await stopRecordingAndExport();
+      await startStopSequencer();
+    } else if (!isPlaying) {
+      await startStopSequencer();
+      await startRecording();
+    } else if (isPlaying){
+      await startRecording();
+    }
+  }
+
   return (
     <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 shadow-lg w-full h-full flex flex-col gap-6">
       {/* Record & Export */}
@@ -58,7 +72,7 @@ const RecordingControls = () => {
         <div className="flex flex-col items-center gap-4">
           {!isRecording ? (
             <button
-              onClick={startRecording}
+              onClick={handleRecord}
               className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium bg-red-500 
               hover:bg-red-600 text-white shadow-lg shadow-red-500/20 transition-all 
               disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-zinc-800 disabled:shadow-none"
@@ -72,7 +86,7 @@ const RecordingControls = () => {
             </button>
           ) : (
             <button
-              onClick={stopRecordingAndExport}
+              onClick={handleRecord}
               className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium bg-zinc-700 hover:bg-zinc-600 text-white transition-all"
             >
               <Square className="w-4 h-4 fill-current" />
