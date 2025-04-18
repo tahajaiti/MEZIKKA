@@ -57,7 +57,7 @@ const convertToMp3 = async (blob: Blob) => {
     const samples = convertFloat32ToInt16(channelData);
 
     // channels(1 mono, 2 stereo)
-    // sampleRate we use the audio samplerate but the defualt is (44100)
+    // sampleRate we use the audio samplerate but the default is (44100)
     // kbps = 128
     const mp3Encoder = new lamejs.Mp3Encoder(1, audioBuffer.sampleRate, 128);
     const mp3Data = [];
@@ -79,17 +79,18 @@ const convertToMp3 = async (blob: Blob) => {
     return new Blob(mp3Data, { type: 'audio/mp3' });
 };
 
-
 const convertFloat32ToInt16 = (buffer: Float32Array) => {
     const int16array = new Int16Array(buffer.length);
-    console.log(int16array);
+    
     for (let i = 0; i < buffer.length; i++) {
-
         // the values are between -32768 and 32767
         // we need to convert them to -1 and 1
-        // and then multiply by 32767(0x7FFFF) which is the max value for int16
-        int16array[i] = Math.min(1, buffer[i]) * 0x7FFF;
+        // and then multiply by 32767 which is the max value for int16
+        const sample = Math.max(-1, Math.min(1, buffer[i]));
+        
+        int16array[i] = Math.round(sample * 32767);
     }
+    
     return int16array;
 }
 
