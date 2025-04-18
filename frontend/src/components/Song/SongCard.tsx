@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Clock, Heart } from 'lucide-react';
 import { IoMdPlayCircle } from "react-icons/io";
 import { IoPauseCircle } from "react-icons/io5";
@@ -12,27 +12,17 @@ interface songProps {
 }
 
 const SongCard = ({ song }: songProps) => {
-    const [playing, setPlaying] = useState(false);
-    const { load, play, pause, toggle, currentSong, isPlaying } = usePlayerStore();
+    const { setSong, setIsPlaying, isPlaying, currentSong } = usePlayerStore();
 
     const navigation = useNavigate();
 
     const handlePlay = async () => {
-        if (currentSong === song.id) {
-            toggle();
-            setPlaying(!playing);
-            return;
-        }
-        await load(song.id).then(() => {
-            play();
-            setPlaying(true);
-        });
-        return;
+        setSong(song);
+        setIsPlaying(true);
     }
 
     const handlePause = () => {
-        pause();
-        setPlaying(false);
+        setIsPlaying(false);
     }
 
     const handleNav = (e: React.MouseEvent) => {
@@ -40,7 +30,7 @@ const SongCard = ({ song }: songProps) => {
         navigation(`/song/${song.id}`)
     }
 
-    const yes = playing && isPlaying ? true : false;
+    const yes = isPlaying && currentSong?.id === song.id ? true : false;
 
 
     return (
