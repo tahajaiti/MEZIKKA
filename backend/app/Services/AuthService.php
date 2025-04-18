@@ -2,13 +2,15 @@
 namespace App\Services;
 
 use App\Helpers\Gen;
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RegisterRequest;
+use App\Models\User;
 use App\Models\Profile;
 use App\Models\RefreshToken;
-use App\Models\User;
+use Illuminate\Http\Request;
+use App\Http\Requests\LoginRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
-use Request;
+use App\Http\Requests\RegisterRequest;
 
 
 class AuthService
@@ -37,7 +39,7 @@ class AuthService
 
         RefreshToken::create([
             'user_id' => $user->id,
-            'token' => $refreshToken,
+            'token' => hash('sha256', $refreshToken),
             'expires_at' => now()->addDays(7),
         ]);
 
@@ -65,19 +67,24 @@ class AuthService
         return $this->toToken($token, $refreshToken, $user);
     }
 
-    public function refresh(Request $request){
-        $refreshToken = $request->get('refresh_token');
-        $hashedToken = hash('sha256', $refreshToken);
+    public function refresh(Request $request)
+    {
+        $refreshToken = $request->cookie('refresh_token');
 
-        $token = RefreshToken::where('token', $hashedToken)
-                ->where('expires_at', '>', now())
-                ->first();
-
-        if (!$token || $token->isExpired()) {
+        if (!$refreshToken) {
             return false;
         }
 
-        $user = $token->user;
+        $hashedToken = hash('sha256', $refreshToken);
+
+        $tokenRecord = RefreshToken::where('token', $hashedToken)->first();
+
+
+        if (!$tokenRecord || $tokenRecord->isExpired()) {
+            return false;
+        }
+
+        $user = $tokenRecord->user;
         $newToken = $user->createToken();
 
         return $this->toToken($newToken, $refreshToken, $user);
@@ -85,25 +92,31 @@ class AuthService
 
     public function logout(Request $request)
     {
-        $refreshToken = $request->get('refresh_token');
+        $user = Auth::user();
+        $refreshToken = $request->cookie('refresh_token');
         $hashedToken = hash('sha256', $refreshToken);
 
-        $token = RefreshToken::where('token', $hashedToken)->first();
+        $token = RefreshToken::where('token', $hashedToken)->where('user_id', $user->id)->first();
 
         if ($token && !$token->isExpired()) {
             $token->revoke();
-            return true;
+            $cookie = Cookie::forget('refresh_token');
+            return $cookie;
         }
         return false;
     }
 
     private function toToken($token, $refreshToken, User $user)
     {
+        $cookie = Cookie::make('refresh_token', $refreshToken, 60 * 24 * 7, '/', null, false, true, false, null);
+
         return [
-            'user' => $user->with('role', 'profile')->find($user->id),
-            'token' => $token,
-            'refresh_token' => $refreshToken,
-            'token_type' => 'bearer',
+            'data' => [
+                'user' => $user->with('role', 'profile')->find($user->id),
+                'token' => $token,
+                'token_type' => 'bearer',
+            ],
+            'refresh_token_cookie' => $cookie,
         ];
     }
 }
