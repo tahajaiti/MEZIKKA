@@ -3,6 +3,7 @@ export interface DrumPad {
     name: string
     soundUrl: string
     volume: number
+    note: string
 }
 
 export interface DrumData {
