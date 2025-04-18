@@ -67,7 +67,7 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
             if (!customSoundUrl || !customSoundName) return;
 
             const newDrum = {
-                id: `custom-${Date.now()}`,
+                id: Date.now(),
                 name: customSoundName,
                 soundUrl: customSoundUrl,
                 volume: 0.5,
