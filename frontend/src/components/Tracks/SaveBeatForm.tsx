@@ -5,9 +5,11 @@ import { useGetGenres } from '../../api/services/genre/query';
 import Genre from '../../types/Genre';
 import { useCreateSong } from '../../api/services/song/query';
 import useToastStore from '../../stores/useToastStore';
+import useRecordStore from '../../stores/useRecordStore';
 
 const SaveBeatForm: React.FC = () => {
-    const { openCloseForm, soundFile, getSongData, setSongId } = useTrackStore();
+    const { openCloseForm, getSongData, setSongId } = useTrackStore();
+    const { soundFile } = useRecordStore();
     const [formData, setFormData] = useState({
         title: '',
         description: '',
