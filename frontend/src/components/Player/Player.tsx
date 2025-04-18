@@ -1,9 +1,12 @@
-import { Heart, Pause, Play, Volume2 } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
-import { formatTime, formatUrl } from "../../util/Formatters";
-import PlayerSkeleton from "./PlayerSkeleton";
-import usePlayerStore from "../../stores/usePlayerStore";
-import songService from "../../api/services/song/service";
+import { useEffect, useRef, useState } from "react"
+import { Heart, Pause, Play, Volume2 } from "lucide-react"
+import { Link } from "react-router"
+import { formatTime, formatUrl } from "../../util/Formatters"
+import PlayerSkeleton from "./PlayerSkeleton"
+import usePlayerStore from "../../stores/usePlayerStore"
+import songService from "../../api/services/song/service"
+import MobilePlayer from "./MobilePlayer"
+import { useMobile } from "../../util/useMobile"
 
 const Player = () => {
   const { isPlaying, setIsPlaying, currentSong, setVolume, volume } = usePlayerStore();
@@ -11,6 +14,7 @@ const Player = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
+  const isMobile = useMobile();
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const lastUpdateRef = useRef(0);
@@ -42,29 +46,27 @@ const Player = () => {
       if (audioUrl) {
         URL.revokeObjectURL(audioUrl);
       }
-    };
+    }
   }, [currentSong]);
 
   useEffect(() => {
     if (audioRef.current) {
       if (isPlaying) {
-        audioRef.current.play().catch(err => {
+        audioRef.current.play().catch((err) => {
           console.error("Error playing audio:", err);
           setIsPlaying(false);
-        });
+        })
       } else {
         audioRef.current.pause();
       }
     }
-  }, [isPlaying, setIsPlaying]);
+  }, [isPlaying, setIsPlaying])
 
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume;
     }
-  }, [volume]);
-
-
+  }, [volume])
 
   const handleTime = () => {
     if (audioRef.current) {
@@ -74,99 +76,140 @@ const Player = () => {
         lastUpdateRef.current = now;
       }
     }
-  };
+  }
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = parseFloat(e.target.value);
+    const newTime = Number.parseFloat(e.target.value);
     setProgress(newTime);
     if (audioRef.current) {
       audioRef.current.currentTime = newTime;
     }
-  };
+  }
 
   const handleMetadata = () => {
     if (audioRef.current && !isNaN(audioRef.current.duration)) {
-      console.log(audioRef.current.duration);
       setDuration(audioRef.current.duration);
     }
-  };
+  }
 
   const handleVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setVolume(parseFloat(e.target.value) / 100);
-  };
+    setVolume(Number.parseFloat(e.target.value) / 100)
+  }
 
   if (isLoading || !currentSong) {
-    return <PlayerSkeleton />;
+    return <PlayerSkeleton />
+  }
+
+  if (isMobile) {
+    return (
+      <>
+        <MobilePlayer
+          currentSong={currentSong}
+          isPlaying={isPlaying}
+          setIsPlaying={setIsPlaying}
+          progress={progress}
+          duration={duration}
+          handleSeek={handleSeek}
+        />
+        {audioUrl && (
+          <audio
+            ref={audioRef}
+            src={audioUrl}
+            onTimeUpdate={handleTime}
+            onLoadedMetadata={handleMetadata}
+            onLoadedData={() => {
+              if (isPlaying && audioRef.current) {
+                audioRef.current.play().catch((err) => {
+                  console.error("Error playing audio:", err)
+                  setIsPlaying(false)
+                })
+              }
+            }}
+            onEnded={() => setIsPlaying(false)}
+            preload="auto"
+          />
+        )}
+      </>
+    )
   }
 
   return (
-    <div className="bg-black w-full h-24 grid grid-cols-3 items-center p-4 border-t border-zinc-900 sticky bottom-0 left-0 right-0 z-50">
-
-      <div className="flex items-center gap-4">
+    <div className="bg-black w-full h-20 md:h-24 grid grid-cols-3 items-center p-2 md:p-4 border-t border-zinc-900 sticky bottom-0 left-0 right-0 z-50">
+      <div className="flex items-center gap-2 md:gap-4 col-span-1">
         <img
-          className="h-16 w-16 object-cover"
-          src={formatUrl(currentSong.cover_path)}
+          className="h-12 w-12 md:h-16 md:w-16 object-cover"
+          src={formatUrl(currentSong.cover_path) || "/placeholder.svg"}
           alt={`${currentSong.name} cover`}
-          onError={(e) => {
-            e.currentTarget.src = '/placeholder-image.png';
-          }}
         />
-        <div className="flex flex-col justify-center overflow-hidden">
-          <h1 className="text-lg font-bold text-white truncate max-w-[10rem]">
+        <div className="flex flex-col justify-center overflow-hidden hidden md:block">
+          <h1 className="text-base md:text-lg font-bold text-white truncate max-w-[8rem] md:max-w-[12rem]">
             {currentSong.name}
           </h1>
-          <h2 className="text-sm text-gray-300 truncate max-w-[10rem]">
-            {currentSong.user?.name || 'Unknown Artist'}
-          </h2>
+          <Link
+            to={`/profile/${currentSong.user?.id}`}
+            className="text-xs md:text-sm cursor-pointer hover:text-gray-500 text-gray-300 truncate max-w-[8rem] md:max-w-[12rem]"
+          >
+            {currentSong.user?.name || "Unknown Artist"}
+          </Link>
         </div>
-        <Heart className="text-white cursor-pointer hover:text-red-500 transition-all hover:fill-current ml-4" />
+        <button className="text-white hover:text-red-500 transition-all hidden md:block">
+          <Heart className="h-5 w-5 hover:fill-current" />
+        </button>
       </div>
 
-      <div className="flex flex-col items-center gap-2">
-        <button
-          onClick={() => setIsPlaying(!isPlaying)}
-          className="bg-white rounded-full p-2 hover:bg-red-500 transition-colors disabled:opacity-50"
-          disabled={!currentSong || isLoading}
-        >
-          {isPlaying ? (
-            <Pause className="text-black fill-current h-5 w-5" />
-          ) : (
-            <Play className="text-black fill-current h-5 w-5" />
-          )}
-        </button>
+      <div className="flex flex-col items-center gap-2 col-span-1 md:col-span-1">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => setIsPlaying(!isPlaying)}
+            className="bg-white rounded-full p-1.5 md:p-2 hover:bg-red-500 transition-colors disabled:opacity-50"
+            disabled={!currentSong || isLoading}
+          >
+            {isPlaying ? (
+              <Pause className="text-black fill-current h-4 w-4 md:h-5 md:w-5" />
+            ) : (
+              <Play className="text-black fill-current h-4 w-4 md:h-5 md:w-5" />
+            )}
+          </button>
+        </div>
 
-        <div className="flex justify-between items-center gap-6 w-full max-w-[37rem] px-4">
-          <span className="text-xs text-gray-400">
-            {formatTime(progress)}
-          </span>
+        <div className="flex justify-between items-center gap-2 md:gap-4 w-full max-w-full md:max-w-[37rem] px-2 md:px-4">
+          <span className="text-xs text-gray-400 min-w-[40px] text-right">{formatTime(progress)}</span>
+          <div className="relative flex-1 min-w-0">
+            <input
+              type="range"
+              value={progress}
+              onChange={handleSeek}
+              max={duration || 0}
+              min={0}
+              step={0.1}
+              disabled={!currentSong || isLoading}
+              className="flex-1 w-full h-2 appearance-none accent-red-500 rounded outline-none cursor-pointer"
+              style={{
+                background: `linear-gradient(to right, #ef4444 ${(progress / (duration || 1)) * 100}%, #27272a ${(progress / (duration || 1)) * 100}%)`,
+              }}
+            />
+          </div>
+          <span className="text-xs text-gray-400 min-w-[40px]">{formatTime(duration)}</span>
+        </div>
+      </div>
+
+      <div className="hidden md:flex items-center justify-end gap-4 pr-6">
+        <Volume2 className="text-white h-5 w-5" />
+        <div className="relative w-24">
           <input
             type="range"
-            value={progress}
-            onChange={handleSeek}
-            max={duration || 0}
+            value={volume * 100}
+            onChange={handleVolume}
+            max={100}
             min={0}
-            step={0.1}
-            disabled={!currentSong || isLoading}
-            className="flex-1 accent-red-500 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer"
+            step={1}
+            disabled={!currentSong}
+            className="w-full h-1.5 rounded-lg accent-red-500 appearance-none cursor-pointer"
+            style={{
+              background: `linear-gradient(to right, #ef4444 ${volume * 100}%, #374151 ${volume * 100}%)`,
+            }}
           />
-          <span className="text-xs text-gray-400">
-            {formatTime(duration)}
-          </span>
         </div>
-      </div>
-
-      <div className="flex items-center justify-end gap-4 pr-10">
-        <Volume2 className="text-white" size={24} />
-        <input
-          type="range"
-          value={volume * 100}
-          onChange={handleVolume}
-          max={100}
-          min={0}
-          step={1}
-          disabled={!currentSong}
-          className="flex-1 accent-red-500 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer"
-        />
       </div>
 
       {audioUrl && (
@@ -177,10 +220,10 @@ const Player = () => {
           onLoadedMetadata={handleMetadata}
           onLoadedData={() => {
             if (isPlaying && audioRef.current) {
-              audioRef.current.play().catch(err => {
-                console.error("Error playing audio:", err);
-                setIsPlaying(false);
-              });
+              audioRef.current.play().catch((err) => {
+                console.error("Error playing audio:", err)
+                setIsPlaying(false)
+              })
             }
           }}
           onEnded={() => setIsPlaying(false)}
@@ -188,7 +231,8 @@ const Player = () => {
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Player;
+export default Player
+
