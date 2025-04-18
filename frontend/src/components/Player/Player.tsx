@@ -136,11 +136,13 @@ const Player = () => {
   return (
     <div className="bg-black w-full h-20 md:h-24 grid grid-cols-3 items-center p-2 md:p-4 border-t border-zinc-900 sticky bottom-0 left-0 right-0 z-50">
       <div className="flex items-center gap-2 md:gap-4 col-span-1">
-        <img
-          className="h-12 w-12 md:h-16 md:w-16 object-cover"
-          src={formatUrl(currentSong.cover_path) || "/placeholder.svg"}
-          alt={`${currentSong.name} cover`}
-        />
+        <Link to={`/song/${currentSong.id}`}>
+          <img
+            className="h-12 w-12 md:h-16 md:w-16 object-cover"
+            src={formatUrl(currentSong.cover_path) || "/placeholder.svg"}
+            alt={`${currentSong.name} cover`}
+          />
+        </Link>
         <div className="flex flex-col justify-center overflow-hidden hidden md:block">
           <h1 className="text-base md:text-lg font-bold text-white truncate max-w-[8rem] md:max-w-[12rem]">
             {currentSong.name}
@@ -179,9 +181,9 @@ const Player = () => {
               type="range"
               value={progress}
               onChange={handleSeek}
-              max={duration || 0}
+              max={duration || 100}
               min={0}
-              step={0.1}
+              step={0.01}
               disabled={!currentSong || isLoading}
               className="flex-1 w-full h-2 appearance-none accent-red-500 rounded outline-none cursor-pointer"
               style={{
