@@ -1,14 +1,15 @@
-import Pads from "../components/Tracks/Pads"
-import useTrackStore from "../stores/useTrackStore"
-import CustomSoundControls from "../components/Tracks/CustomSoundControls"
-import RecordingControls from "../components/Tracks/RecordingControls"
-import SaveBeatForm from "../components/Tracks/SaveBeatForm"
-import SongInfo from "../components/Tracks/SongInfo"
-import { useEffect } from "react"
-// import DrumsHeader from "../components/Tracks/DrumsHeader"
+import * as Tone from "tone";
+import { useEffect } from "react";
+import Pads from "../components/Tracks/Pads";
+import useTrackStore from "../stores/useTrackStore";
+import CustomSoundControls from "../components/Tracks/CustomSoundControls";
+import RecordingControls from "../components/Tracks/RecordingControls";
+import SaveBeatForm from "../components/Tracks/SaveBeatForm";
+import SongInfo from "../components/Tracks/SongInfo";
+import { matserGain, recordGain } from "../util/CustomGain";
 
 const CreateSongPage: React.FC = () => {
-  const { drums, saveFormOpen, startStopSequencer} = useTrackStore();
+  const { drums, saveFormOpen, startStopSequencer } = useTrackStore();
 
   useEffect(() => {
     const handleKeyUp = (e: KeyboardEvent) => {
@@ -24,12 +25,44 @@ const CreateSongPage: React.FC = () => {
     return () => {
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, []);
+  }, [startStopSequencer]);
+
+  useEffect(() => {
+    const sampler = new Tone.Sampler({
+      urls: drums.reduce((acc, drum) => {
+        acc[drum.note] = drum.soundUrl;
+        return acc;
+      }, {} as Record<string, string>),
+    });
+    sampler.connect(matserGain);
+    sampler.connect(recordGain);
+
+    const sequence = new Tone.Sequence(
+      (time, step) => {
+        const state = useTrackStore.getState();
+        const activePads = state.drums.filter(
+          (drum) => !state.mutedPads.has(drum.id) && state.sequences[drum.id][step]
+        );
+        activePads.forEach((pad) => {
+          const velocity = (pad.volume + 20) / 25;
+          sampler.triggerAttackRelease(pad.note, "16n", time, velocity);
+        });
+        state.setCurrentStep(step);
+      },
+      Array.from({ length: 16 }, (_, i) => i),
+      "16n"
+    );
+
+    sequence.start(0);
+
+    return () => {
+      sampler.dispose();
+      sequence.dispose();
+    };
+  }, [drums]);
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white p-4 md:p-6 lg:p-8 ">
-
-
+    <div className="min-h-screen bg-zinc-950 text-white p-4 md:p-6 lg:p-8">
       <div className="space-y-6">
         <div className="px-4">
           <SongInfo />
@@ -51,21 +84,15 @@ const CreateSongPage: React.FC = () => {
                 key={Number(d.id)}
                 id={Number(d.id)}
                 name={d.name || `Track ${d.id}`}
-                soundUrl={d.soundUrl || ""}
               />
             ))}
           </div>
         </section>
 
-        {saveFormOpen &&
-          (<SaveBeatForm
-
-          />)}
-
+        {saveFormOpen && <SaveBeatForm />}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CreateSongPage
-
+export default CreateSongPage;
