@@ -3,13 +3,13 @@ import * as Tone from 'tone';
 import DRUM_DATA, { PRESETS, STEPS } from '../util/DrumData';
 import { DrumData, DrumSequencerState } from '../types/Drums';
 import { registerStoreReset } from './resetStores';
-import { recordGain } from '../util/CustomGain';
 
 
 const initialSequences: Record<string | number, boolean[]> = {};
 DRUM_DATA.forEach(p => {
     initialSequences[p.id] = Array(STEPS).fill(false);
 });
+
 
 const initialState = {
     isPlaying: false,
@@ -19,53 +19,22 @@ const initialState = {
     customSoundName: '',
     drums: DRUM_DATA,
     currentStep: 0,
-    mutedPads: new Set<number | string>(),
-    isRecording: false,
-    recorder: null,
+    mutedPads: new Set<string>(),
     saveFormOpen: false,
-    soundFile: null,
     songId: null,
-}
+};
 
 const useTrackStore = create<DrumSequencerState>((set, get) => {
-
     registerStoreReset(() => set(initialState));
-
     const transport = Tone.getTransport();
 
     return {
         ...initialState,
-        reset: () => {
-            set({
-                isPlaying: false,
-                bpm: 120,
-                sequences: initialSequences,
-                customSoundUrl: '',
-                customSoundName: '',
-                drums: DRUM_DATA,
-                currentStep: 0,
-                mutedPads: new Set<number | string>(),
-                isRecording: false,
-                recorder: null,
-                saveFormOpen: false,
-                soundFile: null,
-                songId: null,
-            })
-        },
+        reset: () => set(initialState),
 
-        getSequences: () => {
-            const state = get();
-            return state.sequences;
-        },
+        getSequences: () => get().sequences,
 
-        openCloseForm: () => {
-            set(state => {
-                const newVal = !state.saveFormOpen;
-                return {
-                    saveFormOpen: newVal
-                }
-            })
-        },
+        openCloseForm: () => set(state => ({ saveFormOpen: !state.saveFormOpen })),
 
         startStopSequencer: async () => {
             await Tone.start();
@@ -76,9 +45,9 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
             } else {
                 transport.start(Tone.now());
             }
-
-            set(state => ({ isPlaying: !state.isPlaying }));
+            set({ isPlaying: !get().isPlaying });
         },
+
 
         updateBpm: (newBpm: number) => {
             transport.bpm.value = newBpm;
@@ -95,25 +64,21 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
 
         addCustomDrum: () => {
             const { customSoundUrl, customSoundName } = get();
+            if (!customSoundUrl || !customSoundName) return;
 
-            if (customSoundUrl && customSoundName) {
-                const newDrum = {
-                    id: Date.now(),
-                    name: customSoundName,
-                    soundUrl: customSoundUrl,
-                    volume: 0.5,
-                }
+            const newDrum = {
+                id: `custom-${Date.now()}`,
+                name: customSoundName,
+                soundUrl: customSoundUrl,
+                volume: 0.5,
+            };
 
-                set(state => ({
-                    drums: [...state.drums, newDrum],
-                    sequences: {
-                        ...state.sequences,
-                        [newDrum.id]: Array(STEPS).fill(false)
-                    },
-                    customSoundName: '',
-                    customSoundUrl: '',
-                }));
-            }
+            set(state => ({
+                drums: [...state.drums, newDrum],
+                sequences: { ...state.sequences, [newDrum.id]: Array(STEPS).fill(false) },
+                customSoundName: '',
+                customSoundUrl: '',
+            }));
         },
 
         setCustomSoundUrl: (url: string) => set({ customSoundUrl: url }),
@@ -147,51 +112,6 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
 
                 return { mutedPads: newMutedPads };
             })
-        },
-
-        startRecording: async () => {
-            await Tone.start();
-
-            
-
-            const recorder = new Tone.Recorder();
-            recordGain.connect(recorder);
-            await recorder.start();
-
-            if (!get().isPlaying) {
-                await get().startStopSequencer();
-            }
-
-            set({ recorder, isRecording: true });
-        },
-
-        stopRecordingAndExport: async () => {
-            const { recorder, isPlaying } = get();
-
-            if (!recorder) return;
-
-            if (isPlaying) {
-                await get().startStopSequencer();
-            }
-
-            try {
-                const recordingBlob = await recorder.stop();
-
-                const fileName = `track-${new Date().toISOString().split('T').join('-')}.webm`;
-                const audioFile = new File([recordingBlob], fileName, {
-                    type: 'audio/webm',
-                });
-
-                if (audioFile) {
-                    set({ soundFile: audioFile });
-                }
-
-                recorder.dispose();
-                set({ recorder: null, isRecording: false });
-
-            } catch (error) {
-                console.error('Error stopping the recorder:', error);
-            }
         },
 
         getSongData: () => {
@@ -248,10 +168,10 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
                 return { sequences: newSequences };
             });
         },
-        setPreset: (name: string ) => {
+        setPreset: (name: string) => {
             const preset = PRESETS.find(p => p.name === name);
             if (!preset) return;
-            set({ drums: preset.sounds, sequences:  initialSequences});
+            set({ drums: preset.sounds, sequences: initialSequences });
         }
     }
 });
