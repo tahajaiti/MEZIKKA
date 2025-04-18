@@ -20,7 +20,7 @@ return [
     'allowed_origins' => ['http://localhost:3000'],
     'allowed_origins_patterns' => [],
     'allowed_headers' => ['*'],
-    'expose_headers' => ['Authorization'],
+    'expose_headers' => ['Authorization', 'Set-Cookie'],
     'max_age' => 0,
     'supports_credentials' => true,
 ];
