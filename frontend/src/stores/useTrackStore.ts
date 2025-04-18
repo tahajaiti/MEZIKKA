@@ -4,12 +4,17 @@ import DRUM_DATA, { PRESETS, STEPS } from '../util/DrumData';
 import { DrumData, DrumSequencerState } from '../types/Drums';
 import { registerStoreReset } from './resetStores';
 
+const availableNotes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5', 'A5', 'B5', 'C6'];
+
+const initialDrums = DRUM_DATA.map((drum, index) => ({
+    ...drum,
+    note: availableNotes[index],
+}));
 
 const initialSequences: Record<string | number, boolean[]> = {};
-DRUM_DATA.forEach(p => {
+initialDrums.forEach(p => {
     initialSequences[p.id] = Array(STEPS).fill(false);
 });
-
 
 const initialState = {
     isPlaying: false,
@@ -17,7 +22,7 @@ const initialState = {
     sequences: initialSequences,
     customSoundUrl: '',
     customSoundName: '',
-    drums: DRUM_DATA,
+    drums: initialDrums,
     currentStep: 0,
     mutedPads: new Set<string>(),
     saveFormOpen: false,
@@ -48,7 +53,6 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
             set({ isPlaying: !get().isPlaying });
         },
 
-
         updateBpm: (newBpm: number) => {
             transport.bpm.value = newBpm;
             set({ bpm: newBpm });
@@ -58,7 +62,7 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
             set(state => ({
                 drums: state.drums.map(pad =>
                     pad.id === id ? { ...pad, volume: newVolume } : pad
-                )
+                ),
             }));
         },
 
@@ -66,11 +70,19 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
             const { customSoundUrl, customSoundName } = get();
             if (!customSoundUrl || !customSoundName) return;
 
+            const usedNotes = new Set(get().drums.map(d => d.note));
+            const availableNote = availableNotes.find(note => !usedNotes.has(note));
+            if (!availableNote) {
+                console.error('No available notes left');
+                return;
+            }
+
             const newDrum = {
                 id: Date.now(),
                 name: customSoundName,
                 soundUrl: customSoundUrl,
                 volume: 0.5,
+                note: availableNote,
             };
 
             set(state => ({
@@ -96,7 +108,7 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
                     sequences: {
                         ...state.sequences,
                         [padId]: newSequence,
-                    }
+                    },
                 };
             });
         },
@@ -111,7 +123,7 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
                 }
 
                 return { mutedPads: newMutedPads };
-            })
+            });
         },
 
         getSongData: () => {
@@ -145,6 +157,8 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
                 if (!state.drums.some((d) => d.id === id)) return state;
                 const newDrums = state.drums.filter((d) => d.id !== id);
 
+                console.log('New drums:', newDrums);
+
                 const newSequences = { ...state.sequences };
                 delete newSequences[id];
 
@@ -156,7 +170,7 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
                     sequences: newSequences,
                     mutedPads: newMutedPads,
                 };
-            })
+            });
         },
 
         clearPad: (id: number) => {
@@ -168,12 +182,13 @@ const useTrackStore = create<DrumSequencerState>((set, get) => {
                 return { sequences: newSequences };
             });
         },
+
         setPreset: (name: string) => {
             const preset = PRESETS.find(p => p.name === name);
             if (!preset) return;
             set({ drums: preset.sounds, sequences: initialSequences });
-        }
-    }
+        },
+    };
 });
 
 export default useTrackStore;
