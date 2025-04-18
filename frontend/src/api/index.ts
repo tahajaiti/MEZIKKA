@@ -55,7 +55,7 @@ const fileClient = axios.create({
     baseURL: API_URL,
     timeout: 10000,
     withCredentials: true,
-    responseType: 'arraybuffer'
+    responseType: 'blob'
 });
 
 addInterceptor([apiClient, fileClient]);
