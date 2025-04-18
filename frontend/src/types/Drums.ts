@@ -1,4 +1,3 @@
-import * as Tone from 'tone'
 export interface DrumPad {
     id: number | string
     name: string
@@ -23,10 +22,7 @@ export interface DrumSequencerState {
     customSoundName: string
     currentStep: number
     mutedPads: Set<number | string>
-    isRecording: boolean
-    recorder: Tone.Recorder | null
     saveFormOpen: boolean
-    soundFile: File | null
     songId: string | null
 
     getSequences: () => Record<string | number, boolean[]>
@@ -40,10 +36,7 @@ export interface DrumSequencerState {
     togglePad: (padId: number | string, stepIndex: number) => void
     toggleMute: (padId: number | string) => void
     setCurrentStep: (step: number) => void
-    startRecording: () => Promise<void>
-    stopRecordingAndExport: () => Promise<void>
     getSongData: () => DrumData
-    // saveSong: (formData: FormData) => Promise<void>
     setSongId: (id: string) => void
     loadSong: (songData: DrumData, id: string) => void
     deleteDrum: (id: number) => void
