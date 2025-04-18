@@ -44,7 +44,8 @@ const Pads: React.FC<PadsProps> = ({ id, name = "Pad", soundUrl = "" }) => {
         C4: soundUrl,
       },
       onload: () => {
-        console.log(`Sampler loaded`);
+        console.log(`Sampler loaded for ${name} with sound URL: ${soundUrl}`);
+        samplerRef.current?.triggerAttackRelease("C4", "16n");
       },
     });
 
