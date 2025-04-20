@@ -45,9 +45,11 @@ Route::middleware('jwt')->group(function () {
 
     // Like routes
     Route::get('/likes', [LikeController::class, 'getLikes']);
-    Route::get('/likes/{type}/{id}', [LikeController::class, 'getLikeCount'])
+    Route::get('/likes/{type}/{id}', [LikeController::class, 'getLike'])
         ->whereIn('type', ['song', 'playlist']);
-    Route::post('/like/{type}/{id}', [LikeController::class, 'toggleLike'])
+    Route::get('/likes/{type}/{id}/count', [LikeController::class, 'getLikeCount'])
+        ->whereIn('type', ['song', 'playlist']);
+    Route::post('/likes/{type}/{id}', [LikeController::class, 'toggleLike'])
         ->whereIn('type', ['song', 'playlist']);
 
     // Follow routes
