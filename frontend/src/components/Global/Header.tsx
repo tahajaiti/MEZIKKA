@@ -1,18 +1,17 @@
-import { DoorOpen, PlusIcon } from 'lucide-react';
-import useAuthStore from '../../stores/authStore';
-import { formatUrl } from '../../util/Formatters';
-import MezikkaText from '../Texts/MezikkaText';
-import { Link } from 'react-router';
-import { logout } from '../../stores/authStore';
-
+import { DoorOpen, PlusIcon } from "lucide-react"
+import useAuthStore from "../../stores/authStore"
+import { formatUrl } from "../../util/Formatters"
+import MezikkaText from "../Texts/MezikkaText"
+import { Link } from "react-router"
+import { logout } from "../../stores/authStore"
 
 const Header = () => {
-  const { profile, user } = useAuthStore();
-  const img = formatUrl(profile?.avatar);
+  const { profile, user } = useAuthStore()
+  const img = formatUrl(profile?.avatar)
 
   return (
-    <header className='sticky top-0 flex justify-between items-center px-16 py-2 z-50'>
-      <div className='flex gap-4 items-center'>
+    <header className="sticky top-0 flex justify-between items-center px-4 sm:px-8 md:px-12 lg:px-16 py-2 z-50 w-full">
+      <div className="flex gap-2 sm:gap-4 items-center">
         <MezikkaText />
 
         <Link
@@ -27,28 +26,29 @@ const Header = () => {
         </Link>
       </div>
 
-      <div className='flex items-center gap-8'>
+      <div className="flex items-center gap-2 sm:gap-4 md:gap-8">
         <Link
           to={`/profile/${user?.id}`}
           className="flex items-center gap-2 py-1 px-2 cursor-pointer
                     hover:bg-zinc-500/40 rounded-full transition-all"
         >
           <img
-            src={img}
+            src={img || "/placeholder.svg"}
             alt={`Avatar image for ${profile?.username}`}
-            className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700"
+            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700"
           />
           <span className="text-zinc-300 hidden sm:block">{profile?.username}</span>
         </Link>
 
         <button
           onClick={() => logout()}
-          className='bg-transparent p-2 hover:bg-zinc-500/40 rounded-full  transition-all cursor-pointer'>
-          <DoorOpen className='shadow-xl shadow-red-500' />
+          className="bg-transparent p-1.5 sm:p-2 hover:bg-zinc-500/40 rounded-full transition-all cursor-pointer"
+        >
+          <DoorOpen className="w-5 h-5 sm:w-6 sm:h-6 shadow-xl shadow-red-500" />
         </button>
       </div>
     </header>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header
