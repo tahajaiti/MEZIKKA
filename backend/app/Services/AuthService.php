@@ -15,8 +15,6 @@ use App\Http\Requests\RegisterRequest;
 
 class AuthService
 {
-
-
     public function register(RegisterRequest $data)
     {
 
@@ -98,7 +96,7 @@ class AuthService
 
         $token = RefreshToken::where('token', $hashedToken)->where('user_id', $user->id)->first();
 
-        if ($token && !$token->isExpired()) {
+        if ($token && $token->isExpired()) {
             $token->revoke();
             $cookie = Cookie::forget('refresh_token');
             return $cookie;
