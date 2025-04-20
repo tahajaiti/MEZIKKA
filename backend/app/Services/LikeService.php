@@ -47,19 +47,27 @@ class LikeService
         ];
     }
 
-    public function getLikeCount(string $type, string $id){
+    public function getLike(string $type, string $id){
         $user = Auth::user();
 
         $toLike = $type === 'playlist' ?
             Playlist::findOrFail($id) : Song::findOrFail($id);
 
-        $totalLikes = $toLike->likes()->count();
-
         $userLiked = $user ? $toLike->likes()->where('user_id', $user->id)->exists() : false;
 
         return [
-            'total_likes' => $totalLikes,
             'liked_by_user' => $userLiked
+        ];
+    }
+
+    public function getLikeCount(string $type, string $id){
+        $toLike = $type === 'playlist' ?
+            Playlist::findOrFail($id) : Song::findOrFail($id);
+
+        $totalLikes = $toLike->likes()->count();
+
+        return [
+            'total_likes' => $totalLikes
         ];
     }
 }

@@ -31,11 +31,21 @@ class LikeController extends Controller
         return Res::success($likes);
     }
 
+    public function getLike(string $type, string $id)
+    {
+        $like = $this->likeService->getLike($type, $id);
+        if ($like) {
+            return Res::success($like);
+        }
+
+        return Res::error('Something went wrong', 500);
+    }
+
     public function getLikeCount(string $type, string $id)
     {
         $like = $this->likeService->getLikeCount($type, $id);
         if ($like) {
-            return Res::success($like, 'Like count retrieved');
+            return Res::success($like);
         }
 
         return Res::error('Something went wrong', 500);
