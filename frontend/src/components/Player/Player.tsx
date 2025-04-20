@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { Heart, Pause, Play, Volume2 } from "lucide-react"
+import { Pause, Play, Volume2 } from "lucide-react"
 import { Link } from "react-router"
 import { formatTime, formatUrl } from "../../util/Formatters"
 import PlayerSkeleton from "./PlayerSkeleton"
@@ -7,6 +7,7 @@ import usePlayerStore from "../../stores/usePlayerStore"
 import songService from "../../api/services/song/service"
 import MobilePlayer from "./MobilePlayer"
 import { useMobile } from "../../util/useMobile"
+import LikeButton from "../Like/LikeButton"
 
 const Player = () => {
   const { isPlaying, setIsPlaying, currentSong, setVolume, volume } = usePlayerStore();
@@ -143,7 +144,7 @@ const Player = () => {
             alt={`${currentSong.name} cover`}
           />
         </Link>
-        <div className="flex flex-col justify-center overflow-hidden hidden md:block">
+        <div className="flex flex-col justify-center overflow-hidden md:block">
           <h1 className="text-base md:text-lg font-bold text-white truncate max-w-[8rem] md:max-w-[12rem]">
             {currentSong.name}
           </h1>
@@ -154,9 +155,7 @@ const Player = () => {
             {currentSong.user?.name || "Unknown Artist"}
           </Link>
         </div>
-        <button className="text-white hover:text-red-500 transition-all hidden md:block">
-          <Heart className="h-5 w-5 hover:fill-current" />
-        </button>
+        <LikeButton id={currentSong.id} type="song" />
       </div>
 
       <div className="flex flex-col items-center gap-2 col-span-1 md:col-span-1">
