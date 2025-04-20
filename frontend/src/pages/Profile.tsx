@@ -51,7 +51,7 @@ const Profile: React.FC = () => {
                 </div>
               )}
 
-              {activeTab === "followers" && <FollowTabs userId={id} type="followers"/>}
+              {activeTab === "followers" && <FollowTabs userId={id} type="followers" />}
 
               {activeTab === "following" && <FollowTabs userId={id} type="follows" />}
             </div>
