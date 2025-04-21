@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import likeService from "./service";
 
 
@@ -20,6 +20,18 @@ export const useGetLikeCount = (type: string, id: string | number) => {
     });
 };
 
+export const useInfiniteSongLikes = () => {
+    return useInfiniteQuery({
+        queryKey: ['likes'],
+        queryFn: ({ pageParam = 1 }) => likeService.getLikedSongs(pageParam),
+        initialPageParam: 1,
+        getNextPageParam: (lastPage) => {
+            const { current_page, last_page: totalPages } = lastPage.data;
+            return current_page < totalPages ? current_page + 1 : undefined;
+        },
+        retry: 1,
+    });
+}
 export const useToggleLike = (type: string, id: string | number) => {
     return useMutation({
         mutationFn: () => likeService.toggleLike(type, id),
