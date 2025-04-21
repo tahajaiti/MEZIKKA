@@ -7,7 +7,7 @@ import usePlayerStore from "../../stores/usePlayerStore"
 import songService from "../../api/services/song/service"
 import MobilePlayer from "./MobilePlayer"
 import { useMobile } from "../../util/useMobile"
-import LikeButton from "../Like/LikeButton"
+import LikeBtn from "../Like/LikeBtn"
 
 const Player = () => {
   const { isPlaying, setIsPlaying, currentSong, setVolume, volume } = usePlayerStore();
@@ -97,6 +97,7 @@ const Player = () => {
     setVolume(Number.parseFloat(e.target.value) / 100)
   }
 
+
   if (isLoading || !currentSong) {
     return <PlayerSkeleton />
   }
@@ -155,7 +156,7 @@ const Player = () => {
             {currentSong.user?.name || "Unknown Artist"}
           </Link>
         </div>
-        <LikeButton id={currentSong.id} type="song" />
+        <LikeBtn type="song" where="player" song={currentSong}/>
       </div>
 
       <div className="flex flex-col items-center gap-2 col-span-1 md:col-span-1">
