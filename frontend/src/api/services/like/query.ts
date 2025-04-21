@@ -2,8 +2,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import likeService from "./service";
 
 
-
-
 export const useGetLikes = () => {
     return useQuery({
         queryKey: [`likes-${new Date()}`],
@@ -15,7 +13,7 @@ export const useGetLikes = () => {
 
 export const useGetLike = (type: string, id: string | number) => {
     return useQuery({
-        queryKey: [`liked-${new Date()}`],
+        queryKey: [`user-like-${id}`],
         queryFn: () => likeService.getLike(type, id),
         staleTime: 5 * 60 * 1000,
         retry: 1
