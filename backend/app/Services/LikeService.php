@@ -20,6 +20,18 @@ class LikeService
         };
     }
 
+    public function index()
+    {
+        $user = Auth::user();
+
+        $liked = $user->likes()->get()->groupBy('likeable_type');
+
+        return [
+            'songs' => optional($liked[Song::class] ?? null)->pluck('likeable_id'),
+            'playlists' => optional($liked[Playlist::class] ?? null)->pluck('likeable_id'),
+        ];
+    }
+
     public function toggleLike(string $type, string $id): string
     {
         $user = Auth::user();
@@ -38,32 +50,6 @@ class LikeService
 
         $likeable->likes()->create(['user_id' => $user->id]);
         return 'liked';
-    }
-
-    public function getLikes()
-    {
-        $user = Auth::user();
-
-        $liked = $user->likes()->with('likeable')->get()->groupBy('likeable_type');
-
-        return [
-            'songs' => optional($liked[Song::class] ?? null)->pluck('likeable')->values(),
-            'playlists' => optional($liked[Playlist::class] ?? null)->pluck('likeable')->values(),
-        ];
-    }
-
-    public function getLike(string $type, string $id)
-    {
-        $user = Auth::user();
-        $likeable = $this->getLikeable($type, $id);
-
-        $userLiked = $user
-            ? $likeable->likes()->where('user_id', $user->id)->exists()
-            : false;
-
-        return [
-            'liked_by_user' => $userLiked,
-        ];
     }
 
     public function getLikeCount(string $type, string $id)

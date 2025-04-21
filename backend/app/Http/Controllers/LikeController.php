@@ -15,6 +15,11 @@ class LikeController extends Controller
     }
 
 
+    public function index() {
+        $likes = $this->likeService->index();
+        return Res::success($likes);
+    }
+
     public function toggleLike(string $type, string $id)
     {
         $like = $this->likeService->toggleLike($type, $id);
@@ -22,22 +27,6 @@ class LikeController extends Controller
         if ($like) {
             return Res::success(null, "$type $like");
         }
-        return Res::error('Something went wrong', 500);
-    }
-
-    public function getLikes()
-    {
-        $likes = $this->likeService->getLikes();
-        return Res::success($likes);
-    }
-
-    public function getLike(string $type, string $id)
-    {
-        $like = $this->likeService->getLike($type, $id);
-        if ($like) {
-            return Res::success($like);
-        }
-
         return Res::error('Something went wrong', 500);
     }
 
