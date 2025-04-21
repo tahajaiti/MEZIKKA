@@ -4,10 +4,11 @@ import { Disc, Heart, UserRoundCheck, UsersRoundIcon } from "lucide-react";
 import ProfileCard from "../components/Profile/ProfileCard";
 import ProfileSkeleton from "../components/Profile/ProfileCardSkeleton";
 import FollowTabs from "../components/Follow/FollowTabs";
+import LikesTab from "../components/Like/LikesTab";
 
 const tabs = [
   { key: "beats", name: "Beats", icon: <Disc className="w-4 h-4" /> },
-  { key: "liked", name: "Liked", icon: <Heart className="w-4 h-4" /> },
+  { key: "likes", name: "Likes", icon: <Heart className="w-4 h-4" /> },
   { key: "followers", name: "Followers", icon: <UserRoundCheck className="w-4 h-4" /> },
   { key: "following", name: "Following", icon: <UsersRoundIcon className="w-4 h-4" /> },
 ];
@@ -43,12 +44,8 @@ const Profile: React.FC = () => {
             <div className="pt-6 overflow-auto">
               {activeTab === "beats" && <div>BEATS</div>}
 
-              {activeTab === "liked" && (
-                <div className="text-center py-8 text-zinc-400">
-                  <Heart className="w-12 h-12 mx-auto mb-4 text-zinc-600" />
-                  <h3 className="text-lg font-medium mb-2">No liked beats yet</h3>
-                  <p className="text-sm">When you like beats, they'll appear here.</p>
-                </div>
+              {activeTab === "likes" && (
+                <LikesTab />
               )}
 
               {activeTab === "followers" && <FollowTabs userId={id} type="followers" />}
