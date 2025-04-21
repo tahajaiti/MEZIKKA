@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Eye, Mail, User } from 'lucide-react';
 import authBg from '@assets/authBg.png';
@@ -7,9 +7,11 @@ import { validateEmail, validatePassword } from '../util/Validators';
 import AuthInput from '../components/Inputs/AuthInput';
 import ButtonLarge from '../components/Buttons/ButtonLarge';
 import { useSignup } from '../api/services/auth/query';
+import useAuthStore from '../stores/authStore';
 
 
 const Signup = () => {
+    const { isAuthenticated } = useAuthStore();
     const [formData, setFormData] = useState<{
         username: string;
         email: string;
@@ -33,6 +35,12 @@ const Signup = () => {
     const navigate = useNavigate();
 
     const { mutate: signup, isPending, error: signupErr } = useSignup();
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/');
+        }
+    }, [isAuthenticated, navigate]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
