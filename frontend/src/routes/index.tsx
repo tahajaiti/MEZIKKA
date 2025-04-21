@@ -7,6 +7,7 @@ import Signup from '../pages/Signup';
 import Profile from '../pages/Profile';
 import CreateSong from '../pages/CreateSong';
 import Song from '../pages/Song';
+import NotFound from '../pages/NotFound';
 
 export interface Route {
     path: string;
@@ -16,6 +17,7 @@ export interface Route {
 }
 
 const routes: Route[] = [
+    { path: '*', component: NotFound, layout: null, auth: false },
     { path: '/', component: Home, layout: MainLayout, auth: true },
     { path: '/login', component: Login, layout: null, auth: false },
     { path: '/signup', component: Signup, layout: null, auth: false },
