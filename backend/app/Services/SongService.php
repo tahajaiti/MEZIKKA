@@ -12,6 +12,40 @@ use App\Exceptions\UnauthorizedException;
 class SongService
 {
 
+    public function index()
+    {
+        $user = Auth::user();
+
+        $songs = Song::with(['user.profile', 'genre'])
+            ->withCount('likes')
+            ->latest()->limit(10)->get();
+
+        if ($user) {
+            $likedSongIds = $user->likes()
+                ->where('likeable_type', Song::class)
+                ->pluck('likeable_id')->toArray();
+
+            $songs->each(function ($song) use ($likedSongIds) {
+                $song->liked_by_user = in_array($song->id, $likedSongIds);
+            });
+        } else {
+            $songs->each(function ($song) {
+                $song->liked_by_user = false;
+            });
+        }
+
+        return $songs;
+    }
+
+    public function show(string $songId): ?Song
+    {
+        $song = Song::with(['user.profile', 'genre'])
+            ->withCount('likes')
+            ->findOrFail($songId);
+
+        return $song ?? null;
+    }
+
 
     public function create(SongPostRequest $request): ?Song
     {
