@@ -20,6 +20,12 @@ class LikeController extends Controller
         return Res::success($likes);
     }
 
+    public function getLikedSongs()
+    {
+        $likes = $this->likeService->getLikedSongs();
+        return Res::success($likes);
+    }
+
     public function toggleLike(string $type, string $id)
     {
         $like = $this->likeService->toggleLike($type, $id);

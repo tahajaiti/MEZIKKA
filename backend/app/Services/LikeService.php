@@ -32,6 +32,24 @@ class LikeService
         ];
     }
 
+    public function getLikedSongs()
+    {
+        $user = Auth::user();
+
+        $liked = $user->likes()
+            ->where('likeable_type', Song::class)
+            ->with('likeable')
+            ->paginate(2);
+
+        $songs = $liked->getCollection()->map(function ($like) {
+            return $like->likeable;
+        });
+
+        $liked->setCollection($songs);
+
+        return $liked;
+    }
+
     public function toggleLike(string $type, string $id): string
     {
         $user = Auth::user();
