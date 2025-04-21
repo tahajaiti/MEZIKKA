@@ -1,15 +1,8 @@
-import { useMutation, UseMutationResult } from "@tanstack/react-query";
-import AuthData, { creds } from "../../../types/Auth";
-import Response from "../../../types/Response";
+import { useMutation,  } from "@tanstack/react-query";
 import useAuthStore from "../../../stores/authStore";
 import authService from "./service";
 
-export const useLogin = (): UseMutationResult<
-    Response<AuthData>, 
-    Error,
-    Pick<creds, 'email' | 'password'>,
-    unknown
-> => {
+export const useLogin = () => {
     const { setAuth } = useAuthStore();
 
     return useMutation({
@@ -27,11 +20,7 @@ export const useLogin = (): UseMutationResult<
     });
 }
 
-export const useSignup = (): UseMutationResult<
-    Response<AuthData>,
-    Error,
-    creds
-> => {
+export const useSignup = () => {
     const { setAuth } = useAuthStore();
 
     return useMutation({
@@ -48,3 +37,18 @@ export const useSignup = (): UseMutationResult<
         }
     });
 }
+
+export const useLogout = () => {
+    const { clearAuth } = useAuthStore();
+
+    return useMutation({
+        mutationFn: authService.logout,
+        onSuccess: () => {
+            clearAuth();
+            console.log("Logged out successfully.");
+        },
+        onError: (error) => {
+            console.error("Logout error:", error);
+        }
+    });
+};
