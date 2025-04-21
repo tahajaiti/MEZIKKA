@@ -1,4 +1,4 @@
-import { useMutation, UseMutationResult, useQuery, UseQueryResult } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, UseMutationResult, useQuery, UseQueryResult } from "@tanstack/react-query";
 import Response from "../../../types/Response";
 import songService from "./service";
 import SongData from "../../../types/Song";
@@ -24,7 +24,7 @@ export const useCreateSong = (): UseMutationResult<
 export const useGetSong = (id: string | number): UseQueryResult<Response<SongData>, Error> => {
     return useQuery({
         queryKey: ['song', id],
-        queryFn: () => songService.getSongById(id), 
+        queryFn: () => songService.getSongById(id),
         staleTime: 5 * 60 * 1000,
         retry: 1,
         refetchOnWindowFocus: false,
@@ -51,5 +51,18 @@ export const useGetAllSongs = (): UseQueryResult<Response<SongData[]>, Error> =>
         retry: 1,
         refetchOnWindowFocus: false,
         enabled: true,
+    });
+}
+
+export const useInfinitUserSongs = (id: string | number) => {
+    return useInfiniteQuery({
+        queryKey: ['likes'],
+        queryFn: ({ pageParam = 1 }) => songService.getUserSongs(id, pageParam),
+        initialPageParam: 1,
+        getNextPageParam: (lastPage) => {
+            const { current_page, last_page: totalPages } = lastPage.data;
+            return current_page < totalPages ? current_page + 1 : undefined;
+        },
+        retry: 1,
     });
 }
