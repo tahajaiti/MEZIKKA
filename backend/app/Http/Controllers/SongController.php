@@ -34,6 +34,16 @@ class SongController extends Controller
         return Res::error('Failed to get songs');
     }
 
+    public function userSongs(string $id) {
+        $res = $this->songService->userSongs($id);
+        if ($res){
+            return Res::success($res);
+        }
+
+        return Res::error('Failed to get user songs');
+    }
+
+
     /**
      * Store a newly created resource in storage.
      */

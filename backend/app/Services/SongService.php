@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Song;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\SongPostRequest;
 use Illuminate\Support\Facades\Storage;
@@ -33,6 +34,15 @@ class SongService
                 $song->liked_by_user = false;
             });
         }
+
+        return $songs;
+    }
+
+
+    public function userSongs(string $id)
+    {
+        $user = User::findOrFail($id);
+        $songs = Song::where('user_id', $user->id)->paginate(10);
 
         return $songs;
     }
