@@ -44,9 +44,7 @@ Route::middleware('jwt')->group(function () {
     Route::delete('/playlists/{playlist}/songs/{song}', [PlaylistItemController::class, 'remove']);
 
     // Like routes
-    Route::get('/likes', [LikeController::class, 'getLikes']);
-    Route::get('/likes/{type}/{id}', [LikeController::class, 'getLike'])
-        ->whereIn('type', ['song', 'playlist']);
+    Route::get('/likes', [LikeController::class, 'index']);
     Route::get('/likes/{type}/{id}/count', [LikeController::class, 'getLikeCount'])
         ->whereIn('type', ['song', 'playlist']);
     Route::post('/likes/{type}/{id}', [LikeController::class, 'toggleLike'])
