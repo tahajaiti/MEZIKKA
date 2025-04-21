@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Storage;
 
 class FileController extends Controller
 {
-    public function serve(Request $request, string $path){
+    public function serve(Request $request, string $path)
+    {
 
         $song = Song::where('id', $path)->first();
         if (!$song) {
