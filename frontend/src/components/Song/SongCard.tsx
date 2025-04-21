@@ -1,11 +1,12 @@
 import React from 'react'
-import { Clock, Heart } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import { IoMdPlayCircle } from "react-icons/io";
 import { IoPauseCircle } from "react-icons/io5";
 import SongData from '../../types/Song';
 import { formatDate, formatUrl } from '../../util/Formatters';
 import usePlayerStore from '../../stores/usePlayerStore';
 import { useNavigate } from 'react-router';
+import LikeBtn from '../Like/LikeBtn';
 
 interface songProps {
     song: SongData;
@@ -83,8 +84,7 @@ const SongCard = ({ song }: songProps) => {
                     </div>
 
                     <div className="flex items-center space-x-2">
-                        <Heart size={16} className="text-white hover:fill-current hover:text-red-500 transition-all cursor-pointer" />
-                        <span>999</span>
+                        <LikeBtn type="song" song={song} where='card' />
                     </div>
                 </div>
             </div>
