@@ -26,7 +26,8 @@ class AuthController extends Controller
             return Res::error('Failed to register user', 500);
         }
 
-        return Res::success($token['data'], 'User registered successfully', 201, $token['refresh_token_cookie']);
+        return Res::success($token['data'], 'User registered successfully', 201)
+            ->withCookie($token['refresh_token_cookie']);
     }
 
     public function login(LoginRequest $request)
@@ -37,20 +38,22 @@ class AuthController extends Controller
             return Res::error('Invalid credentials', 401);
         }
 
-        return Res::success($token['data'], 'Logged in successfully', 200, $token['refresh_token_cookie']);
+        return Res::success($token['data'], 'Logged in successfully', 200)
+            ->withCookie($token['refresh_token_cookie']);
     }
 
     public function logout(Request $request)
     {
-        $token = $this->authService->logout($request);
+        $cookie = $this->authService->logout($request);
 
-        if (!$token) {
+        if (!$cookie) {
             return Res::error('Token not provided', 401);
         }
 
-        // JWT::invalidate($token);
-        return Res::success(null, 'Logged out successfully', $token);
+        return Res::success(null, 'Logged out successfully')
+            ->withCookie($cookie);
     }
+
 
     public function refresh(Request $request)
     {
@@ -60,6 +63,7 @@ class AuthController extends Controller
             return Res::error('Token not provided', 401);
         }
 
-        return Res::success($token['data'], 'Token refreshed successfully', 200, $token['refresh_token_cookie']);
+        return Res::success($token['data'], 'Token refreshed successfully', 200)
+            ->withCookie($token['refresh_token_cookie']);
     }
 }

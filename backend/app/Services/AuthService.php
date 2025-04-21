@@ -92,16 +92,22 @@ class AuthService
     {
         $user = Auth::user();
         $refreshToken = $request->cookie('refresh_token');
+
+        if (!$refreshToken) {
+            return null;
+        }
+
         $hashedToken = hash('sha256', $refreshToken);
 
-        $token = RefreshToken::where('token', $hashedToken)->where('user_id', $user->id)->first();
+        $token = RefreshToken::where('token', $hashedToken)
+            ->where('user_id', $user->id)
+            ->first();
 
-        if ($token && $token->isExpired()) {
+        if ($token) {
             $token->revoke();
-            $cookie = Cookie::forget('refresh_token');
-            return $cookie;
         }
-        return false;
+
+        return Cookie::forget('refresh_token');
     }
 
     private function toToken($token, $refreshToken, User $user)
