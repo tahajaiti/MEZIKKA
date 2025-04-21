@@ -6,6 +6,7 @@ import ProfileSkeleton from "../components/Profile/ProfileCardSkeleton";
 import FollowTabs from "../components/Follow/FollowTabs";
 import LikesTab from "../components/Like/LikesTab";
 import useAuthStore from "../stores/authStore";
+import SongTab from "../components/Song/SongTab";
 
 const tabs = [
   { key: "beats", name: "Beats", icon: <Disc className="w-4 h-4" />, canSee: true },
@@ -50,7 +51,7 @@ const Profile: React.FC = () => {
             </div>
 
             <div className="pt-6 overflow-auto">
-              {activeTab === "beats" && <div>BEATS</div>}
+              {activeTab === "beats" && <SongTab id={id}/>}
 
               {activeTab === "likes" && (
                 <LikesTab />
