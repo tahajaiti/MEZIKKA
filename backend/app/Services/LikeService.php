@@ -6,68 +6,72 @@ use App\Models\Like;
 use App\Models\Playlist;
 use App\Models\Song;
 use Illuminate\Support\Facades\Auth;
+use InvalidArgumentException;
 
 class LikeService
 {
 
+    protected function getLikeable(string $type, string $id)
+    {
+        return match ($type) {
+            'playlist' => Playlist::findOrFail($id),
+            'song' => Song::findOrFail($id),
+            default => throw new InvalidArgumentException('Invalid type provided.'),
+        };
+    }
+
     public function toggleLike(string $type, string $id): string
     {
         $user = Auth::user();
+        $likeable = $this->getLikeable($type, $id);
 
-        $toLike = $type === 'playlist' ?
-            Playlist::findOrFail($id) : Song::findOrFail($id);
-
-        $existing = Like::where('user_id', $user->id)
-            ->where('likeable_id', $id)
-            ->where('likeable_type', get_class($toLike))
-            ->first();
+        $existing = Like::where([
+            'user_id' => $user->id,
+            'likeable_id' => $likeable->id,
+            'likeable_type' => get_class($likeable),
+        ])->first();
 
         if ($existing) {
             $existing->delete();
             return 'unliked';
         }
-        $toLike->likes()->create(['user_id' => $user->id]);
+
+        $likeable->likes()->create(['user_id' => $user->id]);
         return 'liked';
     }
 
-    public function getLikes(){
+    public function getLikes()
+    {
         $user = Auth::user();
 
-        $likedPlaylists = $user->likes()->where('likeable_type', Playlist::class)
-        ->with('likeable')
-        ->get()->pluck('likeable');
-
-        $likedSongs = $user->likes()->where('likeable_type', Song::class)
-        ->with('likeable')
-        ->get()->pluck('likeable');
+        $liked = $user->likes()->with('likeable')->get()->groupBy('likeable_type');
 
         return [
-            'songs' => $likedSongs,
-            'playlists' => $likedPlaylists
+            'songs' => optional($liked[Song::class] ?? null)->pluck('likeable')->values(),
+            'playlists' => optional($liked[Playlist::class] ?? null)->pluck('likeable')->values(),
         ];
     }
 
-    public function getLike(string $type, string $id){
+    public function getLike(string $type, string $id)
+    {
         $user = Auth::user();
+        $likeable = $this->getLikeable($type, $id);
 
-        $toLike = $type === 'playlist' ?
-            Playlist::findOrFail($id) : Song::findOrFail($id);
-
-        $userLiked = $user ? $toLike->likes()->where('user_id', $user->id)->exists() : false;
+        $userLiked = $user
+            ? $likeable->likes()->where('user_id', $user->id)->exists()
+            : false;
 
         return [
-            'liked_by_user' => $userLiked
+            'liked_by_user' => $userLiked,
         ];
     }
 
-    public function getLikeCount(string $type, string $id){
-        $toLike = $type === 'playlist' ?
-            Playlist::findOrFail($id) : Song::findOrFail($id);
-
-        $totalLikes = $toLike->likes()->count();
+    public function getLikeCount(string $type, string $id)
+    {
+        $likeable = $this->getLikeable($type, $id);
 
         return [
-            'total_likes' => $totalLikes
+            'total_likes' => $likeable->likes()->count(),
         ];
     }
 }
