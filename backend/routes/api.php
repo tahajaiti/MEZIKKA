@@ -45,6 +45,7 @@ Route::middleware('jwt')->group(function () {
 
     // Like routes
     Route::get('/likes', [LikeController::class, 'index']);
+    Route::get('/likes/songs', [LikeController::class, 'getLikedSongs']);
     Route::get('/likes/{type}/{id}/count', [LikeController::class, 'getLikeCount'])
         ->whereIn('type', ['song', 'playlist']);
     Route::post('/likes/{type}/{id}', [LikeController::class, 'toggleLike'])
