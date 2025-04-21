@@ -11,6 +11,8 @@ interface SongData {
     genre: Genre;
     metadata: DrumData;
     user: User;
+    liked_by_user: boolean;
+    likes_count: number;
     created_at: string;
     updated_at: string;
 }
