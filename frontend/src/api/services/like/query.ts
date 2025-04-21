@@ -11,16 +11,6 @@ export const useGetLikes = () => {
     })
 }
 
-export const useGetLike = (type: string, id: string | number) => {
-    return useQuery({
-        queryKey: [`user-like-${id}`],
-        queryFn: () => likeService.getLike(type, id),
-        staleTime: 5 * 60 * 1000,
-        retry: 1
-
-    });
-}
-
 export const useGetLikeCount = (type: string, id: string | number) => {
     return useQuery({
         queryKey: [`like-count-${new Date()}`],
