@@ -26,7 +26,12 @@ class SongController extends Controller
      */
     public function index()
     {
-        return Res::success(Song::with(['user', 'genre'])->latest()->limit(10)->get());
+        $res = $this->songService->index();
+        if ($res){
+            return Res::success($res);
+        }
+
+        return Res::error('Failed to get songs');
     }
 
     /**
@@ -48,12 +53,13 @@ class SongController extends Controller
      */
     public function show(string $id)
     {
-        $song = Song::where('id', $id)->first();
-        $user = $song->user;
-        $profile = $user->profile;
-        $genre = $song->genre;
+        $res = $this->songService->show($id);
 
-        return Res::success($song);
+        if ($res){
+            return Res::success($res, 'Song retrieved successfully');
+        }
+
+        return Res::error('Failed to find song', 404);
     }
 
     /**
