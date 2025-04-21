@@ -70,7 +70,7 @@ apiClient.interceptors.response.use(
         return response.data;
     },
     async (error: AxiosError<LaravelApiError>) => {
-        const originalRequest = error.config;
+        const originalRequest = error.config as InternalAxiosRequestConfig & {_retry?: boolean};
 
         if (!error.response) {
             return Promise.reject({
@@ -82,7 +82,8 @@ apiClient.interceptors.response.use(
         const { status, data } = error.response;
 
 
-        if (status === 401 && originalRequest) {
+        if (status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
 
             if (isRefreshing) {
                 return new Promise((resolve) => {
@@ -102,7 +103,6 @@ apiClient.interceptors.response.use(
                 }
 
                 const data = refreshResponse.data;
-
                 useAuthStore.getState().setAuth(data.token, data.user);
                 
                 pendingRequests.forEach(callback => callback());
@@ -113,8 +113,7 @@ apiClient.interceptors.response.use(
                 return apiClient(originalRequest);
             } catch (e) {
                 console.error('Refresh token error:', e);
-                useAuthStore.getState().clearAuth();
-                pendingRequests.forEach(() => {});
+                logout();
                 pendingRequests = [];
 
                 return Promise.reject({
@@ -127,7 +126,13 @@ apiClient.interceptors.response.use(
 
         }
 
-
+        if (status === 401 && originalRequest._retry) {
+            logout();
+            return Promise.reject({
+                message: 'Unauthorized - please log in again',
+                status: 'unauthorized'
+            });
+        }
 
 
         switch (status) {
@@ -137,15 +142,6 @@ apiClient.interceptors.response.use(
                     message: validationErr.message || 'Validation failed',
                     errors: validationErr.errors,
                     status: 'validation_error'
-                });
-            }
-
-            case 401: {
-                const unauthorizedErr = error.response.data as LaravelApiError;
-                logout();
-                return Promise.reject({
-                    message: unauthorizedErr.message || 'Unauthorized',
-                    status: 'unauthorized'
                 });
             }
 
