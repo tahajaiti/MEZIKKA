@@ -4,10 +4,23 @@ import { formatUrl } from "../../util/Formatters"
 import MezikkaText from "../Texts/MezikkaText"
 import { Link } from "react-router"
 import { logout } from "../../stores/authStore"
+import { useLogout } from "../../api/services/auth/query"
 
 const Header = () => {
-  const { profile, user } = useAuthStore()
+  const { profile, user } = useAuthStore();
+  const { mutate } = useLogout();
   const img = formatUrl(profile?.avatar)
+
+  const handleLogout = () => {
+    mutate(undefined, {
+      onSuccess: () => {
+        logout();
+      },
+      onError: (error) => {
+        console.error("Logout error:", error);
+      }
+    });
+  }
 
   return (
     <header className="sticky top-0 flex justify-between items-center px-4 sm:px-8 md:px-12 lg:px-16 py-2 z-50 w-full">
@@ -41,7 +54,7 @@ const Header = () => {
         </Link>
 
         <button
-          onClick={() => logout()}
+          onClick={handleLogout}
           className="bg-transparent p-1.5 sm:p-2 hover:bg-zinc-500/40 rounded-full transition-all cursor-pointer"
         >
           <DoorOpen className="w-5 h-5 sm:w-6 sm:h-6 shadow-xl shadow-red-500" />

@@ -6,7 +6,6 @@ const LikeLoader = () => {
     const { data } = useGetLikes();
     const setLikes = useLikeStore((state) => state.setLikes);
 
-    console.log(data);
 
     useEffect(() => {
         if (data?.data) {
