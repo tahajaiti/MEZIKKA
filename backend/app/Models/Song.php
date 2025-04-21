@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Song extends Model
@@ -16,13 +18,15 @@ class Song extends Model
         'description',
         'metadata',
         'genre_id',
-        'parent_id',
-        'remix_id',
         'user_id'
     ];
 
     protected $casts = [
         'metadata' => 'json',
+    ];
+
+    protected $appends = [
+        'liked_by_user',
     ];
 
     public function genre()
@@ -35,30 +39,6 @@ class Song extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    /**
-     * Get the original song if this song is a remix.
-     */
-    public function original()
-    {
-        return $this->belongsTo(Song::class, 'parent_id');
-    }
-
-    /**
-     * Get all the remixes of this song.
-     */
-    public function remixes()
-    {
-        return $this->hasMany(Song::class, 'parent_id');
-    }
-
-    /**
-     * Get the song that this song remixes.
-     */
-    public function remixOf()
-    {
-        return $this->belongsTo(Song::class, 'remix_id');
-    }
-
     public function playlists()
     {
         return $this->belongsToMany(Playlist::class, 'playlist_items')
@@ -69,5 +49,12 @@ class Song extends Model
     public function likes()
     {
         return $this->morphMany(Like::class, 'likeable');
+    }
+
+    protected function likedByUser(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->likes()->where('user_id', Auth::id())->exists()
+        );
     }
 }
