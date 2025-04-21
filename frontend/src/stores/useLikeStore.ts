@@ -1,24 +1,41 @@
 import { create } from 'zustand';
 
-
 interface LikeStore {
     likedSongs: Set<number | string>;
-    toggleLike: (songId: number | string) => void;
+    likedPlaylists: Set<number | string>;
+    likeCounts: Record<number, number>;
+    toggleLike: (type: 'song' | 'playlist', id: number | string) => void;
+    setLikes: (songs: number[], playlists: number[]) => void;
+    setLikeCount: (id: number, count: number) => void;
 }
 
-
 const useLikeStore = create<LikeStore>((set) => ({
-    likedSongs: new Set<number | string>(),
-    toggleLike: (songId) => {
+    likedSongs: new Set(),
+    likedPlaylists: new Set(),
+    likeCounts: {},
+    toggleLike: (type, id) => {
         set((state) => {
-            const updatedLikes = new Set(state.likedSongs);
-            if (updatedLikes.has(songId)) {
-                updatedLikes.delete(songId);
+            const targetSet = type === 'song' ? new Set(state.likedSongs) : new Set(state.likedPlaylists);
+            if (targetSet.has(id)) {
+                targetSet.delete(id);
             } else {
-                updatedLikes.add(songId);
+                targetSet.add(id);
             }
-            return { likedSongs: updatedLikes };
+            return type === 'song'
+                ? { likedSongs: targetSet }
+                : { likedPlaylists: targetSet };
         });
+    },
+    setLikes: (songs, playlists) => {
+        set({
+            likedSongs: new Set(songs),
+            likedPlaylists: new Set(playlists),
+        });
+    },
+    setLikeCount: (id, count) => {
+        set((state) => ({
+            likeCounts: { ...state.likeCounts, [id]: count }
+        }));
     }
 }));
 
