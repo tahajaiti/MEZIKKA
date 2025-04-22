@@ -64,18 +64,40 @@ class SearchService
     {
 
         $query = $request->input('q');
+        $sort = $request->input('sort', 'newest'); 
 
         if (!$query) {
             return false;
         }
 
-        $users = User::query()
+        $usersQuery = User::query()
             ->where(function ($q) use ($query) {
                 $q->where('name', 'ilike', "%{$query}%")
                     ->orWhereHas('profile', function ($q) use ($query) {
                         $q->where('username', 'ilike', "%{$query}%");
                     });
-            })->with('profile')->latest()->limit(15)->get();
+            })
+            ->with(['profile'])
+            ->withCount('followers');
+
+        switch ($sort) {
+            case 'most_followed':
+                $usersQuery->orderByDesc('followers_count');
+                break;
+            case 'least_followed':
+                $usersQuery->orderBy('followers_count');
+                break;
+            case 'newest':
+                $usersQuery->latest();
+                break;
+            case 'oldest':
+                break;
+            default:
+                $usersQuery->latest();
+                break;
+        }
+
+        $users = $usersQuery->limit(15)->get();
 
         return $users;
     }
