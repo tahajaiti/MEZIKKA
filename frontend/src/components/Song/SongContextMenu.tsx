@@ -1,9 +1,51 @@
+import { useEffect, useRef } from "react";
+import { useInfiniteUserPlaylist } from "../../api/services/playlist/query";
+import useAuthStore from "../../stores/authStore";
 import useModalStore from "../../stores/useModalStore"
+import CompactPlaylistCard from "../Playlist/CompactPlaylistCard";
+
+
 
 const SongContextMenu = () => {
     const { isOpen, song } = useModalStore();
+    const { user } = useAuthStore();
+
+    console.log(user);
+
+    const { data,
+        isError,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+        isPending, } = useInfiniteUserPlaylist(String(user?.id));
+
+    const loadMoreRef = useRef(null);
+
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+                    fetchNextPage();
+                }
+            },
+            {
+                rootMargin: "200px",
+                threshold: 1,
+            }
+        );
+
+        const currentRef = loadMoreRef.current;
+        if (currentRef) observer.observe(currentRef);
+
+        return () => {
+            if (currentRef) observer.unobserve(currentRef);
+        };
+    }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     if (!isOpen || !song) return null;
+
+    const playlists = data?.pages.flatMap((page) => page.data?.data || []);
 
     return (
         <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4'>
@@ -25,6 +67,11 @@ const SongContextMenu = () => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-h-96 overflow-y-auto pr-1">
+                    {playlists?.map((p) => (
+                        <div key={p.id}>
+                            <CompactPlaylistCard key={p.id} playlist={p} />
+                        </div>
+                    ))}
                 </div>
             </div>
 
