@@ -31,3 +31,12 @@ export const useGetPlaylists = () => {
         staleTime: 1000 * 60 * 5,
     });
 };
+
+
+export const useGetPlaylist = (id: string) => {
+    return useQuery({
+        queryKey: ['playlists', id],
+        queryFn: () => playlistService.getPlaylist(id),
+        staleTime: 1000 * 60 * 5,
+    });
+}
