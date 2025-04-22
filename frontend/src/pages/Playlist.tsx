@@ -9,14 +9,22 @@ import { PlaylistData } from '../types/Playlist'
 const Playlist = () => {
     const [addOpen, setAddOpen] = useState(false);
     const [playlists, setPlaylists] = useState<PlaylistData[]>([]);
-
-    const { data } = useGetPlaylists();
+    const { data, isError } = useGetPlaylists();
 
     useEffect(() => {
         if (data && data.data) {
             setPlaylists(data.data);
         }
     }, [data]);
+
+
+    if (isError) {
+        return (
+            <div className="w-full h-full text-center text-red-600">
+                Error loading playlists, please try again later.
+            </div>
+        );
+    }
 
     return (
         <motion.main
@@ -26,7 +34,6 @@ const Playlist = () => {
             transition={{ duration: 0.2 }}
             className='h-full w-full bg-gradient-to-br from-zinc-800 to-zinc-950 p-12 overflow-y-auto
             flex flex-col items-center gap-10'>
-
 
             {addOpen && (<PlaylistCreateForm onClose={() => setAddOpen(false)} />)}
 
@@ -42,14 +49,18 @@ const Playlist = () => {
             </div>
 
             <div className='grid grid-cols-5 items-center gap-20'>
-                {playlists.map((playlist) => (
-                    <PlaylistCard key={playlist.id} playlist={playlist} />
-                ))}
+                {playlists.length > 0 ? (
+                    playlists.map((playlist) => (
+                        <PlaylistCard key={playlist.id} playlist={playlist} />
+                    ))
+                ) : (
+                    <div className="w-full text-center text-gray-500">
+                        No playlists available.
+                    </div>
+                )}
             </div>
-
-
         </motion.main>
-    )
+    );
 }
 
-export default Playlist
+export default Playlist;
