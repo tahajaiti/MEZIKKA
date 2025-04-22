@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use App\Models\Playlist;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -31,6 +32,18 @@ class PlaylistService
         ])->withCount('likes','songs')->first();
 
         return $playlist ? $playlist : null;
+    }
+
+    public function paginateUserPlaylist (string $id) {
+        $user = User::where('id', $id)->first();
+
+        if (!$user) {
+            return null;
+        }
+
+        $playlists = Playlist::where('user_id', $user->id)->paginate(10);
+
+        return $playlists;
     }
 
     public function create(PlaylistPostRequest $request): ?Playlist
