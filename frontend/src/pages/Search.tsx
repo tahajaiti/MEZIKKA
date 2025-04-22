@@ -1,16 +1,20 @@
 import { useLocation } from 'react-router';
 import { motion } from 'motion/react';
-import useSearch from '../api/services/search/query';
 import { useEffect, useState } from 'react';
-import SongData from '../types/Song';
-import SongCard from '../components/Song/SongCard';
+import SearchSongTab from '../components/Search/SearchSongTab';
+import SearchUserTab from '../components/Search/SearchUserTab';
+
+const tabs = [
+    { key: "beats", name: "Beats", },
+    { key: "producers", name: "Producers", },
+    { key: "playlists", name: "Playlists", },
+];
 
 const Search = () => {
     const [term, setTerm] = useState("");
-    const [songs, setSongs] = useState<SongData[]>([]);
-    const query = new URLSearchParams(useLocation().search).get("q");
+    const [activeTab, setActiveTab] = useState("beats");
 
-    const { data, isPending, isError } = useSearch(term, !!term);
+    const query = new URLSearchParams(useLocation().search).get("q");
 
     useEffect(() => {
         if (query) {
@@ -18,11 +22,6 @@ const Search = () => {
         }
     }, [query]);
 
-    useEffect(() => {
-        if (data?.data) {
-            setSongs(data.data);
-        }
-    }, [data]);
 
     return (
         <motion.div
@@ -37,23 +36,27 @@ const Search = () => {
                     Searching for "{term}"
                 </h2>
 
-                {isPending && (
-                    <p className="text-zinc-400 text-lg">Searching...</p>
-                )}
-
-                {isError && (
-                    <p className="text-red-400 text-lg">An unexpected error occured, try again later</p>
-                )}
-
-                {!isPending && !isError && songs.length === 0 && (
-                    <p className="text-zinc-500 text-lg italic">No tracks found for "{term}"</p>
-                )}
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-                    {songs.map((song) => (
-                        <SongCard song={song} key={song.id} />
+                <div className='flex overflow-x-auto mb-5'>
+                    {tabs.map(tab => (
+                        <button
+                            key={tab.key}
+                            onClick={() => setActiveTab(tab.key)}
+                            className={`px-4 py-2 font-medium text-sm cursor-pointer flex items-center gap-2 transition-all whitespace-nowrap
+                        ${activeTab === tab.key ? "text-red-500 border-b-2 border-red-500" : "text-zinc-400 hover:text-white"}`}
+                        >
+                            {tab.name}
+                        </button>
                     ))}
                 </div>
+
+                {activeTab === 'beats' && (
+                    <SearchSongTab query={term} />
+                )}
+
+                {activeTab === 'producers' && (
+                    <SearchUserTab query={term} />
+                )}
+
             </section>
         </motion.div>
     );

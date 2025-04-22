@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams } from "react-router";
 import { motion } from 'motion/react';
-import { Disc, Heart, UserRoundCheck, UsersRoundIcon } from "lucide-react";
+import { Disc, Heart, Play, UserRoundCheck, UsersRoundIcon } from "lucide-react";
 import ProfileCard from "../components/Profile/ProfileCard";
 import ProfileSkeleton from "../components/Profile/ProfileCardSkeleton";
 import FollowTabs from "../components/Follow/FollowTabs";
@@ -14,6 +14,7 @@ const tabs = [
   { key: "likes", name: "Likes", icon: <Heart className="w-4 h-4" />, canSee: false },
   { key: "followers", name: "Followers", icon: <UserRoundCheck className="w-4 h-4" />, canSee: true },
   { key: "following", name: "Following", icon: <UsersRoundIcon className="w-4 h-4" />, canSee: true },
+  { key: "playlist", name: "Playlists", icon: <Play className="w-4 h-4" />, canSee: true },
 ];
 
 const Profile: React.FC = () => {
