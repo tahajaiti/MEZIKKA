@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useInfiniteUserPlaylist } from "../../api/services/playlist/query";
+import { useAddSongToPlaylist, useInfiniteUserPlaylist } from "../../api/services/playlist/query";
 import useAuthStore from "../../stores/authStore";
 import useModalStore from "../../stores/useModalStore"
 import CompactPlaylistCard from "../Playlist/CompactPlaylistCard";
@@ -10,17 +10,28 @@ const SongContextMenu = () => {
     const { isOpen, song } = useModalStore();
     const { user } = useAuthStore();
 
-    console.log(user);
-
     const { data,
-        isError,
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
-        isPending, } = useInfiniteUserPlaylist(String(user?.id));
+    } = useInfiniteUserPlaylist(String(user?.id));
+
+    const { mutate } = useAddSongToPlaylist();
 
     const loadMoreRef = useRef(null);
 
+
+    const handleClick = (playlistId: number) => {
+        if (!playlistId || !song) return;
+        mutate({ playlistId: String(playlistId), songId: String(song.id) }, {
+            onSuccess: () => {
+                useModalStore.setState({ isOpen: false, song: null });
+            },
+            onError: (error) => {
+                console.error("Error adding song to playlist:", error);
+            }
+        });
+    }
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -48,7 +59,8 @@ const SongContextMenu = () => {
     const playlists = data?.pages.flatMap((page) => page.data?.data || []);
 
     return (
-        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4'>
+        <div
+            className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4'>
 
             <div className="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl bg-zinc-900 
             border border-zinc-700 rounded-sm p-6 space-y-4">
@@ -68,10 +80,22 @@ const SongContextMenu = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-h-96 overflow-y-auto pr-1">
                     {playlists?.map((p) => (
-                        <div key={p.id}>
+                        <div
+                            onClick={() => handleClick(p.id)}
+                            key={p.id}>
                             <CompactPlaylistCard key={p.id} playlist={p} />
                         </div>
                     ))}
+                </div>
+                <div
+                    ref={loadMoreRef}
+                    className="w-full text-center py-4 text-sm text-zinc-400"
+                >
+                    {isFetchingNextPage
+                        ? "Loading more..."
+                        : hasNextPage
+                            ? "Scroll to load more"
+                            : ""}
                 </div>
             </div>
 
