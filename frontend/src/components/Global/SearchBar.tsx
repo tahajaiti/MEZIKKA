@@ -28,7 +28,6 @@ const SearchBar = ({ isVisible, toggleSearch }: props) => {
         const trimmed = searchTerm.trim();
 
         if (trimmed === "") {
-            navigate('/');
             return;
         };
 
