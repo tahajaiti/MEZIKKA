@@ -6,6 +6,7 @@ import { Routes, useNavigate } from 'react-router';
 import { useEffect } from 'react';
 import { setNavigator } from './util/navigation';
 import { AnimatePresence } from 'motion/react';
+import ConfirmScreen from './components/Global/ConfirmScreen';
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => {
         </Routes>
       </AnimatePresence>
       <Toast />
+      <ConfirmScreen />
     </QueryClientProvider>
   )
 }
