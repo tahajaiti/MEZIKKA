@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useCreatePlaylist } from '../../api/services/playlist/query';
 
 interface props {
     onClose: () => void;
@@ -11,8 +12,51 @@ const PlaylistCreateForm = ({ onClose }: props) => {
         cover: null as File | null,
     });
 
+    useEffect(() => {
+        const handleKeyUp = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                onClose();
+            }
+        };
 
-    const handleSubmit = () => {
+        window.addEventListener("keyup", handleKeyUp);
+        return () => {
+            window.removeEventListener("keyup", handleKeyUp);
+        };
+    }, [onClose]);
+
+    const { mutate, isError } = useCreatePlaylist();
+
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        const { title, description, cover } = formData;
+
+        const data = new FormData();
+        data.append('title', title.trim());
+        data.append('description', description.trim() || 'No description');
+
+        if (cover instanceof File) {
+            data.append('cover_file', cover);
+        }
+        mutate(data, {
+            onSuccess: () => {
+                setFormData({
+                    title: '',
+                    description: '',
+                    cover: null,
+                });
+                onClose();
+            },
+            onError: () => {
+                setFormData({
+                    title: '',
+                    description: '',
+                    cover: null,
+                });
+            }
+        });
 
     }
 
@@ -23,7 +67,7 @@ const PlaylistCreateForm = ({ onClose }: props) => {
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
-        setFormData((prev) => ({ ...prev, coverFile: file }));
+        setFormData((prev) => ({ ...prev, cover: file }));
     };
 
     const handleClose = () => {
@@ -33,6 +77,12 @@ const PlaylistCreateForm = ({ onClose }: props) => {
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <form onSubmit={handleSubmit} className="bg-zinc-900 p-6 rounded-lg w-full max-w-md text-white">
+                {isError && (
+                    <div className="mb-4 text-red-500">
+                        An error occurred while creating the playlist. Please try again.
+                    </div>
+                )}
+
                 <h3 className="text-xl font-bold mb-4">Create Playlist</h3>
 
                 <div className="mb-4">
