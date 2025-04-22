@@ -51,6 +51,7 @@ Route::middleware('jwt')->group(function () {
 
     // Playlists
     Route::apiResource('playlists', PlaylistController::class);
+    Route::get('/playlists/user/{id}', [PlaylistItemController::class, 'showUserPlaylists'])->name('playlists.user');
     Route::post('/playlists/{playlist}/songs/{song}', [PlaylistItemController::class, 'add']);
     Route::delete('/playlists/{playlist}/songs/{song}', [PlaylistItemController::class, 'remove']);
 
