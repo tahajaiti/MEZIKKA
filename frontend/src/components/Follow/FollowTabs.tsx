@@ -87,3 +87,4 @@ const FollowTabs = ({ userId, type }: Props) => {
 };
 
 export default FollowTabs;
+

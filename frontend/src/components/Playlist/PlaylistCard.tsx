@@ -74,7 +74,7 @@ const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
 
                 <div className="flex items-center">
                     <div className="rounded-full bg-zinc-800 px-3 py-1 text-xs font-medium text-zinc-300">
-                        {playlist.song_count || 0} {playlist.song_count === 1 ? "song" : "songs"}
+                        {playlist.songs_count || 0} {playlist.songs_count === 1 ? "song" : "songs"}
                     </div>
                 </div>
             </div>
