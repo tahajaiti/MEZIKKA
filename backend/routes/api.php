@@ -29,6 +29,7 @@ Route::middleware('jwt')->group(function () {
 
     // Search
     Route::get('/search', [SearchController::class, 'search'])->name('search');
+    Route::get('/search/user', [SearchController::class, 'userSearch'])->name('userSearch');
 
     // File Access
     Route::get('/files/{path}', [FileController::class, 'serve'])
