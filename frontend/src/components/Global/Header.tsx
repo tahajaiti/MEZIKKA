@@ -1,15 +1,18 @@
-import { DoorOpen, PlusIcon } from "lucide-react"
-import useAuthStore from "../../stores/authStore"
-import { formatUrl } from "../../util/Formatters"
-import MezikkaText from "../Texts/MezikkaText"
-import { Link } from "react-router"
-import { logout } from "../../stores/authStore"
-import { useLogout } from "../../api/services/auth/query"
+import { DoorOpen, PlusIcon, Search } from "lucide-react";
+import { useState } from "react";
+import useAuthStore from "../../stores/authStore";
+import { formatUrl } from "../../util/Formatters";
+import MezikkaText from "../Texts/MezikkaText";
+import { Link } from "react-router";
+import { logout } from "../../stores/authStore";
+import { useLogout } from "../../api/services/auth/query";
+import SearchBar from "./SearchBar";
 
 const Header = () => {
   const { profile, user } = useAuthStore();
   const { mutate } = useLogout();
-  const img = formatUrl(profile?.avatar)
+  const img = formatUrl(profile?.avatar);
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
 
   const handleLogout = () => {
     mutate(undefined, {
@@ -18,15 +21,18 @@ const Header = () => {
       },
       onError: (error) => {
         console.error("Logout error:", error);
-      }
+      },
     });
-  }
+  };
+
+  const toggleSearch = () => {
+    setIsSearchVisible(!isSearchVisible);
+  };
 
   return (
-    <header className="sticky top-0 flex justify-between items-center px-4 sm:px-8 md:px-12 lg:px-16 py-2 z-50 w-full">
+    <header className="sticky top-0 flex justify-between items-center px-4 sm:px-8 md:px-12 lg:px-16 py-2 z-50 w-full bg-zinc-900/80 backdrop-blur-md">
       <div className="flex gap-2 sm:gap-4 items-center">
         <MezikkaText />
-
         <Link
           to="/song"
           className="flex justify-center items-center gap-1.5 py-1.5 px-3
@@ -39,7 +45,18 @@ const Header = () => {
         </Link>
       </div>
 
-      <div className="flex items-center gap-2 sm:gap-4 md:gap-8">
+      <SearchBar isVisible={isSearchVisible} toggleSearch={toggleSearch} />
+
+      <div className="flex items-center gap-2 sm:gap-4 md:gap-6">
+        <button
+          onClick={toggleSearch}
+          className={`p-1.5 sm:p-2 hover:bg-zinc-500/40 rounded-full transition-all cursor-pointer ${isSearchVisible ? "bg-zinc-500/40" : "bg-transparent"
+            }`}
+          aria-label="Toggle search"
+        >
+          <Search className="w-5 h-5 sm:w-5 sm:h-5" />
+        </button>
+
         <Link
           to={`/profile/${user?.id}`}
           className="flex items-center gap-2 py-1 px-2 cursor-pointer
@@ -61,7 +78,7 @@ const Header = () => {
         </button>
       </div>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;
