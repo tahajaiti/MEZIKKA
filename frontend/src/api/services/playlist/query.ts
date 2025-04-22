@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import playlistService from "./service";
 
 
@@ -39,4 +39,17 @@ export const useGetPlaylist = (id: string) => {
         queryFn: () => playlistService.getPlaylist(id),
         staleTime: 1000 * 60 * 5,
     });
+}
+
+export const useInfiniteUserPlaylist = (id: string) => {
+    return useInfiniteQuery({
+        queryKey: ['playlists', 'user', id],
+        queryFn: ({ pageParam = 1 }) => playlistService.getUserPlaylist(id, pageParam),
+        initialPageParam: 1,
+        getNextPageParam: (lastPage) => {
+            const { current_page, last_page: totalPages } = lastPage.data;
+            return current_page < totalPages ? current_page + 1 : undefined;
+        },
+        retry: 1,
+    })
 }
