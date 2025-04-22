@@ -4,10 +4,10 @@ import searchService from "./service";
 
 
 
-export const useSearch = (query: string, enabled = true) => {
+export const useSearch = (query: string, sort: string = "newest" ,enabled = true) => {
     return useQuery({
-        queryKey: ["search", "songs", query],
-        queryFn: () => searchService.search(query),
+        queryKey: ["search", "songs", query, sort],
+        queryFn: () => searchService.search(query, sort),
         enabled: enabled && query.length > 0,
         staleTime: 1000 * 60 * 5,
     });
