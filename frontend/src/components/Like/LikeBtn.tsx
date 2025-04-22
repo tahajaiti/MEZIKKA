@@ -3,11 +3,12 @@ import { useToggleLike } from '../../api/services/like/query';
 import { useEffect } from 'react';
 import SongData from '../../types/Song';
 import useLikeStore from '../../stores/useLikeStore';
+import { PlaylistData } from '../../types/Playlist';
 
 interface Props {
     type: 'playlist' | 'song';
     where: 'player' | 'card';
-    song: SongData;
+    song: SongData | PlaylistData;
 }
 
 const LikeBtn = ({ type, song, where }: Props) => {
