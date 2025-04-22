@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams } from "react-router";
+import { motion } from 'motion/react';
 import { Disc, Heart, UserRoundCheck, UsersRoundIcon } from "lucide-react";
 import ProfileCard from "../components/Profile/ProfileCard";
 import ProfileSkeleton from "../components/Profile/ProfileCardSkeleton";
@@ -25,7 +26,12 @@ const Profile: React.FC = () => {
   const isCurrentUser = Number(id) === user.id;
 
   return (
-    <div className="h-full w-full px-12 py-6">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="h-full w-full px-12 py-6">
       <div className="grid grid-cols-1 lg:grid-cols-[350px_1fr] gap-6">
         <ProfileCard userId={id} />
 
@@ -51,7 +57,7 @@ const Profile: React.FC = () => {
             </div>
 
             <div className="pt-6 overflow-auto">
-              {activeTab === "beats" && <SongTab id={id}/>}
+              {activeTab === "beats" && <SongTab id={id} />}
 
               {activeTab === "likes" && (
                 <LikesTab />
@@ -64,7 +70,7 @@ const Profile: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

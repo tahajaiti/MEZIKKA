@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react"
+import {motion} from 'motion/react';
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import SongCard from "../components/Song/SongCard"
 import { useGetAllSongs } from "../api/services/song/query"
@@ -34,7 +35,12 @@ const Home: React.FC = () => {
 
 
   return (
-    <div className="w-full h-full pt-16 p-8 bg-gradient-to-br from-red-950 to-zinc-950 overflow-y-auto">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="w-full h-full pt-16 p-8 bg-gradient-to-br from-red-950 to-zinc-950 overflow-y-auto">
       <section className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h2 className="text-3xl font-bold">New Mezikka</h2>
@@ -88,7 +94,7 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section>
-    </div>
+    </motion.div>
   )
 }
 

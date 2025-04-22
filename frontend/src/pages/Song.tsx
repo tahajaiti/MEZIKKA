@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router'
+import { motion } from 'motion/react'
 import { useGetSong } from '../api/services/song/query';
 import { formatDate, formatUrl } from '../util/Formatters';
 import { Calendar, Clock, Music, User } from 'lucide-react';
@@ -8,7 +9,7 @@ const Song = () => {
 
     const { data } = useGetSong(id!);
 
-    if (!data || !data.data){
+    if (!data || !data.data) {
         return null;
     }
 
@@ -19,9 +20,14 @@ const Song = () => {
     const userImg = formatUrl(user?.profile.avatar);
 
     const songRelease = formatDate(song?.created_at);
-    
+
     return (
-        <div className='bg-black rounded-xl h-full w-full border border-zinc-800 shadow-lg overflow-auto'>
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className='bg-black rounded-xl h-full w-full border border-zinc-800 shadow-lg overflow-auto'>
             <div className="relative">
                 <div className="aspect-square max-h-[500px] w-full overflow-hidden bg-zinc-800">
                     <img
@@ -103,7 +109,7 @@ const Song = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </motion.div>
     )
 }
 

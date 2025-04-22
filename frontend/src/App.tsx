@@ -5,6 +5,7 @@ import Toast from './components/Global/Toast';
 import { Routes, useNavigate } from 'react-router';
 import { useEffect } from 'react';
 import { setNavigator } from './util/navigation';
+import { AnimatePresence } from 'motion/react';
 
 const queryClient = new QueryClient();
 
@@ -22,9 +23,11 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <NavigationHandler />
-      <Routes>
-        {render(routes)}
-      </Routes>
+      <AnimatePresence mode="wait">
+        <Routes>
+          {render(routes)}
+        </Routes>
+      </AnimatePresence>
       <Toast />
     </QueryClientProvider>
   )
