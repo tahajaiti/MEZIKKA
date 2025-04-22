@@ -28,7 +28,6 @@ export const useGetPlaylists = () => {
     return useQuery({
         queryKey: ['playlists'],
         queryFn: playlistService.getPlaylists,
-        staleTime: 1000 * 60 * 5,
     });
 };
 
@@ -37,9 +36,25 @@ export const useGetPlaylist = (id: string) => {
     return useQuery({
         queryKey: ['playlists', id],
         queryFn: () => playlistService.getPlaylist(id),
-        staleTime: 1000 * 60 * 5,
+        enabled: !!id,
     });
 }
+
+export const useInfinitePlaylistSongs = (id: string) => {
+    return useInfiniteQuery({
+        queryKey: ['playlists'],
+        queryFn: ({ pageParam = 1 }) => playlistService.getPlaylistSongs(id, pageParam),
+        initialPageParam: 1,
+        getNextPageParam: (lastPage) => {
+            const { current_page, last_page: totalPages } = lastPage.data;
+            console.log(lastPage);
+            return current_page < totalPages ? current_page + 1 : undefined;
+        },
+        retry: 1,
+    })
+}
+
+
 
 export const useInfiniteUserPlaylist = (id: string) => {
     return useInfiniteQuery({
@@ -52,4 +67,15 @@ export const useInfiniteUserPlaylist = (id: string) => {
         },
         retry: 1,
     })
+}
+
+export const useAddSongToPlaylist = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (data: { playlistId: string, songId: string }) => playlistService.addSongToPlaylist(data.playlistId, data.songId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['playlists'] });
+        },
+    });
 }
