@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FileController;
@@ -25,6 +26,9 @@ Route::prefix('auth')->group(function () {
 
 // Protected Routes
 Route::middleware('jwt')->group(function () {
+
+    // Search
+    Route::get('/search', [SearchController::class, 'search'])->name('search');
 
     // File Access
     Route::get('/files/{path}', [FileController::class, 'serve'])
