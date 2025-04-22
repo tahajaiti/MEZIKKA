@@ -9,6 +9,7 @@ import CreateSong from '../pages/CreateSong';
 import Song from '../pages/Song';
 import NotFound from '../pages/NotFound';
 import Search  from '../pages/Search';
+import Playlist from '../pages/Playlist';
 
 export interface Route {
     path: string;
@@ -26,6 +27,7 @@ const routes: Route[] = [
     { path: '/song', component: CreateSong, layout: DrumLayout, auth: true },
     { path: '/song/:id', component: Song, layout: MainLayout, auth: true },
     { path: '/search', component: Search, layout: MainLayout, auth: true },
+    { path: '/playlist', component: Playlist, layout: MainLayout, auth: true },
 ];
 
 export default routes;
