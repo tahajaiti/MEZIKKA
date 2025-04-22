@@ -1,12 +1,22 @@
 import { motion } from 'motion/react'
 import PlaylistCard from '../components/Playlist/PlaylistCard'
 import { Grid2X2Plus } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import PlaylistCreateForm from '../components/Playlist/PlaylistCreateForm'
+import { useGetPlaylists } from '../api/services/playlist/query'
+import { PlaylistData } from '../types/Playlist'
 
 const Playlist = () => {
     const [addOpen, setAddOpen] = useState(false);
+    const [playlists, setPlaylists] = useState<PlaylistData[]>([]);
 
+    const { data } = useGetPlaylists();
+
+    useEffect(() => {
+        if (data && data.data) {
+            setPlaylists(data.data);
+        }
+    }, [data]);
 
     return (
         <motion.main
@@ -18,7 +28,7 @@ const Playlist = () => {
             flex flex-col items-center gap-10'>
 
 
-            {addOpen && (<PlaylistCreateForm onClose={() => setAddOpen(false)}/>)}
+            {addOpen && (<PlaylistCreateForm onClose={() => setAddOpen(false)} />)}
 
             <div className='w-full flex justify-between items-center'>
                 <h1 className='text-2xl font-bold'>Manage Playlists</h1>
@@ -31,11 +41,10 @@ const Playlist = () => {
                 </button>
             </div>
 
-            <div className='grid grid-cols-4 items-center gap-20'>
-                <PlaylistCard />
-                <PlaylistCard />
-                <PlaylistCard />
-                <PlaylistCard />
+            <div className='grid grid-cols-5 items-center gap-20'>
+                {playlists.map((playlist) => (
+                    <PlaylistCard key={playlist.id} playlist={playlist} />
+                ))}
             </div>
 
 
