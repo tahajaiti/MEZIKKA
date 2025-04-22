@@ -4,6 +4,8 @@ import type { PlaylistData } from "../../types/Playlist"
 import { formatUrl } from "../../util/Formatters"
 import LikeBtn from "../Like/LikeBtn"
 import useConfirmStore from "../../stores/useConfirmStore"
+import { useDeletePlaylist } from "../../api/services/playlist/query"
+import useToastStore from "../../stores/useToastStore"
 
 interface PlaylistCardProps {
     playlist: PlaylistData
@@ -12,12 +14,19 @@ interface PlaylistCardProps {
 const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
     const { user } = useAuthStore();
     const { showModal } = useConfirmStore();
+    const { showToast } = useToastStore();
+    const { mutate } = useDeletePlaylist();
 
     const isOwner = user?.id === playlist.user.id;
 
     const handleDelete = (e: React.MouseEvent) => {
         e.stopPropagation();
         showModal("Are you sure you want to delete this playlist?", () => {
+            mutate(String(playlist.id), {
+                onSuccess: () => {
+                    showToast("Playlist deleted successfully", "success");
+                }
+            })
         });
     }
 
@@ -40,9 +49,9 @@ const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
                         <button className="p-2 rounded-full bg-zinc-800/80 hover:bg-zinc-400/90 cursor-pointer transition-all text-zinc-200 hover:text-white">
                             <Edit size={16} />
                         </button>
-                        <button 
-                        onClick={handleDelete}
-                        className="p-2 rounded-full bg-zinc-800/80 hover:bg-red-500/90 cursor-pointer transition-all text-zinc-200 hover:text-white">
+                        <button
+                            onClick={handleDelete}
+                            className="p-2 rounded-full bg-zinc-800/80 hover:bg-red-500/90 cursor-pointer transition-all text-zinc-200 hover:text-white">
                             <Trash size={16} />
                         </button>
                     </div>
