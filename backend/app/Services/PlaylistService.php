@@ -14,9 +14,8 @@ class PlaylistService {
     public function index(){
 
         $playlists = Playlist::with([
-            'user.profile','songs'
-        ])->get();
-
+            'user.profile'
+        ])->withCount('likes', 'songs')->get();
 
         return $playlists;
     }
