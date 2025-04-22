@@ -15,8 +15,9 @@ class PlaylistService
 
     public function index()
     {
+        $user = Auth::user();
 
-        $playlists = Playlist::with([
+        $playlists = Playlist::where('user_id', $user->id)->with([
             'user.profile'
         ])->withCount('likes', 'songs')->get();
 
@@ -26,15 +27,26 @@ class PlaylistService
     public function show(string $id)
     {
 
-        $playlist = Playlist::findOrFail($id)->with([
+        $playlist = Playlist::with([
             'user.profile',
-            'songs.user:id.profile:id,username,avatar'
-        ])->withCount('likes','songs')->first();
+        ])
+            ->withCount(['likes', 'songs'])
+            ->findOrFail($id);
 
-        return $playlist ? $playlist : null;
+
+        return $playlist ?? null;
     }
 
-    public function paginateUserPlaylist (string $id) {
+    public function showSongs(string $id)
+    {
+        $playlist = Playlist::where('id', $id)->first();
+
+        $songs = $playlist->songs()->with('user.profile')->paginate(6);
+        return $songs ?? null;
+    }
+
+    public function paginateUserPlaylist(string $id)
+    {
         $user = User::where('id', $id)->first();
 
         if (!$user) {

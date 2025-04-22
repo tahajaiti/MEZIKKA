@@ -55,6 +55,16 @@ class PlaylistController extends Controller
         return Res::error('Failed to retrieve playlist');
     }
 
+    public function showSongs(string $id)
+    {
+        $res = $this->playlistService->showSongs($id);
+        if ($res) {
+            return Res::success($res, 'Playlist songs retrieved successfully');
+        }
+        return Res::error('Failed to retrieve playlist songs');
+    }
+
+
     public function userPlaylists(string $id)
     {
         $res = $this->playlistService->paginateUserPlaylist($id);
