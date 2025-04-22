@@ -6,6 +6,7 @@ import LikeBtn from "../Like/LikeBtn"
 import useConfirmStore from "../../stores/useConfirmStore"
 import { useDeletePlaylist } from "../../api/services/playlist/query"
 import useToastStore from "../../stores/useToastStore"
+import { useNavigate } from "react-router"
 
 interface PlaylistCardProps {
     playlist: PlaylistData
@@ -16,6 +17,7 @@ const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
     const { showModal } = useConfirmStore();
     const { showToast } = useToastStore();
     const { mutate } = useDeletePlaylist();
+    const navigate = useNavigate();
 
     const isOwner = user?.id === playlist.user.id;
 
@@ -32,6 +34,7 @@ const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
 
     return (
         <div
+            onClick={() => navigate(`/playlist/${playlist.id}`)}
             className="relative w-full max-w-md overflow-hidden rounded-md border border-zinc-800/50 cursor-pointer
                 bg-zinc-900/90 shadow-lg transition-all duration-300 hover:-translate-y-4 hover:shadow-xl hover:border-zinc-700/90"
         >
