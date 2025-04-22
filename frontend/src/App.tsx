@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { setNavigator } from './util/navigation';
 import { AnimatePresence } from 'motion/react';
 import ConfirmScreen from './components/Global/ConfirmScreen';
+import SongContextMenu from './components/Song/SongContextMenu';
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => {
       </AnimatePresence>
       <Toast />
       <ConfirmScreen />
+      <SongContextMenu />
     </QueryClientProvider>
   )
 }
