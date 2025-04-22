@@ -7,7 +7,8 @@ import User from "../../../types/User";
 
 const search = (query: string, sort: string = "newest") => 
     api.get<Response<SongData[]>>(`/search?q=${query}&sort=${sort}`);
-const userSearch = (query: string) => api.get<Response<User[]>>(`/search/user?q=${query}`);
+const userSearch = (query: string, sort: string = "newest") => 
+    api.get<Response<User[]>>(`/search/user?q=${query}&sort=${sort}`);
 
 const searchService = {
     search,

@@ -4,7 +4,7 @@ import searchService from "./service";
 
 
 
-export const useSearch = (query: string, sort: string = "newest" ,enabled = true) => {
+export const useSearch = (query: string, sort: string = "newest", enabled = true) => {
     return useQuery({
         queryKey: ["search", "songs", query, sort],
         queryFn: () => searchService.search(query, sort),
@@ -13,10 +13,10 @@ export const useSearch = (query: string, sort: string = "newest" ,enabled = true
     });
 }
 
-export const useUserSearch = (query: string, enabled = true) => {
+export const useUserSearch = (query: string, sort: string = "newest", enabled = true) => {
     return useQuery({
-        queryKey: ["search", "users", query],
-        queryFn: () => searchService.userSearch(query),
+        queryKey: ["search", "users", query, sort],
+        queryFn: () => searchService.userSearch(query, sort),
         enabled: enabled && query.length > 0,
         staleTime: 1000 * 60 * 5,
     });
