@@ -36,7 +36,7 @@ const MiniSongCard = ({ song }: MiniSongCardProps) => {
       className="flex items-center bg-zinc-900 rounded-md p-2 cursor-pointer hover:bg-zinc-800 transition-all border border-zinc-800">
       <div className="relative w-16 h-16 mr-3 flex-shrink-0">
         <img
-          src={formatUrl(song.cover_path) || "/placeholder.svg"}
+          src={formatUrl(song.cover_path)}
           alt={`${song.name} cover`}
           className="w-full h-full object-cover rounded"
         />
