@@ -1,5 +1,4 @@
-import React from 'react'
-import { Clock } from 'lucide-react';
+import { Clock, Plus } from 'lucide-react';
 import { IoMdPlayCircle } from "react-icons/io";
 import { IoPauseCircle } from "react-icons/io5";
 import SongData from '../../types/Song';
@@ -7,6 +6,7 @@ import { formatDate, formatUrl } from '../../util/Formatters';
 import usePlayerStore from '../../stores/usePlayerStore';
 import { useNavigate } from 'react-router';
 import LikeBtn from '../Like/LikeBtn';
+import useModalStore from '../../stores/useModalStore';
 
 interface songProps {
     song: SongData;
@@ -14,7 +14,7 @@ interface songProps {
 
 const SongCard = ({ song }: songProps) => {
     const { setSong, setIsPlaying, isPlaying, currentSong } = usePlayerStore();
-
+    const { open } = useModalStore();
     const navigation = useNavigate();
 
     const handlePlay = async () => {
@@ -35,9 +35,11 @@ const SongCard = ({ song }: songProps) => {
 
 
     return (
-        <div 
-        className=" hover:-translate-y-2 transition-all hover:border hover:border-zinc-700
-        w-full max-w-xs bg-zinc-900  text-white rounded-lg overflow-hidden shadow-lg border border-zinc-800">
+        <div
+            className=" hover:-translate-y-2 transition-all hover:border hover:border-zinc-700
+                        w-full max-w-xs bg-zinc-900 text-white rounded-lg
+                        overflow-hidden shadow-lg border border-zinc-800">
+
             <div className="relative">
                 <img
                     src={formatUrl(song.cover_path)}
@@ -61,14 +63,21 @@ const SongCard = ({ song }: songProps) => {
                     </button>
                 )}
 
-                <div className="absolute top-2 right-2 bg-red-600 px-2 py-1 rounded-full text-xs font-bold">
+                <div className="absolute top-2 left-2 bg-red-600 px-2 py-1 rounded-full text-xs font-bold">
                     {song.genre.name}
                 </div>
+
+                <button
+                    onClick={() => open(song)}
+                    aria-label='add to playlist'
+                    className='absolute top-2 right-2 bg-zinc-800/60 cursor-pointer hover:bg-zinc-900/70 p-1 rounded-full text-xs font-bold'>
+                    <Plus />
+                </button>
             </div>
 
-            <div 
-            onClick={(e) => handleNav(e)}
-            className="p-4 cursor-pointer">
+            <div
+                onClick={(e) => handleNav(e)}
+                className="p-4 cursor-pointer">
                 <h3 className="font-bold text-lg text-white truncate">{song.name}</h3>
 
                 <p className="text-gray-400 text-sm mb-2">{song.user.name}</p>
