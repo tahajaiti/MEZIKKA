@@ -45,9 +45,14 @@ class PlaylistController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Playlist $playlist)
+    public function show(string $id)
     {
-        return $playlist;
+        $res = $this->playlistService->show($id);
+
+        if ($res) {
+            return Res::success($res, 'Playlist retrieved successfully');
+        }
+        return Res::error('Failed to retrieve playlist');
     }
 
     /**
@@ -59,7 +64,7 @@ class PlaylistController extends Controller
         $res = $this->playlistService->update($request, $playlist);
 
         return $res ? Res::success($res, 'Playlist updated successfully')
-        : Res::error('Failed to update playlist');
+            : Res::error('Failed to update playlist');
     }
 
     /**
@@ -70,6 +75,6 @@ class PlaylistController extends Controller
         Gate::authorize('delete', $playlist);
         $res = $this->playlistService->delete($playlist);
         return $res ? Res::success($res, 'Playlist deleted successfully')
-        : Res::error('Failed to delete playlist');
+            : Res::error('Failed to delete playlist');
     }
 }

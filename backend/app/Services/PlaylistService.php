@@ -8,10 +8,12 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\PlaylistPostRequest;
 use App\Http\Requests\PlaylistUpdateRequest;
 
-class PlaylistService {
+class PlaylistService
+{
 
 
-    public function index(){
+    public function index()
+    {
 
         $playlists = Playlist::with([
             'user.profile'
@@ -20,7 +22,19 @@ class PlaylistService {
         return $playlists;
     }
 
-    public function create(PlaylistPostRequest $request): ?Playlist{
+    public function show(string $id)
+    {
+
+        $playlist = Playlist::findOrFail($id)->with([
+            'user.profile',
+            'songs.user:id.profile:id,username,avatar'
+        ])->withCount('likes','songs')->first();
+
+        return $playlist ? $playlist : null;
+    }
+
+    public function create(PlaylistPostRequest $request): ?Playlist
+    {
         $user = Auth::user();
 
         $path = $request->hasFile('cover_file') ? $request->file('cover_file')->store('playlist/covers', 'public') : null;
@@ -35,7 +49,8 @@ class PlaylistService {
         return $playlist ? $playlist : null;
     }
 
-    public function update(PlaylistUpdateRequest $request, Playlist $playlist) {
+    public function update(PlaylistUpdateRequest $request, Playlist $playlist)
+    {
         $path = $request->hasFile('cover_file') ? $request->file('cover_file')->store('playlist/covers', 'public') : null;
 
         if ($playlist && $playlist->cover && $path) {
@@ -52,7 +67,8 @@ class PlaylistService {
         return $res ? $request : null;
     }
 
-    public function delete(Playlist $playlist): bool {
+    public function delete(Playlist $playlist): bool
+    {
         if ($playlist && $playlist->cover) {
             Storage::disk('public')->delete($playlist->cover);
         }
