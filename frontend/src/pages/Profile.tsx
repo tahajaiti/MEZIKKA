@@ -18,12 +18,14 @@ const tabs = [
 ];
 
 const Profile: React.FC = () => {
-  const { id } = useParams();
+  const { userId } = useParams();
   const { user } = useAuthStore();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("beats");
 
-  if (!id || !user) return <ProfileSkeleton />;
+  if (!user) return <ProfileSkeleton />;
+  
+  const id = userId ? userId : user.id;
 
   const isCurrentUser = Number(id) === user.id;
 
@@ -44,7 +46,7 @@ const Profile: React.FC = () => {
       transition={{ duration: 0.2 }}
       className="h-full w-full px-12 py-6 bg-gradient-to-br from-gray-800 to-zinc-950">
       <div className="grid grid-cols-1 lg:grid-cols-[350px_1fr] gap-6">
-        <ProfileCard userId={id} />
+        <ProfileCard userId={String(id)} />
 
         <div className="space-y-6">
           {/* Tabs */}
@@ -76,9 +78,9 @@ const Profile: React.FC = () => {
                 <LikesTab />
               )}
 
-              {activeTab === "followers" && <FollowTabs userId={id} type="followers" />}
+              {activeTab === "followers" && <FollowTabs userId={String(id)} type="followers" />}
 
-              {activeTab === "following" && <FollowTabs userId={id} type="follows" />}
+              {activeTab === "following" && <FollowTabs userId={String(id)} type="follows" />}
             </div>
           </div>
         </div>

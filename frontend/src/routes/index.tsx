@@ -24,6 +24,7 @@ const routes: Route[] = [
     { path: '/login', component: Login, layout: null, auth: false },
     { path: '/signup', component: Signup, layout: null, auth: false },
     { path: '/profile/:id', component: Profile, layout: MainLayout, auth: true },
+    { path: '/profile', component: Profile, layout: MainLayout, auth: true },
     { path: '/song', component: CreateSong, layout: DrumLayout, auth: true },
     { path: '/song/:id', component: Song, layout: MainLayout, auth: true },
     { path: '/search', component: Search, layout: MainLayout, auth: true },
