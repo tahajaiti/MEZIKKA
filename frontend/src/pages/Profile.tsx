@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { motion } from 'motion/react';
 import { Disc, Heart, Play, UserRoundCheck, UsersRoundIcon } from "lucide-react";
 import ProfileCard from "../components/Profile/ProfileCard";
@@ -20,11 +20,21 @@ const tabs = [
 const Profile: React.FC = () => {
   const { id } = useParams();
   const { user } = useAuthStore();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("beats");
 
   if (!id || !user) return <ProfileSkeleton />;
 
   const isCurrentUser = Number(id) === user.id;
+
+  const handleClick = (key: string) => {
+    if (isCurrentUser && key === "playlist") {
+      console.log("hehe");
+      navigate("/playlist");
+      return;
+    }
+    setActiveTab(key);
+  }
 
   return (
     <motion.div
@@ -32,7 +42,7 @@ const Profile: React.FC = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="h-full w-full px-12 py-6">
+      className="h-full w-full px-12 py-6 bg-gradient-to-br from-gray-800 to-zinc-950">
       <div className="grid grid-cols-1 lg:grid-cols-[350px_1fr] gap-6">
         <ProfileCard userId={id} />
 
@@ -46,7 +56,9 @@ const Profile: React.FC = () => {
                 return (
                   <button
                     key={tab.key}
-                    onClick={() => setActiveTab(tab.key)}
+                    onClick={() => {
+                      handleClick(tab.key);
+                    }}
                     className={`px-4 py-2 font-medium text-sm cursor-pointer flex items-center gap-2 transition-all whitespace-nowrap
                     ${activeTab === tab.key ? "text-red-500 border-b-2 border-red-500" : "text-zinc-400 hover:text-white"}`}
                   >
