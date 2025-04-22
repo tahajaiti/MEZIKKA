@@ -15,12 +15,13 @@ class SearchService
     {
 
         $query = $request->input('q');
+        $sort = $request->input('sort', 'newest');
 
         if (!$query) {
-            return false;
+            return response()->json([], 200);
         }
 
-        $songs = Song::query()
+        $songsQuery = Song::query()
             ->where(function ($q) use ($query) {
                 $q->where('name', 'ilike', "%{$query}%")
                     ->orWhere('description', 'ilike', "%{$query}%")
@@ -33,12 +34,28 @@ class SearchService
             })
             ->with([
                 'genre:id,name',
-                'user',
-                'user.profile'
-            ])->withCount('likes')
-            ->latest()
-            ->limit(15)
-            ->get();
+                'user:id',
+                'user.profile:id,user_id,username'
+            ])
+            ->withCount('likes');
+
+        switch ($sort) {
+            case 'most_liked':
+                $songsQuery->orderByDesc('likes_count');
+                break;
+            case 'least_liked':
+                $songsQuery->orderBy('likes_count');
+                break;
+            case 'oldest':
+                $songsQuery->orderBy('created_at');
+                break;
+            case 'newest':
+            default:
+                $songsQuery->orderByDesc('created_at');
+                break;
+        }
+
+        $songs = $songsQuery->limit(15)->get();
 
         return $songs;
     }
