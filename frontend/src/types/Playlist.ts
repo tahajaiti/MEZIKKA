@@ -12,6 +12,6 @@ export interface PlaylistData {
     updated_at: string;
     user: User;
     songs: SongData[];
-    song_count: number;
+    songs_count: number;
     likes_count: number;
 }
