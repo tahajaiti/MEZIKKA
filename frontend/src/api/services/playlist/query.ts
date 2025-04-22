@@ -13,6 +13,17 @@ export const useCreatePlaylist = () => {
     });
 };
 
+export const useDeletePlaylist = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (id: string) => playlistService.deletePlaylist(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['playlists'] });
+        },
+    });
+}
+
 export const useGetPlaylists = () => {
     return useQuery({
         queryKey: ['playlists'],
