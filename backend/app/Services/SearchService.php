@@ -3,14 +3,13 @@
 namespace App\Services;
 
 use App\Models\Song;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 
 
 class SearchService
 {
-
-
 
     public function search(Request $request)
     {
@@ -42,6 +41,26 @@ class SearchService
             ->get();
 
         return $songs;
+    }
+
+    public function userSearch(Request $request)
+    {
+
+        $query = $request->input('q');
+
+        if (!$query) {
+            return false;
+        }
+
+        $users = User::query()
+            ->where(function ($q) use ($query) {
+                $q->where('name', 'ilike', "%{$query}%")
+                    ->orWhereHas('profile', function ($q) use ($query) {
+                        $q->where('username', 'ilike', "%{$query}%");
+                    });
+            })->with('profile')->latest()->limit(15)->get();
+
+        return $users;
     }
 
 }
