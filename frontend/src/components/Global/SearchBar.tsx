@@ -41,13 +41,14 @@ const SearchBar = ({ isVisible, toggleSearch }: props) => {
 
     return (
         <div
-            className={`absolute left-1/2 transform translate-y-14 -translate-x-1/2 transition-all duration-300 ${isVisible ? "w-full sm:w-1/2 md:w-1/3 opacity-100" : "w-0 opacity-0"
+            className={`absolute left-1/2 transform translate-y-16 -translate-x-1/2 transition-all duration-300 ${isVisible ? "w-full sm:w-1/2 md:w-1/3 opacity-100" : "w-0 opacity-0"
                 }`}
         >
             {isVisible && (
                 <form
                     onSubmit={(e) => {
                         e.preventDefault();
+                        setSearchTerm("");
                         toggleSearch();
                     }}
                     className="w-full flex items-center"
