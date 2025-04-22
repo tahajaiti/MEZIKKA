@@ -11,6 +11,16 @@ use App\Http\Requests\PlaylistUpdateRequest;
 class PlaylistService {
 
 
+    public function index(){
+
+        $playlists = Playlist::with([
+            'user.profile','songs'
+        ])->get();
+
+
+        return $playlists;
+    }
+
     public function create(PlaylistPostRequest $request): ?Playlist{
         $user = Auth::user();
 

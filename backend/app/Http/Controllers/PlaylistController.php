@@ -23,7 +23,11 @@ class PlaylistController extends Controller
      */
     public function index()
     {
-        //
+        $res = $this->playlistService->index();
+        if ($res) {
+            return Res::success($res, 'Playlists retrieved successfully');
+        }
+        return Res::error('Failed to retrieve playlists');
     }
 
     /**
