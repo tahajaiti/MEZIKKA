@@ -26,7 +26,7 @@ class SongController extends Controller
      */
     public function index()
     {
-        $res = $this->songService->index();
+        $res = $this->songService->index(false);
         if ($res){
             return Res::success($res);
         }
@@ -50,6 +50,14 @@ class SongController extends Controller
             return Res::success($res);
         }
         return Res::error('Failed to get songs by genre');
+    }
+
+    public function getMostLiked() {
+        $res = $this->songService->getMostLiked(false);
+        if ($res){
+            return Res::success($res);
+        }
+        return Res::error('Failed to get most liked songs');
     }
 
     /**

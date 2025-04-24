@@ -6,90 +6,66 @@ use App\Models\Song;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\SongPostRequest;
-use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\SongUpdateRequest;
 use App\Exceptions\UnauthorizedException;
+use Illuminate\Support\Facades\Storage;
 
 class SongService
 {
-
-    public function index()
+    public function index($paginate = true)
     {
-        $user = Auth::user();
-
-        $songs = Song::with(['user.profile', 'genre'])
-            ->withCount('likes')
-            ->latest()->limit(10)->get();
-
-        if ($user) {
-            $likedSongIds = $user->likes()
-                ->where('likeable_type', Song::class)
-                ->pluck('likeable_id')->toArray();
-
-            $songs->each(function ($song) use ($likedSongIds) {
-                $song->liked_by_user = in_array($song->id, $likedSongIds);
-            });
-        } else {
-            $songs->each(function ($song) {
-                $song->liked_by_user = false;
-            });
-        }
-
-        return $songs;
+        return $this->getSongs($paginate);
     }
 
-
-    public function getByGenre(string $genre)
+    public function getMostLiked($paginate = true)
     {
+        return $this->getSongs($paginate, 'likes_count');
+    }
 
+    public function getByGenre(string $genre, $paginate = true)
+    {
+        return $this->getSongs($paginate, null, $genre);
+    }
+
+    private function getSongs($paginate = true, $sortBy = null, $genre = null)
+    {
         $user = Auth::user();
 
         $query = Song::with(['user.profile', 'genre'])->withCount('likes');
 
-        if (strtolower($genre) !== 'all') {
+        if ($sortBy === 'likes_count') {
+            $query->orderByDesc('likes_count');
+        }
+
+        if ($genre && strtolower($genre) !== 'all') {
             $query->whereHas('genre', function ($q) use ($genre) {
                 $q->whereRaw('name ILIKE ?', [$genre]);
             });
         }
 
-        $songs = $query->latest()->paginate(10);
-
-
-        if ($user) {
-            $likedSongIds = $user->likes()
-                ->where('likeable_type', Song::class)
-                ->pluck('likeable_id')->toArray();
-
-            $songs->each(function ($song) use ($likedSongIds) {
-                $song->liked_by_user = in_array($song->id, $likedSongIds);
-            });
+        if ($paginate) {
+            $songs = $query->latest()->paginate(10);
         } else {
-            $songs->each(function ($song) {
-                $song->liked_by_user = false;
-            });
+            $songs = $query->latest()->get();
         }
 
-        return $songs;
+        $songs->each(function ($song) use ($user) {
+            $song->liked_by_user = $user ? in_array($song->id, $user->likes()->pluck('likeable_id')->toArray()) : false;
+        });
 
+        return $songs;
     }
 
     public function userSongs(string $id)
     {
         $user = User::findOrFail($id);
-        $songs = Song::where('user_id', $user->id)->paginate(10);
-
-        return $songs;
+        return Song::where('user_id', $user->id)->get();
     }
 
     public function show(string $songId): ?Song
     {
-        $song = Song::with(['user.profile', 'genre'])
-            ->withCount('likes')
-            ->findOrFail($songId);
-
-        return $song ?? null;
+        return Song::with(['user.profile', 'genre'])->withCount('likes')->findOrFail($songId);
     }
-
 
     public function create(SongPostRequest $request): ?Song
     {
@@ -97,54 +73,52 @@ class SongService
         $data = $request->validated();
         $data['user_id'] = $user->id;
 
-        $song_path = $request->hasFile('song_file') ? $request->file('song_file')->store('songs/files', 'public') : null;
-        $cover_path = $request->hasFile('cover_file') ? $request->file('cover_file')->store('songs/covers', 'public') : null;
+        $data['file_path'] = $this->handleFileUpload($request, 'song_file', 'songs/files');
+        $data['cover_path'] = $this->handleFileUpload($request, 'cover_file', 'songs/covers');
 
-        $data['file_path'] = $song_path;
-        $data['cover_path'] = $cover_path;
         $data['metadata'] = json_decode($data['metadata']);
-        $data['description'] = $request->has('description') ? $request->input('description') : null;
-        $data['genre_id'] = $request->has('genre_id') ? $request->input('genre_id') : null;
+        $data['description'] = $request->input('description', null);
+        $data['genre_id'] = $request->input('genre_id', null);
 
-        $song = Song::create($data);
-
-        return $song ?? null;
+        return Song::create($data);
     }
 
     public function update(SongUpdateRequest $request, string $songId): ?Song
     {
-        $user = Auth::user();
-        $song = Song::where('id', $songId)->where('user_id', $user->id)->first();
-
-        if (!$song) {
-            throw new UnauthorizedException();
-        }
-
+        $song = $this->authorizeUserSong($songId);
         $data = $request->validated();
 
         if ($request->hasFile('cover_file')) {
-            $data['cover_path'] = $request->file('cover_file')->store('covers', 'public');
+            $data['cover_path'] = $this->handleFileUpload($request, 'cover_file', 'covers');
         }
 
-        $updated = $song->update($data);
-
-        return $updated ? $song : null;
+        return $song->update($data) ? $song : null;
     }
 
     public function destroy(string $songId): bool
     {
-        $user = Auth::user();
-        $song = Song::where('id', $songId)->where('user_id', $user->id)->first();
-
-        if (!$song) {
-            throw new UnauthorizedException();
-        }
+        $song = $this->authorizeUserSong($songId);
 
         $res = $song->delete();
         Storage::disk('public')->delete($song->file_path);
         Storage::disk('public')->delete($song->cover_path);
 
-        return $res ? true : false;
+        return $res;
     }
 
+    private function handleFileUpload($request, $fileInputName, $storagePath)
+    {
+        return $request->hasFile($fileInputName) ? $request->file($fileInputName)->store($storagePath, 'public') : null;
+    }
+
+    private function authorizeUserSong(string $songId)
+    {
+        $song = Song::where('id', $songId)->where('user_id', Auth::id())->first();
+
+        if (!$song) {
+            throw new UnauthorizedException();
+        }
+
+        return $song;
+    }
 }
