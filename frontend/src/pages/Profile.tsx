@@ -18,16 +18,16 @@ const tabs = [
 ];
 
 const Profile: React.FC = () => {
-  const { userId } = useParams();
+  const { id } = useParams();
   const { user } = useAuthStore();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("beats");
 
   if (!user) return <ProfileSkeleton />;
   
-  const id = userId ? userId : user.id;
+  const userId = id ? id : user.id;
 
-  const isCurrentUser = Number(id) === user.id;
+  const isCurrentUser = Number(userId) === user.id;
 
   const handleClick = (key: string) => {
     if (isCurrentUser && key === "playlist") {
@@ -72,15 +72,15 @@ const Profile: React.FC = () => {
             </div>
 
             <div className="pt-6 overflow-auto">
-              {activeTab === "beats" && <SongTab id={id} />}
+              {activeTab === "beats" && <SongTab id={userId} />}
 
               {activeTab === "likes" && (
                 <LikesTab />
               )}
 
-              {activeTab === "followers" && <FollowTabs userId={String(id)} type="followers" />}
+              {activeTab === "followers" && <FollowTabs userId={String(userId)} type="followers" />}
 
-              {activeTab === "following" && <FollowTabs userId={String(id)} type="follows" />}
+              {activeTab === "following" && <FollowTabs userId={String(userId)} type="follows" />}
             </div>
           </div>
         </div>
