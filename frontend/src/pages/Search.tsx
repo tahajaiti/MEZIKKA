@@ -1,27 +1,32 @@
-import { useLocation } from 'react-router';
+import { useSearchParams } from 'react-router';
 import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import SearchSongTab from '../components/Search/SearchSongTab';
 import SearchUserTab from '../components/Search/SearchUserTab';
+import SearchPlaylistTab from '../components/Search/SearchPlaylistTab';
 
 const tabs = [
-    { key: "beats", name: "Beats", },
-    { key: "producers", name: "Producers", },
-    { key: "playlists", name: "Playlists", },
+    { key: "beats", name: "Beats" },
+    { key: "producers", name: "Producers" },
+    { key: "playlists", name: "Playlists" },
 ];
 
 const Search = () => {
+    const [searchParams, setSearchParams] = useSearchParams();
     const [term, setTerm] = useState("");
-    const [activeTab, setActiveTab] = useState("beats");
 
-    const query = new URLSearchParams(useLocation().search).get("q");
+    const query = searchParams.get("q") || "";
+    const tab = searchParams.get("tab") || "beats";
 
     useEffect(() => {
-        if (query) {
-            setTerm(query);
-        }
+        setTerm(query);
     }, [query]);
 
+    const handleTabChange = (key: string) => {
+        const updatedParams = new URLSearchParams(searchParams.toString());
+        updatedParams.set("tab", key);
+        setSearchParams(updatedParams);
+    };
 
     return (
         <motion.div
@@ -36,27 +41,22 @@ const Search = () => {
                     Searching for "{term}"
                 </h2>
 
-                <div className='flex overflow-x-auto mb-5'>
-                    {tabs.map(tab => (
+                <div className="flex overflow-x-auto mb-5">
+                    {tabs.map(t => (
                         <button
-                            key={tab.key}
-                            onClick={() => setActiveTab(tab.key)}
+                            key={t.key}
+                            onClick={() => handleTabChange(t.key)}
                             className={`px-4 py-2 font-medium text-sm cursor-pointer flex items-center gap-2 transition-all whitespace-nowrap
-                        ${activeTab === tab.key ? "text-red-500 border-b-2 border-red-500" : "text-zinc-400 hover:text-white"}`}
+                            ${tab === t.key ? "text-red-500 border-b-2 border-red-500" : "text-zinc-400 hover:text-white"}`}
                         >
-                            {tab.name}
+                            {t.name}
                         </button>
                     ))}
                 </div>
 
-                {activeTab === 'beats' && (
-                    <SearchSongTab query={term} />
-                )}
-
-                {activeTab === 'producers' && (
-                    <SearchUserTab query={term} />
-                )}
-
+                {tab === "beats" && <SearchSongTab query={term} />}
+                {tab === "producers" && <SearchUserTab query={term} />}
+                {tab === "playlists" && <SearchPlaylistTab query={term} />}
             </section>
         </motion.div>
     );
