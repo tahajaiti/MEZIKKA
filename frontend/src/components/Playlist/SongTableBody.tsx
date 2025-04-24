@@ -1,11 +1,14 @@
 import { useEffect, useRef } from "react";
-import { useInfinitePlaylistSongs } from "../../api/services/playlist/query";
+import { useInfinitePlaylistSongs, useRemoveSongFromPlaylist } from "../../api/services/playlist/query";
 import { formatDate, formatUrl } from "../../util/Formatters";
 import usePlayerStore from "../../stores/usePlayerStore";
 import { useNavigate } from "react-router";
 import { IoPauseCircle } from "react-icons/io5";
 import { IoMdPlayCircle } from "react-icons/io";
 import SongData from "../../types/Song";
+import { Trash } from "lucide-react";
+import useConfirmStore from "../../stores/useConfirmStore";
+import useToastStore from "../../stores/useToastStore";
 
 interface Props {
   pId: number;
@@ -21,7 +24,11 @@ const SongTableBody = ({ pId }: Props) => {
     isLoading
   } = useInfinitePlaylistSongs(String(pId));
 
+  const { mutate } = useRemoveSongFromPlaylist(String(pId));
+
   const { setSong, setIsPlaying, isPlaying, currentSong } = usePlayerStore();
+  const { showModal } = useConfirmStore();
+  const { showToast } = useToastStore();
   const navigate = useNavigate();
 
   const isCurrentlyPlaying = isPlaying && currentSong?.id;
@@ -66,6 +73,18 @@ const SongTableBody = ({ pId }: Props) => {
   const handleNavigation = (e: React.MouseEvent, songId: number) => {
     e.stopPropagation();
     navigate(`/song/${songId}`);
+  }
+
+
+  const handleRemove = (e: React.MouseEvent, songId: number) => {
+    e.stopPropagation();
+    showModal("Are you sure you want to remove this song from playlist?", () => {
+      mutate({ playlistId: String(pId), songId: String(songId) }, {
+        onSuccess: () => {
+          showToast("Song removed successfully", "success");
+        }
+      })
+    });
   }
 
   if (isPending) {
@@ -117,7 +136,7 @@ const SongTableBody = ({ pId }: Props) => {
                   <div
                     onClick={(e) => {
                       e.stopPropagation();
-                      navigate(`/user/${song.user.id}`);
+                      navigate(`/profile/${song.user.id}`);
                     }}
                     className="text-gray-400 text-sm hover:text-white hover:underline transition-colors"
                   >
@@ -130,10 +149,12 @@ const SongTableBody = ({ pId }: Props) => {
             <td className="py-3 text-gray-400 text-right">{song.metadata.bpm}</td>
             <td className="py-3 text-right pr-3">
               <button
-                className="text-gray-400 hover:text-white transition-colors"
-                onClick={(e) => e.stopPropagation()}
+                className="text-red-500 hover:text-red-600 transition-all cursor-pointer"
+                onClick={(e) => handleRemove(e, song.id)}
+                title="Remove from playlist"
+                aria-label="Remove from playlist"
               >
-                More
+                <Trash />
               </button>
             </td>
           </tr>

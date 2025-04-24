@@ -79,7 +79,7 @@ const PlaylistDetails = () => {
                                 <th className="pb-2">Title</th>
                                 <th className="pb-2 hidden md:table-cell">Date Added</th>
                                 <th className="pb-2 text-right">BPM</th>
-                                <th className="pb-2 text-right">Duration</th>
+                                <th className="pb-2 "></th>
                             </tr>
                         </thead>
                         <SongTableBody pId={Number(id)} />
