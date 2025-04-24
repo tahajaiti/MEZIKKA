@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Playlist;
 use App\Models\Song;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -64,7 +65,7 @@ class SearchService
     {
 
         $query = $request->input('q');
-        $sort = $request->input('sort', 'newest'); 
+        $sort = $request->input('sort', 'newest');
 
         if (!$query) {
             return false;
@@ -100,6 +101,50 @@ class SearchService
         $users = $usersQuery->limit(15)->get();
 
         return $users;
+    }
+
+    public function playlistSearch(Request $request)
+    {
+        $query = $request->input('q');
+        $sort = $request->input('sort', 'newest');
+
+        if (!$query) {
+            return response()->json([], 200);
+        }
+
+        $playlistQuery = Playlist::query()
+            ->where(function ($q) use ($query) {
+                $q->where('title', 'ilike', "%{$query}%")
+                    ->orWhere('description', 'ilike', "%{$query}%")
+                    ->orWhereHas('user.profile', function ($q) use ($query) {
+                        $q->where('username', 'ilike', "%{$query}%");
+                    });
+            })
+            ->with([
+                'user:id',
+                'user.profile:id,user_id,username'
+            ])
+            ->withCount('likes','songs');
+
+        switch ($sort) {
+            case 'most_liked':
+                $playlistQuery->orderByDesc('likes_count');
+                break;
+            case 'least_liked':
+                $playlistQuery->orderBy('likes_count');
+                break;
+            case 'oldest':
+                $playlistQuery->orderBy('created_at');
+                break;
+            case 'newest':
+            default:
+                $playlistQuery->orderByDesc('created_at');
+                break;
+        }
+
+        $playlists = $playlistQuery->limit(15)->get();
+
+        return $playlists;
     }
 
 }

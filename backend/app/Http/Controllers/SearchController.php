@@ -38,4 +38,14 @@ class SearchController extends Controller
         return Res::success($users, 'Search results');
     }
 
+    public function playlistSearch(Request $request)
+    {
+        $playlists = $this->searchService->playlistSearch($request);
+
+        if (!$playlists) {
+            return Res::error('Failed to search');
+        }
+
+        return Res::success($playlists, 'Search results');
+    }
 }
