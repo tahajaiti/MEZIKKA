@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import NewMezikkaCarousel from '../components/Home/NewMezikkaCarousel';
 import GenreCarousel from '../components/Home/GenreCarousel';
+import MostLikedCarousel from '../components/Home/MostLikedCarousel';
 
 
 const Home: React.FC = () => {
@@ -20,6 +21,7 @@ const Home: React.FC = () => {
       <div className='mx-32'>
         <GenreCarousel />
         <NewMezikkaCarousel />
+        <MostLikedCarousel />
       </div>
 
     </motion.div>
