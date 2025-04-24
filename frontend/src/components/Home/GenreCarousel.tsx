@@ -74,7 +74,7 @@ const GenreCarousel = () => {
                                     <div className="w-20 h-20 mb-6 rounded-full bg-zinc-800/50 flex items-center justify-center">
                                         <Music className="w-10 h-10 text-zinc-400" />
                                     </div>
-                                    <h3 className="text-2xl font-medium text-white mb-3">No songs found</h3>
+                                    <h3 className="text-2xl font-medium text-white mb-3">No genres found</h3>
                                 </div>
                             ))}
                 </div>
