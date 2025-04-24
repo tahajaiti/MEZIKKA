@@ -21,3 +21,12 @@ export const useUserSearch = (query: string, sort: string = "newest", enabled = 
         staleTime: 1000 * 60 * 5,
     });
 }
+
+export const usePlaylistSearch = (query: string, sort: string = "newest", enabled = true) => {
+    return useQuery({
+        queryKey: ["search", "playlists", query, sort],
+        queryFn: () => searchService.playlistSearch(query, sort),
+        enabled: enabled && query.length > 0,
+        staleTime: 1000 * 60 * 5,
+    });
+}
