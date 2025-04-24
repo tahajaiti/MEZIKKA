@@ -45,9 +45,11 @@ Route::middleware('jwt')->group(function () {
     // Songs
     Route::apiResource('songs', SongController::class);
     Route::get('/songs/user/{id}', [SongController::class, 'userSongs'])->name('songs.user');
+    Route::get('/songs/genre/{genre}', [SongController::class, 'getByGenre'])->name('songs.genre');
 
     // Genres
     Route::apiResource('genres', GenreController::class);
+    Route::get('/genres/image/{genre}', [GenreController::class, 'getImage'])->name('genres.image');
 
     // Playlists
     Route::apiResource('playlists', PlaylistController::class);
