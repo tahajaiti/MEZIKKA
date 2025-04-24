@@ -44,6 +44,14 @@ class SongController extends Controller
     }
 
 
+    public function getByGenre(string $genre) {
+        $res = $this->songService->getByGenre($genre);
+        if ($res){
+            return Res::success($res);
+        }
+        return Res::error('Failed to get songs by genre');
+    }
+
     /**
      * Store a newly created resource in storage.
      */
