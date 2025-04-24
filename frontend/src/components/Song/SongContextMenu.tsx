@@ -3,11 +3,13 @@ import { useAddSongToPlaylist, useInfiniteUserPlaylist } from "../../api/service
 import useAuthStore from "../../stores/authStore";
 import useModalStore from "../../stores/useModalStore"
 import CompactPlaylistCard from "../Playlist/CompactPlaylistCard";
+import useToastStore from "../../stores/useToastStore";
 
 
 
 const SongContextMenu = () => {
     const { isOpen, song } = useModalStore();
+    const { showToast } = useToastStore();
     const { user } = useAuthStore();
 
     const { data,
@@ -25,10 +27,13 @@ const SongContextMenu = () => {
         if (!playlistId || !song) return;
         mutate({ playlistId: String(playlistId), songId: String(song.id) }, {
             onSuccess: () => {
+                showToast("Song added to playlist", "success");
                 useModalStore.setState({ isOpen: false, song: null });
             },
             onError: (error) => {
-                console.error("Error adding song to playlist:", error);
+                showToast("Song already exists on playlist", "error");
+
+                console.error("Error adding song to playlist:", error.message);
             }
         });
     }
