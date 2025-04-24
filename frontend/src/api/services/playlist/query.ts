@@ -42,12 +42,15 @@ export const useGetPlaylist = (id: string) => {
 
 export const useInfinitePlaylistSongs = (id: string) => {
     return useInfiniteQuery({
-        queryKey: ['playlists'],
+        queryKey: ['playlists', 'songs', id],
         queryFn: ({ pageParam = 1 }) => playlistService.getPlaylistSongs(id, pageParam),
         initialPageParam: 1,
         getNextPageParam: (lastPage) => {
-            const { current_page, last_page: totalPages } = lastPage.data;
             console.log(lastPage);
+            if (!lastPage || !lastPage.data) return undefined;
+
+            const { current_page, last_page: totalPages } = lastPage.data;
+
             return current_page < totalPages ? current_page + 1 : undefined;
         },
         retry: 1,
