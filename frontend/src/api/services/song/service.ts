@@ -10,6 +10,7 @@ const getAll = () => api.get<Response<SongData[]>>('/songs');
 const getUserSongs = (id: string | number, pageParam: number = 1) =>
     api.get<PaginateResponse<SongData[]>>(`/songs/user/${id}?page=${pageParam}`);
 const getSongsByGenre = (genre: string, pageParam: number = 1) => api.get<PaginateResponse<SongData[]>>(`/songs/genre/${genre}?page=${pageParam}`);
+const getMostLikedSongs = () => api.get<Response<SongData[]>>('/songs/liked/most');
 
 const songService = {
     createSong,
@@ -17,7 +18,8 @@ const songService = {
     getSongFile,
     getAll,
     getUserSongs,
-    getSongsByGenre
+    getSongsByGenre,
+    getMostLikedSongs,
 }
 
 export default songService;

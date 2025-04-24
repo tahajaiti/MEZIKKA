@@ -43,6 +43,17 @@ export const useGetFile = (id: string | number): UseQueryResult<ArrayBuffer, Err
     });
 }
 
+export const useGetMostLikedSongs = () => {
+    return useQuery({
+        queryKey: ['songs', 'most-liked'],
+        queryFn: () => songService.getMostLikedSongs(),
+        staleTime: 5 * 60 * 1000,
+        retry: 1,
+        refetchOnWindowFocus: false,
+        enabled: true,
+    });
+}
+
 export const useGetAllSongs = (): UseQueryResult<Response<SongData[]>, Error> => {
     return useQuery({
         queryKey: ['songs'],
