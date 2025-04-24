@@ -2,7 +2,6 @@ import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse, AxiosInst
 import useAuthStore, { logout } from '../stores/authStore';
 import authService from './services/auth/service';
 
-
 interface LaravelValidationError {
     message: string;
     errors: Record<string, string[]>;
@@ -14,36 +13,12 @@ interface LaravelApiError {
     exception?: string;
 }
 
-
-const addInterceptor = (client: AxiosInstance[]) => {
-    client.forEach(c => {
-        c.interceptors.request.use(
-            (config: InternalAxiosRequestConfig) => {
-                const token = localStorage.getItem('token');
-                if (token) {
-                    config.headers.Authorization = `Bearer ${token}`;
-                }
-
-                if (config.data instanceof FormData) {
-                    delete config.headers['Content-Type'];
-                    config.headers['Content-Type'] = 'multipart/form-data';
-                }
-
-                return config;
-            },
-            (error: AxiosError) => {
-                return Promise.reject(error);
-            }
-        );
-    })
-}
-
-
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080/api';
+const REQUEST_TIMEOUT = 10000;
 
 const apiClient = axios.create({
     baseURL: API_URL,
-    timeout: 10000,
+    timeout: REQUEST_TIMEOUT,
     withCredentials: true,
     headers: {
         'Accept': 'application/json',
@@ -51,42 +26,68 @@ const apiClient = axios.create({
     }
 });
 
-
 const fileClient = axios.create({
     baseURL: API_URL,
-    timeout: 10000,
+    timeout: REQUEST_TIMEOUT,
     withCredentials: true,
     responseType: 'blob'
 });
 
-addInterceptor([apiClient, fileClient]);
+const addAuthInterceptor = (clients: AxiosInstance[]) => {
+    clients.forEach(client => {
+        client.interceptors.request.use(
+            (config: InternalAxiosRequestConfig) => {
+                const token = localStorage.getItem('token');
+                if (token) {
+                    config.headers.Authorization = `Bearer ${token}`;
+                }
+
+                if (config.data instanceof FormData) {
+                    config.headers['Content-Type'] = 'multipart/form-data';
+                }
+
+                return config;
+            },
+            (error: AxiosError) => Promise.reject(error)
+        );
+    });
+};
+
+addAuthInterceptor([apiClient, fileClient]);
 
 let isRefreshing = false;
-
 let pendingRequests: Array<() => void> = [];
 
+const processQueue = (error: Error | null = null) => {
+    pendingRequests.forEach(callback => {
+        if (error) {
+            return;
+        }
+        callback();
+    });
+
+    pendingRequests = [];
+};
+
 apiClient.interceptors.response.use(
-    (response: AxiosResponse) => {
-        return response.data;
-    },
+    (response: AxiosResponse) => response.data,
     async (error: AxiosError<LaravelApiError>) => {
-        const originalRequest = error.config as InternalAxiosRequestConfig & {_retry?: boolean};
+        const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 
         if (!error.response) {
             return Promise.reject({
-                message: 'Network error - The server is currently down please try again later',
+                message: 'Network error - The server is currently unavailable. Please try again later.',
                 status: 'network_error'
             });
         }
 
         const { status, data } = error.response;
 
-
         if (status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
 
             if (isRefreshing) {
-                return new Promise((resolve) => {
+                return new Promise(resolve => {
                     pendingRequests.push(() => {
                         resolve(apiClient(originalRequest));
                     });
@@ -96,55 +97,64 @@ apiClient.interceptors.response.use(
             isRefreshing = true;
 
             try {
-
                 const refreshResponse = await authService.refreshToken();
-                if (!refreshResponse.data) {
-                    throw new Error('No data returned');
+                if (!refreshResponse?.data) {
+                    throw new Error('No data returned from refresh token request');
                 }
 
-                const data = refreshResponse.data;
-                useAuthStore.getState().setAuth(data.token, data.user);
-                
-                pendingRequests.forEach(callback => callback());
-                pendingRequests = [];
+                const { token, user } = refreshResponse.data;
+                useAuthStore.getState().setAuth(token, user);
 
-                console.log('Token refreshed successfully');
+                processQueue();
 
                 return apiClient(originalRequest);
-            } catch (e) {
-                console.error('Refresh token error:', e);
+            } catch (refreshError) {
+                console.error('Token refresh failed:', refreshError);
                 logout();
-                pendingRequests = [];
+                processQueue(refreshError as Error);
 
                 return Promise.reject({
-                    message: 'Session_expired - Please log in again',
+                    message: 'Your session has expired. Please log in again.',
                     status: 'session_expired',
-                })
+                });
             } finally {
                 isRefreshing = false;
             }
-
         }
 
         if (status === 401 && originalRequest._retry) {
             logout();
             return Promise.reject({
-                message: 'Unauthorized - please log in again',
+                message: 'Authentication failed. Please log in again.',
                 status: 'unauthorized'
             });
         }
 
-
         switch (status) {
             case 422: {
-                const validationErr = error.response.data as LaravelValidationError;
+                const validationErr = data as LaravelValidationError;
                 return Promise.reject({
                     message: validationErr.message || 'Validation failed',
                     errors: validationErr.errors,
                     status: 'validation_error'
                 });
             }
-
+            case 403:
+                return Promise.reject({
+                    message: data?.message || 'You do not have permission to perform this action',
+                    status: 'forbidden'
+                });
+            case 404:
+                return Promise.reject({
+                    message: data?.message || 'Resource not found',
+                    status: 'not_found'
+                });
+            case 500:
+                return Promise.reject({
+                    message: 'Server error occurred. Please try again later.',
+                    status: 'server_error',
+                    error: data
+                });
             default:
                 return Promise.reject({
                     message: data?.message || 'An unexpected error occurred',
@@ -153,36 +163,40 @@ apiClient.interceptors.response.use(
                 });
         }
     }
-)
+);
 
 fileClient.interceptors.response.use(
     (response: AxiosResponse) => response.data,
     (error: AxiosError) => {
         if (!error.response) {
             return Promise.reject({
-                message: 'Network error - The server is currently down please try again later',
+                message: 'Network error - The server is currently unavailable. Please try again later.',
                 status: 'network_error',
             });
         }
 
         const { status, data } = error.response;
+
         switch (status) {
-            case 401: {
+            case 401:
                 logout();
                 return Promise.reject({
-                    message: 'Unauthorized - Please log in again',
+                    message: 'Authentication failed. Please log in again.',
                     status: 'unauthorized',
                 });
-            }
-            case 404: {
+            case 403:
+                return Promise.reject({
+                    message: 'You do not have permission to access this file',
+                    status: 'forbidden',
+                });
+            case 404:
                 return Promise.reject({
                     message: 'File not found',
                     status: 'not_found',
                 });
-            }
             default:
                 return Promise.reject({
-                    message: 'An unexpected error occurred while fetching the file',
+                    message: 'An unexpected error occurred while retrieving the file',
                     status: 'unknown_error',
                     error: data,
                 });
@@ -210,6 +224,6 @@ const api = {
 export const file = {
     get: <T>(url: string, config = {}): Promise<T> =>
         fileClient.get<T>(url, config) as unknown as Promise<T>,
-}
+};
 
 export default api;
