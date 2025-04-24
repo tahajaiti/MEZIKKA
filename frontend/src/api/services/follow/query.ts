@@ -35,8 +35,9 @@ export const useInfiniteFollows = (id: string | number, type: 'followers' | 'fol
 export const useFollow = (): UseMutationResult<Response<null>, Error, string | number> => {
     return useMutation({
         mutationFn: (id: string | number) => followService.follow(id),
-        onSuccess: (res) => {
-            console.log("Song created successfully", res);
+        onSuccess: (res, id) => {
+            console.log(id)
+            console.log("res", res);
         },
         onError: (error) => {
             console.error("Error creating song", error);
@@ -48,7 +49,7 @@ export const useUnfollow = (): UseMutationResult<Response<null>, Error, string |
     return useMutation({
         mutationFn: (id: string | number) => followService.unfollow(id),
         onSuccess: (res) => {
-            console.log("Song created successfully", res);
+            console.log("res", res);
         },
         onError: (error) => {
             console.error("Error creating song", error);
@@ -60,8 +61,8 @@ export const useToggleFollow = (isFollowing: boolean) => {
     const queryClient = useQueryClient();
 
     const mutationFn = isFollowing
-        ? followService.follow
-        : followService.unfollow;
+        ? followService.unfollow
+        : followService.follow;
 
     return useMutation({
         mutationFn: (id: string | number) => mutationFn(id),

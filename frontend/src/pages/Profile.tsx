@@ -8,6 +8,7 @@ import FollowTabs from "../components/Follow/FollowTabs";
 import LikesTab from "../components/Like/LikesTab";
 import useAuthStore from "../stores/authStore";
 import SongTab from "../components/Song/SongTab";
+import PlaylistTab from "../components/Playlist/PlaylistTab";
 
 const tabs = [
   { key: "beats", name: "Beats", icon: <Disc className="w-4 h-4" />, canSee: true },
@@ -31,7 +32,6 @@ const Profile: React.FC = () => {
 
   const handleClick = (key: string) => {
     if (isCurrentUser && key === "playlist") {
-      console.log("hehe");
       navigate("/playlist");
       return;
     }
@@ -81,6 +81,7 @@ const Profile: React.FC = () => {
               {activeTab === "followers" && <FollowTabs userId={String(userId)} type="followers" />}
 
               {activeTab === "following" && <FollowTabs userId={String(userId)} type="follows" />}
+              {activeTab === "playlist" && <PlaylistTab userId={String(userId)} />}
             </div>
           </div>
         </div>
