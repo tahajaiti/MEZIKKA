@@ -44,12 +44,16 @@ class SongService
 
         $user = Auth::user();
 
-        $songs = Song::with(['user.profile', 'genre'])
-            ->whereHas('genre', function ($query) use ($genre) {
-                $query->whereRaw('name ILIKE ?', [$genre]);
-            })
-            ->withCount('likes')
-            ->latest()->limit(10)->get();
+        $query = Song::with(['user.profile', 'genre'])->withCount('likes');
+
+        if (strtolower($genre) !== 'all') {
+            $query->whereHas('genre', function ($q) use ($genre) {
+                $q->whereRaw('name ILIKE ?', [$genre]);
+            });
+        }
+
+        $songs = $query->latest()->paginate(10);
+
 
         if ($user) {
             $likedSongIds = $user->likes()
