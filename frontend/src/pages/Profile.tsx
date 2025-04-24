@@ -45,7 +45,7 @@ const Profile: React.FC = () => {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
       className="h-full w-full px-12 py-6 bg-gradient-to-br from-gray-800 to-zinc-950">
-      <div className="grid grid-cols-1 lg:grid-cols-[350px_1fr] gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 max-w-[90rem] mx-auto">
         <ProfileCard userId={String(id)} />
 
         <div className="space-y-6">
