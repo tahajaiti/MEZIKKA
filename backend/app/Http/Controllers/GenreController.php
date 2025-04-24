@@ -24,6 +24,14 @@ class GenreController extends Controller
         return Res::success(Genre::all());
     }
 
+    public function getImage(string $genre) {
+        $res = $this->genreService->getImage($genre);
+        if ($res) {
+            return Res::success($res);
+        }
+        return Res::error('Failed to get genre image');
+    }
+
     /**
      * Store a newly created resource in storage.
      */

@@ -73,6 +73,7 @@ const Player = () => {
     if (audioRef.current) {
       const now = Date.now();
       if (now - lastUpdateRef.current > 250) {
+        console.log(audioRef.current.currentTime);
         setProgress(audioRef.current.currentTime);
         lastUpdateRef.current = now;
       }
@@ -80,7 +81,7 @@ const Player = () => {
   }
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = Number.parseFloat(e.target.value);
+    const newTime = Number.parseFloat(e.target.value)
     setProgress(newTime);
     if (audioRef.current) {
       audioRef.current.currentTime = newTime;
@@ -185,7 +186,7 @@ const Player = () => {
               min={0}
               step={0.01}
               disabled={!currentSong || isLoading}
-              className="flex-1 w-full h-2 appearance-none accent-red-500 rounded outline-none cursor-pointer"
+              className="flex-1 w-full h-2 appearance-none accent-red-500 rounded outline-none cursor-pointer transtion-all duration-300"
               style={{
                 background: `linear-gradient(to right, #ef4444 ${(progress / (duration || 1)) * 100}%, #27272a ${(progress / (duration || 1)) * 100}%)`,
               }}

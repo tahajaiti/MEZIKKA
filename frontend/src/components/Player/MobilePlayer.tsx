@@ -95,7 +95,7 @@ const MobilePlayer: React.FC<MobilePlayerProps> = ({
                         max={duration || 0}
                         min={0}
                         step={0.1}
-                        className="w-full accent-red-500 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                        className="w-full accent-red-500 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer transition-all"
                     />
 
                     <div className="flex justify-between mt-2">
