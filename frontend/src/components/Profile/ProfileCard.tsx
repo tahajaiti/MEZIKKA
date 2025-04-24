@@ -22,7 +22,7 @@ const ProfileCard: React.FC<props> = ({userId}) => {
     const [editMode, setEditMode] = useState(false);
     const [isFollowing, setIsFollowing] = useState<boolean>(false);
 
-    const followMutation = useToggleFollow(isFollowing);
+    const followMutation = useToggleFollow(!isFollowing);
 
     useEffect(() => {
         if (isError) {
@@ -44,6 +44,7 @@ const ProfileCard: React.FC<props> = ({userId}) => {
     const memberSince = formatDate(profile.created_at);
     const img = formatUrl(profile.avatar);
     const isMe = user.id === currentUser?.id;
+
 
     const handleFollow = () => {
         const newFollow = !isFollowing;
