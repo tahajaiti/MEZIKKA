@@ -9,13 +9,15 @@ const getSongFile = (path: string | number): Promise<Blob> => file.get<Blob>(`/f
 const getAll = () => api.get<Response<SongData[]>>('/songs');
 const getUserSongs = (id: string | number, pageParam: number = 1) =>
     api.get<PaginateResponse<SongData[]>>(`/songs/user/${id}?page=${pageParam}`);
+const getSongsByGenre = (genre: string, pageParam: number = 1) => api.get<PaginateResponse<SongData[]>>(`/songs/genre/${genre}?page=${pageParam}`);
 
 const songService = {
     createSong,
     getSongById,
     getSongFile,
     getAll,
-    getUserSongs
+    getUserSongs,
+    getSongsByGenre
 }
 
 export default songService;

@@ -66,3 +66,16 @@ export const useInfinitUserSongs = (id: string | number) => {
         retry: 1,
     });
 }
+
+export const useInfiniteGenreSongs = (genre: string) => {
+    return useInfiniteQuery({
+        queryKey: ['song','genre', genre],
+        queryFn: ({ pageParam = 1 }) => songService.getSongsByGenre(genre, pageParam),
+        initialPageParam: 1,
+        getNextPageParam: (lastPage) => {
+            const { current_page, last_page: totalPages } = lastPage.data;
+            return current_page < totalPages ? current_page + 1 : undefined;
+        },
+        retry: 1,
+    });
+}
