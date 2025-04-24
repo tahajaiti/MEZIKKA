@@ -11,6 +11,7 @@ import NotFound from '../pages/NotFound';
 import Search from '../pages/Search';
 import Playlist from '../pages/Playlist';
 import PlaylistDetails from '../pages/PlaylistDetails';
+import Browse from '../pages/Browse';
 
 export interface Route {
     path: string;
@@ -30,6 +31,7 @@ const routes: Route[] = [
     { path: '/search', component: Search, layout: MainLayout, auth: true },
     { path: '/playlist/:id', component: PlaylistDetails, layout: MainLayout, auth: true },
     { path: '/playlist', component: Playlist, layout: MainLayout, auth: true },
+    { path: '/browse', component: Browse, layout: MainLayout, auth: true },
     { path: '*', component: NotFound, layout: null, auth: false },
 ];
 
