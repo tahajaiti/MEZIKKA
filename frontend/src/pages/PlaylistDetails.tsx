@@ -70,7 +70,7 @@ const PlaylistDetails = () => {
                 </div>
             </div>
 
-            <div className="h-full bg-black w-full">
+            <div className="h-full bg-gradient-to-b from-black to-zinc-900 w-full">
                 <div className="px-6 py-4">
                     <table className="w-full">
                         <thead>
@@ -80,7 +80,6 @@ const PlaylistDetails = () => {
                                 <th className="pb-2 hidden md:table-cell">Date Added</th>
                                 <th className="pb-2 text-right">BPM</th>
                                 <th className="pb-2 text-right">Duration</th>
-                                <th className="w-10"></th>
                             </tr>
                         </thead>
                         <SongTableBody pId={Number(id)} />
