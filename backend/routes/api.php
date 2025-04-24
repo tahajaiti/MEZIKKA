@@ -45,7 +45,7 @@ Route::middleware('jwt')->group(function () {
 
     // Songs
     Route::apiResource('songs', SongController::class);
-    Route::get('/songs/most_liked', [SongController::class, 'getMostLiked'])->name('songs.most_liked');
+    Route::get('/songs/liked/most', [SongController::class, 'getMostLiked'])->name('songs.most_liked');
     Route::get('/songs/user/{id}', [SongController::class, 'userSongs'])->name('songs.user');
     Route::get('/songs/genre/{genre}', [SongController::class, 'getByGenre'])->name('songs.genre');
 
