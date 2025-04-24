@@ -46,7 +46,6 @@ export const useInfinitePlaylistSongs = (id: string) => {
         queryFn: ({ pageParam = 1 }) => playlistService.getPlaylistSongs(id, pageParam),
         initialPageParam: 1,
         getNextPageParam: (lastPage) => {
-            console.log(lastPage);
             if (!lastPage || !lastPage.data) return undefined;
 
             const { current_page, last_page: totalPages } = lastPage.data;
@@ -79,6 +78,18 @@ export const useAddSongToPlaylist = () => {
         mutationFn: (data: { playlistId: string, songId: string }) => playlistService.addSongToPlaylist(data.playlistId, data.songId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['playlists'] });
+        },
+    });
+}
+
+export const useRemoveSongFromPlaylist = (playlistId: string) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (data: { playlistId: string, songId: string }) => playlistService.removeSongFromPlaylist(data.playlistId, data.songId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['playlists', 'songs', playlistId] });
+            queryClient.invalidateQueries({ queryKey: ['playlists', playlistId] });
         },
     });
 }

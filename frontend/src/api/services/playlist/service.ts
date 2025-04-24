@@ -22,6 +22,7 @@ const getPlaylistSongs = (id: string, pageParam: number = 1) => api.get<Paginate
 const getUserPlaylist = (id: string, pageParam: number = 1) => api.get<PaginateResponse<PlaylistData[]>>(`/playlists/user/${id}?page=${pageParam}`);
 
 const addSongToPlaylist = (playlistId: string, songId: string) => api.post<Response<PlaylistData>>(`/playlists/${playlistId}/songs/${songId}`);
+const removeSongFromPlaylist = (playlistId: string, songId: string) => api.delete<Response<PlaylistData>>(`/playlists/${playlistId}/songs/${songId}`);
 
 
 const playlistService = {
@@ -31,7 +32,8 @@ const playlistService = {
     getPlaylist,
     getUserPlaylist,
     getPlaylistSongs,
-    addSongToPlaylist
+    addSongToPlaylist,
+    removeSongFromPlaylist,
 };
 
 export default playlistService;
