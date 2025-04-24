@@ -13,11 +13,14 @@ const Home: React.FC = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="w-full h-full pt-16 p-8 bg-gradient-to-br from-red-950 to-zinc-950 overflow-y-auto flex flex-col gap-8">
+      className="w-full h-full pt-16 p-8 bg-gradient-to-br from-red-900 to-zinc-950 overflow-y-auto flex flex-col gap-8">
 
-      <NewMezikkaCarousel />
 
-      <GenreCarousel />
+
+      <div className='mx-32'>
+        <GenreCarousel />
+        <NewMezikkaCarousel />
+      </div>
 
     </motion.div>
   )
