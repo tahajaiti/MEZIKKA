@@ -20,7 +20,6 @@ export interface Route {
 }
 
 const routes: Route[] = [
-    { path: '*', component: NotFound, layout: null, auth: false },
     { path: '/', component: Home, layout: MainLayout, auth: true },
     { path: '/login', component: Login, layout: null, auth: false },
     { path: '/signup', component: Signup, layout: null, auth: false },
@@ -29,8 +28,9 @@ const routes: Route[] = [
     { path: '/song', component: CreateSong, layout: DrumLayout, auth: true },
     { path: '/song/:id', component: Song, layout: MainLayout, auth: true },
     { path: '/search', component: Search, layout: MainLayout, auth: true },
-    { path: '/playlist', component: Playlist, layout: MainLayout, auth: true },
     { path: '/playlist/:id', component: PlaylistDetails, layout: MainLayout, auth: true },
+    { path: '/playlist', component: Playlist, layout: MainLayout, auth: true },
+    { path: '*', component: NotFound, layout: null, auth: false },
 ];
 
 export default routes;
