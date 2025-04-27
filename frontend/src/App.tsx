@@ -25,7 +25,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <NavigationHandler />
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="sync">
         <Routes>
           {render(routes)}
         </Routes>
