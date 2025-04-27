@@ -82,8 +82,8 @@ Route::middleware('jwt')->group(function () {
     Route::get('/users/{id}', [UserController::class, 'show'])->name('user.show');
 
     Route::middleware('role:admin')->group(function () {
-        Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
+        Route::get('/statistics', [StatisticsController::class, 'getStatistics'])->name('statistics.index');
     });
 
-    
+
 });
