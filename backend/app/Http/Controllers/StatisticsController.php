@@ -16,16 +16,37 @@ class StatisticsController extends Controller
         $this->statisticsService = $statisticsService;
     }
 
-
-    public function getStatistics()
+    public function getUserStats(string $period)
     {
-        $statistics = $this->statisticsService->getStats();
+        $userGrowth = $this->statisticsService->getUserStats($period);
 
-        if (!$statistics) {
-            return Res::error('Failed to get statistics');
+        if (!$userGrowth) {
+            return Res::error('Failed to get user growth');
         }
 
-        return Res::success($statistics, 'Statistics retrieved successfully');
+        return Res::success($userGrowth, 'User growth retrieved successfully');
+    }
+
+    public function getSongStats(string $period)
+    {
+        $songGrowth = $this->statisticsService->getSongStats($period);
+
+        if (!$songGrowth) {
+            return Res::error('Failed to get song growth');
+        }
+
+        return Res::success($songGrowth, 'Song growth retrieved successfully');
+    }
+
+    public function getPlaylistStats(string $period)
+    {
+        $playlistGrowth = $this->statisticsService->getPlaylistStats($period);
+
+        if (!$playlistGrowth) {
+            return Res::error('Failed to get playlist growth');
+        }
+
+        return Res::success($playlistGrowth, 'Playlist growth retrieved successfully');
     }
 
 }
