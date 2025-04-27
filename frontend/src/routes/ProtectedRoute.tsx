@@ -28,6 +28,10 @@ const ProtectedRoute = ({ children, admin }: ProtectedRouteProps) => {
         return null;
     }
 
+    if (admin && !isAdmin) {
+        return null;
+    }
+
     return children;
 };
 
