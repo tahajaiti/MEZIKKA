@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import SearchSongTab from '../components/Search/SearchSongTab';
 import SearchUserTab from '../components/Search/SearchUserTab';
 import SearchPlaylistTab from '../components/Search/SearchPlaylistTab';
+import SearchBar from '../components/Global/SearchBar';
 
 const tabs = [
     { key: "beats", name: "Beats" },
@@ -34,11 +35,14 @@ const Search = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="w-full h-full pt-20 px-6 sm:px-12 pb-12 bg-gradient-to-br from-purple-950 to-zinc-950 text-white overflow-y-auto"
+            className="w-full h-full pt-10 px-6 sm:px-12 pb-12 bg-gradient-to-br from-purple-950 to-zinc-950 
+            text-white overflow-y-auto flex flex-col gap-10"
         >
-            <section className="max-w-5xl mx-auto">
+            <SearchBar/>
+
+            <section className="max-w-5xl mx-auto w-full">
                 <h2 className="text-3xl sm:text-4xl font-bold mb-6">
-                    Searching for "{term}"
+                    Searching for "{term || "..." }"
                 </h2>
 
                 <div className="flex overflow-x-auto mb-5">
