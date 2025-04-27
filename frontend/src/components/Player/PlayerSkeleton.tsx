@@ -8,7 +8,7 @@ const PlayerSkeleton = () => {
         return (
             <div className="bg-black w-full h-16 flex items-center p-2 border-t border-zinc-900 sticky bottom-0 left-0 right-0 z-50">
                 <div className="flex items-center w-full">
-                    <div className="h-12 w-12 bg-zinc-800 rounded-md mr-3" />
+                    <div className="h-12 w-12 bg-zinc-800 rounded-sm mr-3" />
 
                     <div className="flex-1 overflow-hidden mr-3">
                         <div className="h-3 w-32 bg-zinc-800 mb-2" />
@@ -26,7 +26,7 @@ const PlayerSkeleton = () => {
     return (
         <div className="bg-black w-full h-20 md:h-24 grid grid-cols-1 md:grid-cols-3 items-center p-2 md:p-4 border-t border-zinc-900 sticky bottom-0 left-0 right-0 z-50">
             <div className="hidden md:flex items-center gap-4">
-                <div className="h-14 w-14 md:h-16 md:w-16 bg-zinc-800 rounded-md" />
+                <div className="h-14 w-14 md:h-16 md:w-16 bg-zinc-800 rounded-sm" />
                 <div className="flex flex-col justify-center gap-2 overflow-hidden">
                     <div className="h-4 w-32 bg-zinc-800" />
                     <div className="h-3 w-24 bg-zinc-800" />
@@ -34,7 +34,6 @@ const PlayerSkeleton = () => {
                 <Heart className="text-zinc-800 ml-4" />
             </div>
 
-            {/* Player controls */}
             <div className="flex flex-col items-center gap-2 col-span-1 md:col-span-1">
                 <div className="flex items-center gap-4">
                     <div className="bg-zinc-800 rounded-full p-1.5 md:p-2">
