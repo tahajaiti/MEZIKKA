@@ -5,6 +5,7 @@ import { useGetPlaylist } from "../api/services/playlist/query";
 import { PlaylistData } from "../types/Playlist";
 import { formatUrl } from "../util/Formatters";
 import SongTableBody from "../components/Playlist/SongTableBody";
+import LikeBtn from "../components/Like/LikeBtn";
 
 const PlaylistDetails = () => {
     const { id } = useParams();
@@ -56,6 +57,7 @@ const PlaylistDetails = () => {
                     <h2 className="text-xs font-semibold tracking-wider mb-2">PLAYLIST</h2>
                     <h1 className="text-2xl md:text-5xl font-bold mb-2">{playlist.title}</h1>
                     <p className="text-sm text-gray-300 mb-4 max-w-2xl">{playlist.description}</p>
+
                     <div className="flex items-center text-sm justify-center md:justify-start">
                         <div className="flex items-center">
                             <Link to={`/profile/${playlist.user?.id}`} className="font-semibold hover:text-white/70">
@@ -66,7 +68,11 @@ const PlaylistDetails = () => {
                         <span id="likes-count">{playlist.likes_count} likes</span>
                         <span className="mx-1">•</span>
                         <span id="song-count">{playlist.songs_count || 0} songs</span>
+                        <div className="ml-4 flex items-center scale-105 mt-1" >
+                            <LikeBtn type="playlist" where="card" song={playlist} />
+                        </div>
                     </div>
+
                 </div>
             </div>
 
