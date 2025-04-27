@@ -1,18 +1,15 @@
 import { DoorOpen, PlusIcon, Search, Shield } from "lucide-react";
-import { useState } from "react";
 import useAuthStore from "../../stores/authStore";
 import { formatUrl } from "../../util/Formatters";
 import MezikkaText from "../Texts/MezikkaText";
 import { Link } from "react-router";
 import { logout } from "../../stores/authStore";
 import { useLogout } from "../../api/services/auth/query";
-import SearchBar from "./SearchBar";
 
 const Header = () => {
   const { profile, user } = useAuthStore();
   const { mutate } = useLogout();
   const img = formatUrl(profile?.avatar);
-  const [isSearchVisible, setIsSearchVisible] = useState(false);
 
   const isAdmin = user?.role.name === "admin";
 
@@ -25,10 +22,6 @@ const Header = () => {
         console.error("Logout error:", error);
       },
     });
-  };
-
-  const toggleSearch = () => {
-    setIsSearchVisible(!isSearchVisible);
   };
 
   return (
@@ -49,22 +42,14 @@ const Header = () => {
         </Link>
       </div>
 
-      <div className={`absolute left-0 right-0 mx-auto w-full max-w-md px-4 transition-all duration-300 ${
-        isSearchVisible ? "top-16 opacity-100" : "-top-20 opacity-0 pointer-events-none"
-      } md:static md:opacity-100 md:pointer-events-auto md:w-1/3 md:max-w-xs lg:max-w-sm xl:max-w-md md:px-0`}>
-        <SearchBar isVisible={isSearchVisible} toggleSearch={toggleSearch} />
-      </div>
-
       <div className="flex items-center gap-1 xs:gap-2 sm:gap-3 md:gap-4">
-        <button
-          onClick={toggleSearch}
-          className={`p-1 sm:p-1.5 md:p-2 hover:bg-zinc-500/40 rounded-full transition-all cursor-pointer md:hidden ${
-            isSearchVisible ? "bg-zinc-500/40" : "bg-transparent"
+        <Link to="/search"
+          className={`p-1 sm:p-1.5 md:p-2 hover:bg-zinc-500/40 rounded-full transition-all cursor-pointer 
           }`}
           aria-label="Toggle search"
         >
           <Search className="w-4 h-4 sm:w-5 sm:h-5" />
-        </button>
+        </Link>
 
         {isAdmin && (
           <Link 

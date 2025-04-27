@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Playlist;
 use App\Models\Song;
 use App\Models\User;
-use App\Services\Interfaces\ISearchService;
+use App\Contracts\ISearchService;
 use Illuminate\Http\Request;
 
 
