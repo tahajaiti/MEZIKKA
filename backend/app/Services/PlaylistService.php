@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Models\Playlist;
-use App\Services\Interfaces\IPlaylistService;
+use App\Contracts\IPlaylistService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\PlaylistPostRequest;

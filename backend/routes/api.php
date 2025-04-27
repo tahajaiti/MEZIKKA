@@ -12,6 +12,7 @@ use App\Http\Controllers\FollowController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\PlaylistItemController;
+use App\Http\Controllers\StatisticsController;
 
 // Auth Routes
 Route::prefix('auth')->group(function () {
@@ -79,4 +80,10 @@ Route::middleware('jwt')->group(function () {
 
     // Users
     Route::get('/users/{id}', [UserController::class, 'show'])->name('user.show');
+
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
+    });
+
+    
 });
