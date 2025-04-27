@@ -4,17 +4,25 @@ import useAuthStore from '../stores/authStore';
 
 interface ProtectedRouteProps {
     children: JSX.Element;
+    admin?: boolean;
 }
 
-const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+const ProtectedRoute = ({ children, admin }: ProtectedRouteProps) => {
     const { isAuthenticated } = useAuthStore();
+    const { user } = useAuthStore();
     const navigate = useNavigate();
+
+    const isAdmin = user?.role.name === 'admin';
 
     useEffect(() => {
         if (!isAuthenticated) {
             navigate('/login', { replace: true });
         }
-    }, [isAuthenticated, navigate]);
+
+        if (admin && !isAdmin) {
+            navigate('/', { replace: true });
+        }
+    }, [isAuthenticated, navigate, admin, isAdmin]);
 
     if (!isAuthenticated) {
         return null;
