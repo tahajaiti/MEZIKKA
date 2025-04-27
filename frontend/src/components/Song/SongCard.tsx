@@ -17,7 +17,7 @@ const SongCard = ({ song }: songProps) => {
     const { open } = useModalStore();
     const navigation = useNavigate();
 
-    const handlePlay = async () => {
+    const handlePlay = () => {
         setSong(song);
         setIsPlaying(true);
     }
@@ -40,13 +40,12 @@ const SongCard = ({ song }: songProps) => {
                         w-full max-w-xs bg-zinc-900 text-white rounded-lg
                         overflow-hidden shadow-lg border border-zinc-800">
 
-            <div className="relative">
+            <div className="relative bg-white">
                 <img
                     src={formatUrl(song.cover_path)}
                     alt="cover"
                     className="w-full h-48 object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
 
                 {yes ? (
                     <button
