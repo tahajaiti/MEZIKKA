@@ -107,6 +107,8 @@ apiClient.interceptors.response.use(
 
                 processQueue();
 
+                console.log('Token refreshed successfully');
+
                 return apiClient(originalRequest);
             } catch (refreshError) {
                 console.error('Token refresh failed:', refreshError);
