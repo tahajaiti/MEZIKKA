@@ -3,9 +3,14 @@ import { motion } from 'motion/react'
 import { useGetSong } from '../api/services/song/query';
 import { formatDate, formatUrl } from '../util/Formatters';
 import { Calendar, Clock, Music, User } from 'lucide-react';
+import LikeBtn from '../components/Like/LikeBtn';
+import usePlayerStore from '../stores/usePlayerStore';
+import { IoPauseCircle } from 'react-icons/io5';
+import { IoMdPlayCircle } from 'react-icons/io';
 
 const Song = () => {
     const { id } = useParams();
+    const { setSong, setIsPlaying, isPlaying, currentSong } = usePlayerStore();
 
     const { data } = useGetSong(id!);
 
@@ -21,15 +26,27 @@ const Song = () => {
 
     const songRelease = formatDate(song?.created_at);
 
+    const handlePlay = () => {
+        setSong(song);
+        setIsPlaying(true);
+    }
+
+    const handlePause = () => {
+        setIsPlaying(false);
+    }
+
+    const yes = isPlaying && currentSong?.id === song.id ? true : false;
+
+
     return (
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className='bg-black rounded-xl h-full w-full border border-zinc-800 shadow-lg overflow-auto'>
+            className='bg-black h-full w-full border border-zinc-800 shadow-lg overflow-auto'>
             <div className="relative">
-                <div className="aspect-square max-h-[500px] w-full overflow-hidden bg-zinc-800">
+                <div className="aspect-square max-h-[500px] w-full overflow-hidden bg-zinc-700">
                     <img
                         src={img}
                         alt={song?.name}
@@ -39,21 +56,41 @@ const Song = () => {
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
 
+                {yes ? (
+                    <button
+                        onClick={handlePause}
+                        className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-all">
+                        <IoPauseCircle size={80} className="text-white cursor-pointer hover:text-red-500 transition-all" />
+                    </button>
+
+                ) : (
+                    <button
+                        onClick={handlePlay}
+                        className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-all">
+                        <IoMdPlayCircle size={80} className="text-white cursor-pointer hover:text-red-500 transition-all" />
+                    </button>
+                )}
+
                 <div className="absolute bottom-0 left-4 p-6">
                     <h1 className="text-4xl font-bold text-white mb-6">{song?.name}</h1>
-                    <Link to={`/profile/${user?.id}`} className="flex items-center gap-4 group">
-                        <div className="w-15 h-15 rounded-full overflow-hidden border-2 border-zinc-800">
-                            <img
-                                src={userImg}
-                                alt={user?.profile.username}
-                                className="w-full h-full object-cover"
-                            />
+                    <div className='flex items-center gap-10'>
+                        <Link to={`/profile/${user?.id}`} className="flex items-center gap-4 group">
+                            <div className="w-15 h-15 rounded-full overflow-hidden border-2 border-zinc-800">
+                                <img
+                                    src={userImg}
+                                    alt={user?.profile.username}
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                            <div className="text-zinc-300 group-hover:text-white flex flex-col items-center transition-colors">
+                                <span className="font-medium text-lg">{user.name}</span>
+                                <span className="text-zinc-400 text-sm">@{user.profile.username}</span>
+                            </div>
+                        </Link>
+                        <div className='scale-125'>
+                            <LikeBtn type='song' where='card' song={song} />
                         </div>
-                        <div className="text-zinc-300 group-hover:text-white flex flex-col items-center transition-colors">
-                            <span className="font-medium text-lg">{user.name}</span>
-                            <span className="text-zinc-400 text-sm">@{user.profile.username}</span>
-                        </div>
-                    </Link>
+                    </div>
                 </div>
             </div>
 
