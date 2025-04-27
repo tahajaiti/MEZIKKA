@@ -12,12 +12,15 @@ import Search from '../pages/Search';
 import Playlist from '../pages/Playlist';
 import PlaylistDetails from '../pages/PlaylistDetails';
 import Browse from '../pages/Browse';
+import Dashboard from '../pages/Dashboard';
+import AdminLayout from '../layouts/AdminLayout';
 
 export interface Route {
     path: string;
     component: ComponentType;
     layout: ComponentType | null;
     auth: boolean;
+    admin?: boolean;
 }
 
 const routes: Route[] = [
@@ -32,6 +35,7 @@ const routes: Route[] = [
     { path: '/playlist/:id', component: PlaylistDetails, layout: MainLayout, auth: true },
     { path: '/playlist', component: Playlist, layout: MainLayout, auth: true },
     { path: '/browse', component: Browse, layout: MainLayout, auth: true },
+    { path: '/admin', component: Dashboard, layout: AdminLayout, auth: true, admin: true },
     { path: '*', component: NotFound, layout: null, auth: false },
 ];
 
