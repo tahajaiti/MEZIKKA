@@ -18,7 +18,7 @@ const Home: React.FC = () => {
 
 
 
-      <div className='mx-32'>
+      <div className='lg:mx-32 transition-all'>
         <GenreCarousel />
         <NewMezikkaCarousel />
         <MostLikedCarousel />
