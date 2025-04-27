@@ -82,7 +82,11 @@ Route::middleware('jwt')->group(function () {
     Route::get('/users/{id}', [UserController::class, 'show'])->name('user.show');
 
     Route::middleware('role:admin')->group(function () {
-        Route::get('/statistics', [StatisticsController::class, 'getStatistics'])->name('statistics.index');
+        Route::get('/stats/user/{period}', [StatisticsController::class, 'getUserStats'])->name('statistics.index');
+        Route::get('/stats/song/{period}', [StatisticsController::class, 'getSongStats'])->name('statistics.song');
+        Route::get('/stats/playlist/{period}', [StatisticsController::class, 'getPlaylistStats'])->name('statistics.playlist');
+
+        
     });
 
 
