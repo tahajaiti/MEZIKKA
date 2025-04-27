@@ -14,7 +14,7 @@ const GenreCarousel = () => {
         if (data && data.data) {
             const defaultGenre: Genre = {
                 id: 0,
-                name: "All",
+                name: "All Genres",
                 created_at: new Date(),
                 updated_at: new Date(),
             }

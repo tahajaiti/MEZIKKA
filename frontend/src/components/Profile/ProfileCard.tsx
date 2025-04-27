@@ -14,7 +14,7 @@ interface props {
     userId: string;
 }
 
-const ProfileCard: React.FC<props> = ({userId}) => {
+const ProfileCard: React.FC<props> = ({ userId }) => {
     const { user: currentUser } = useAuthStore();
     const { data, isPending, isError, refetch } = useGetUser(userId!);
     const { showToast } = useToastStore();
@@ -36,7 +36,7 @@ const ProfileCard: React.FC<props> = ({userId}) => {
         }
     }, [data]);
 
-    if (!data?.data || isPending) return <ProfileSkeleton/>;
+    if (!data?.data || isPending) return <ProfileSkeleton />;
 
     const profile = data.data.user.profile;
     const user = data.data.user;
@@ -51,10 +51,10 @@ const ProfileCard: React.FC<props> = ({userId}) => {
         setIsFollowing(newFollow);
 
         followMutation.mutate(profile.id, {
-            onError: (error) => {
+            onError: () => {
                 setIsFollowing(!newFollow);
                 showToast(
-                    error.message || "Failed to update follow status",
+                    "Failed to update follow status",
                     "error"
                 );
             },
