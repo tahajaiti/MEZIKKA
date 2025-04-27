@@ -30,7 +30,7 @@
   - JWT-based email/password login and registration
 - **User Profiles**
   - Edit username, avatar, and bio
-  - View other users' profiles, followers, and followings
+  - View other users' profiles, songs, playlists, followers, and followings
 - **Social Features**
   - Follow/unfollow other users
   - Like songs and playlists
@@ -38,7 +38,7 @@
 - **Music Creation**
   - Use an in-app music creation tool with recording support
   - Assign unique keys to songs for saving and loading music state
-  - Upload, edit, and delete songs
+  - Upload, and delete songs
 - **Playlists**
   - Create public playlists with custom covers and names
   - Edit and delete playlists
