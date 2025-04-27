@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\ISongService;
 use App\Helpers\Res;
 use App\Http\Requests\SongPostRequest;
 use App\Http\Requests\SongUpdateRequest;
 use App\Models\Song;
-use App\Services\SongService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 class SongController extends Controller
 {
 
-    private SongService $songService;
+    private ISongService $songService;
 
-    public function __construct(SongService $songService)
+    public function __construct(ISongService $songService)
     {
         $this->songService = $songService;
     }

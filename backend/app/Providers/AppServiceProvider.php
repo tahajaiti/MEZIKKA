@@ -11,6 +11,19 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->bind('App\Contracts\ISongService', 'App\Services\SongService');
+        $this->app->bind('App\Contracts\IPlaylistService', 'App\Services\PlaylistService');
+        $this->app->bind('App\Contracts\ISearchService', 'App\Services\SearchService');
+        $this->app->bind('App\Contracts\IAuthService', 'App\Services\AuthService');
+        $this->app->bind('App\Contracts\IProfileService', 'App\Services\ProfileService');
+        $this->app->bind('App\Contracts\IPlaylistService', 'App\Services\PlaylistService');
+        $this->app->bind('App\Contracts\IPlaylistItemService', 'App\Services\PlaylistItemService');
+        $this->app->bind('App\Contracts\IGenreService', 'App\Services\GenreService');
+        $this->app->bind('App\Contracts\IFollowService', 'App\Services\FollowService');
+
+
+
+
     }
 
     /**

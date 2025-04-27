@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\IGenreService;
 use App\Models\Genre;
 use App\Helpers\Res;
 use App\Http\Requests\GenrePostRequest;
-use App\Services\GenreService;
 
 class GenreController extends Controller
 {
-    private GenreService $genreService;
+    private IGenreService $genreService;
 
-    public function __construct(GenreService $genreService)
+    public function __construct(IGenreService $genreService)
     {
         $this->genreService = $genreService;
     }

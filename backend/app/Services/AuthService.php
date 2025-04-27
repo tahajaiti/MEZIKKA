@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Contracts\IAuthService;
 use App\Helpers\Gen;
 use App\Models\User;
 use App\Models\Profile;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
 
 
-class AuthService
+class AuthService implements IAuthService
 {
     public function register(RegisterRequest $data)
     {

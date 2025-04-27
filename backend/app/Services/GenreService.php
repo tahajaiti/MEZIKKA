@@ -2,15 +2,16 @@
 
 namespace App\Services;
 
+use App\Contracts\IGenreService;
 use App\Http\Requests\GenrePostRequest;
 use App\Models\Genre;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
-class GenreService
+class GenreService implements IGenreService
 {
 
-    public function getImage(string $genre)
+    public function getImage(string $genre): string
     {
 
         $cacheKey = "pexels_img_$genre";
@@ -25,7 +26,7 @@ class GenreService
 
             if ($request->successful()) {
                 $photo = $request->json('photos.0.src.landscape');
-                return $photo;
+                return  $photo;
             }
 
             return null;
@@ -33,7 +34,7 @@ class GenreService
 
 
 
-        return $imgUrl;
+        return (string) $imgUrl;
     }
 
     public function create(GenrePostRequest $request): ?Genre

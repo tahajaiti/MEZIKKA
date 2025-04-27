@@ -5,11 +5,12 @@ namespace App\Services;
 use App\Models\Playlist;
 use App\Models\Song;
 use App\Models\User;
+use App\Services\Interfaces\ISearchService;
 use Illuminate\Http\Request;
 
 
 
-class SearchService
+class SearchService implements ISearchService
 {
 
     public function search(Request $request)

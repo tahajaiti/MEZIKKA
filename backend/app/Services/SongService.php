@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Contracts\ISongService;
 use App\Models\Song;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -10,7 +11,7 @@ use App\Http\Requests\SongUpdateRequest;
 use App\Exceptions\UnauthorizedException;
 use Illuminate\Support\Facades\Storage;
 
-class SongService
+class SongService implements ISongService
 {
     public function index($paginate = true)
     {

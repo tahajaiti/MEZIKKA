@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\IFollowService;
 use App\Helpers\Res;
-use App\Services\FollowService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class FollowController extends Controller
 {
 
-    private FollowService $followService;
+    private IFollowService $followService;
 
-    public function __construct(FollowService $followService)
+    public function __construct(IFollowService $followService)
     {
         $this->followService = $followService;
     }

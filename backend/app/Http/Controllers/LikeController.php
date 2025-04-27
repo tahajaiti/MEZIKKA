@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\ILikeService;
 use App\Helpers\Res;
-use App\Services\LikeService;
 
 class LikeController extends Controller
 {
-    private LikeService $likeService;
+    private ILikeService $likeService;
 
-    public function __construct(LikeService $likeService)
+    public function __construct(ILikeService $likeService)
     {
         $this->likeService = $likeService;
     }

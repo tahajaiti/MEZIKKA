@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\IProfileService;
 use App\Helpers\Res;
 use App\Http\Requests\ProfileUpdateRequest;
-use App\Services\ProfileService;
 use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
 
-    private ProfileService $profileService;
+    private IProfileService $profileService;
 
-    public function __construct(ProfileService $profileService)
+    public function __construct(IProfileService $profileService)
     {
         $this->profileService = $profileService;
     }

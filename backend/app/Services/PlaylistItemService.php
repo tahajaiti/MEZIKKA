@@ -7,54 +7,51 @@ use App\Exceptions\NotFoundException;
 use App\Models\Song;
 use App\Models\Playlist;
 use App\Models\PlaylistItem;
+use App\Contracts\IPlaylistItemService;
 
-class PlaylistItemService
+class PlaylistItemService implements IPlaylistItemService
 {
-
-
-    public function add(string $playlistId, string $songId)
+    public function add(string $playlistId, string $songId): ?Playlist
     {
-        $deja = PlaylistItem::where("playlist_id", $playlistId)
-            ->where('song_id', $songId)->exists();
+        $alreadyExists = PlaylistItem::where('playlist_id', $playlistId)
+            ->where('song_id', $songId)
+            ->exists();
 
-        if ($deja) {
-            throw new DuplicateException('Song already exists');
+        if ($alreadyExists) {
+            throw new DuplicateException('Song already exists in the playlist.');
         }
 
-        $song = Song::where('id', $songId)->first();
+        $song = Song::findOrFail($songId);
 
         $nextOrder = PlaylistItem::nextOrder($playlistId);
 
-        $playlistItem = PlaylistItem::create([
+        PlaylistItem::create([
             'playlist_id' => $playlistId,
             'song_id' => $song->id,
             'order' => $nextOrder
         ]);
 
-        $playlist = Playlist::with('songs')->where('id', $playlistId)->first();
-
-        return $playlistItem ? $playlist : null;
+        return Playlist::with('songs')->find($playlistId);
     }
 
-    public function remove(string $playlistId, string $songId)
+    public function remove(string $playlistId, string $songId): bool
     {
-        $playlistItem = PlaylistItem::where("playlist_id", $playlistId)
-            ->where('song_id', $songId)->first();
+        $playlistItem = PlaylistItem::where('playlist_id', $playlistId)
+            ->where('song_id', $songId)
+            ->first();
 
         if (!$playlistItem) {
-            throw new NotFoundException('Song does not exist in the playlist');
+            throw new NotFoundException('Song does not exist in the playlist.');
         }
 
         $deletedOrder = $playlistItem->order;
 
-        $res = $playlistItem->delete();
+        $playlistItem->delete();
 
         PlaylistItem::where('playlist_id', $playlistId)
-                ->where('order', '>', $deletedOrder)
-                ->decrement('order');
+            ->where('order', '>', $deletedOrder)
+            ->decrement('order');
 
-        return $res ? true : false;
+        return true;
     }
-
-
 }

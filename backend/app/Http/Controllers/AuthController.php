@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\IAuthService;
 use App\Helpers\Res;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
-use App\Services\AuthService;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
 
-    protected AuthService $authService;
+    protected IAuthService $authService;
 
-    public function __construct(AuthService $authService)
+    public function __construct(IAuthService $authService)
     {
         $this->authService = $authService;
     }

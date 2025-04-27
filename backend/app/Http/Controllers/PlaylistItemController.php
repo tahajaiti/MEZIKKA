@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\IPlaylistItemService;
 use App\Helpers\Res;
-use App\Services\PlaylistItemService;
 
 class PlaylistItemController extends Controller
 {
-    private PlaylistItemService $playlistItemService;
+    private IPlaylistItemService $playlistItemService;
 
-    public function __construct(PlaylistItemService $playlistItemService) {
+    public function __construct(IPlaylistItemService $playlistItemService) {
         $this->playlistItemService = $playlistItemService;
     }
 

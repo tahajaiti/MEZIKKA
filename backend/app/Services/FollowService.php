@@ -2,13 +2,14 @@
 
 namespace App\Services;
 
+use App\Contracts\IFollowService;
 use App\Models\Follow;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 
-class FollowService
+class FollowService implements IFollowService
 {
 
 

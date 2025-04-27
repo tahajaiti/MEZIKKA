@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Res;
-use App\Services\SearchService;
+use App\Contracts\ISearchService;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {
 
-    private SearchService $searchService;
+    private ISearchService $searchService;
 
-    public function __construct(SearchService $searchService)
+    public function __construct(ISearchService $searchService)
     {
         $this->searchService = $searchService;
     }

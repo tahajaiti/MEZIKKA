@@ -1,12 +1,13 @@
 <?php
 namespace App\Services;
 
+use App\Contracts\IProfileService;
 use App\Helpers\Gen;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-class ProfileService
+class ProfileService implements IProfileService
 {
     public function update(ProfileUpdateRequest $request)
     {

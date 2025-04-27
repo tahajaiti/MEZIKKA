@@ -2,13 +2,15 @@
 
 namespace App\Services;
 
+use App\Contracts\ILikeService;
 use App\Models\Like;
 use App\Models\Playlist;
 use App\Models\Song;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use InvalidArgumentException;
 
-class LikeService
+class LikeService implements ILikeService
 {
 
     protected function getLikeable(string $type, string $id)
@@ -20,7 +22,7 @@ class LikeService
         };
     }
 
-    public function index()
+    public function index(): array
     {
         $user = Auth::user();
 
@@ -32,7 +34,7 @@ class LikeService
         ];
     }
 
-    public function getLikedSongs()
+    public function getLikedSongs(): LengthAwarePaginator
     {
         $user = Auth::user();
 
@@ -70,7 +72,7 @@ class LikeService
         return 'liked';
     }
 
-    public function getLikeCount(string $type, string $id)
+    public function getLikeCount(string $type, string $id): array
     {
         $likeable = $this->getLikeable($type, $id);
 

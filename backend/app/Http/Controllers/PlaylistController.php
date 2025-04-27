@@ -4,16 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Res;
 use App\Models\Playlist;
-use App\Services\PlaylistService;
 use App\Http\Requests\PlaylistPostRequest;
 use App\Http\Requests\PlaylistUpdateRequest;
+use App\Contracts\IPlaylistService;
 use Illuminate\Support\Facades\Gate;
 
 class PlaylistController extends Controller
 {
-    private PlaylistService $playlistService;
+    private IPlaylistService $playlistService;
 
-    public function __construct(PlaylistService $playlistService)
+    public function __construct(IPlaylistService $playlistService)
     {
         $this->playlistService = $playlistService;
     }
