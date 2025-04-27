@@ -1,13 +1,13 @@
-import { useEffect, useRef, useState } from "react"
-import { Pause, Play, Volume2 } from "lucide-react"
-import { Link } from "react-router"
-import { formatTime, formatUrl } from "../../util/Formatters"
-import PlayerSkeleton from "./PlayerSkeleton"
-import usePlayerStore from "../../stores/usePlayerStore"
-import songService from "../../api/services/song/service"
-import MobilePlayer from "./MobilePlayer"
-import { useMobile } from "../../util/useMobile"
-import LikeBtn from "../Like/LikeBtn"
+import { useEffect, useRef, useState } from "react";
+import { Pause, Play, Volume2 } from "lucide-react";
+import { Link } from "react-router";
+import { formatTime, formatUrl } from "../../util/Formatters";
+import PlayerSkeleton from "./PlayerSkeleton";
+import usePlayerStore from "../../stores/usePlayerStore";
+import songService from "../../api/services/song/service";
+import MobilePlayer from "./MobilePlayer";
+import { useMobile } from "../../util/useMobile";
+import LikeBtn from "../Like/LikeBtn";
 
 const Player = () => {
   const { isPlaying, setIsPlaying, currentSong, setVolume, volume } = usePlayerStore();
@@ -39,7 +39,7 @@ const Player = () => {
           setIsLoading(false);
         }
       }
-    }
+    };
 
     loadAudio();
 
@@ -47,7 +47,7 @@ const Player = () => {
       if (audioUrl) {
         URL.revokeObjectURL(audioUrl);
       }
-    }
+    };
   }, [currentSong]);
 
   useEffect(() => {
@@ -56,51 +56,56 @@ const Player = () => {
         audioRef.current.play().catch((err) => {
           console.error("Error playing audio:", err);
           setIsPlaying(false);
-        })
+        });
       } else {
         audioRef.current.pause();
       }
     }
-  }, [isPlaying, setIsPlaying])
+  }, [isPlaying, setIsPlaying]);
 
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume;
     }
-  }, [volume])
+  }, [volume]);
 
   const handleTime = () => {
     if (audioRef.current) {
       const now = Date.now();
-      if (now - lastUpdateRef.current > 250) {
-        console.log(audioRef.current.currentTime);
+      if (now - lastUpdateRef.current > 100) {
         setProgress(audioRef.current.currentTime);
         lastUpdateRef.current = now;
       }
     }
-  }
+  };
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = Number.parseFloat(e.target.value)
+    const newTime = Number.parseFloat(e.target.value);
     setProgress(newTime);
     if (audioRef.current) {
       audioRef.current.currentTime = newTime;
     }
-  }
+  };
 
   const handleMetadata = () => {
     if (audioRef.current && !isNaN(audioRef.current.duration)) {
       setDuration(audioRef.current.duration);
     }
-  }
+  };
 
   const handleVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setVolume(Number.parseFloat(e.target.value) / 100)
-  }
+    setVolume(Number.parseFloat(e.target.value) / 100);
+  };
 
+  const handleEnded = () => {
+    setIsPlaying(false);
+    if (audioRef.current) {
+      setProgress(audioRef.current.duration);
+    }
+  };
 
   if (isLoading || !currentSong) {
-    return <PlayerSkeleton />
+    return <PlayerSkeleton />;
   }
 
   if (isMobile) {
@@ -123,17 +128,17 @@ const Player = () => {
             onLoadedData={() => {
               if (isPlaying && audioRef.current) {
                 audioRef.current.play().catch((err) => {
-                  console.error("Error playing audio:", err)
-                  setIsPlaying(false)
-                })
+                  console.error("Error playing audio:", err);
+                  setIsPlaying(false);
+                });
               }
             }}
-            onEnded={() => setIsPlaying(false)}
+            onEnded={handleEnded}
             preload="auto"
           />
         )}
       </>
-    )
+    );
   }
 
   return (
@@ -157,7 +162,7 @@ const Player = () => {
             {currentSong.user?.name || "Unknown Artist"}
           </Link>
         </div>
-        <LikeBtn type="song" where="player" song={currentSong}/>
+        <LikeBtn type="song" where="player" song={currentSong} />
       </div>
 
       <div className="flex flex-col items-center gap-2 col-span-1 md:col-span-1">
@@ -182,11 +187,11 @@ const Player = () => {
               type="range"
               value={progress}
               onChange={handleSeek}
-              max={duration || 100}
+              max={duration || 1}
               min={0}
               step={0.01}
               disabled={!currentSong || isLoading}
-              className="flex-1 w-full h-2 appearance-none accent-red-500 rounded outline-none cursor-pointer transtion-all duration-300"
+              className="flex-1 w-full h-2 appearance-none accent-red-500 rounded outline-none cursor-pointer transition-all duration-300"
               style={{
                 background: `linear-gradient(to right, #ef4444 ${(progress / (duration || 1)) * 100}%, #27272a ${(progress / (duration || 1)) * 100}%)`,
               }}
@@ -224,18 +229,17 @@ const Player = () => {
           onLoadedData={() => {
             if (isPlaying && audioRef.current) {
               audioRef.current.play().catch((err) => {
-                console.error("Error playing audio:", err)
-                setIsPlaying(false)
-              })
+                console.error("Error playing audio:", err);
+                setIsPlaying(false);
+              });
             }
           }}
-          onEnded={() => setIsPlaying(false)}
+          onEnded={handleEnded}
           preload="auto"
         />
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Player
-
+export default Player;

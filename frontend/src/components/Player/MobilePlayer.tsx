@@ -1,9 +1,10 @@
-import { Heart, Pause, Play, X } from "lucide-react"
+import { Pause, Play, X } from "lucide-react"
 import type React from "react"
 import { useState } from "react"
 import { formatTime, formatUrl } from "../../util/Formatters"
 import SongData from "../../types/Song"
 import { Link } from "react-router"
+import LikeBtn from "../Like/LikeBtn"
 
 interface MobilePlayerProps {
     currentSong: SongData
@@ -95,7 +96,7 @@ const MobilePlayer: React.FC<MobilePlayerProps> = ({
                         max={duration || 0}
                         min={0}
                         step={0.1}
-                        className="w-full accent-red-500 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer transition-all"
+                        className="w-full accent-red-500 h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer transition-all"
                     />
 
                     <div className="flex justify-between mt-2">
@@ -105,9 +106,7 @@ const MobilePlayer: React.FC<MobilePlayerProps> = ({
                 </div>
 
                 <div className="flex items-center justify-center gap-8">
-                    <button className="text-white hover:text-red-500 transition-all">
-                        <Heart className="h-7 w-7 hover:fill-current" />
-                    </button>
+                    <LikeBtn type="song" where="player" song={currentSong} />
 
                     <button
                         onClick={() => setIsPlaying(!isPlaying)}
