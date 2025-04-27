@@ -3,9 +3,9 @@ import { Route as RouteType } from '.';
 import ProtectedRoute from './ProtectedRoute';
 
 const render = (routes: RouteType[]) => {
-    return routes.map(({ path, component: Component, layout: Layout, auth }) => {
+    return routes.map(({ path, component: Component, layout: Layout, auth, admin }) => {
         const element = auth ? (
-            <ProtectedRoute>
+            <ProtectedRoute admin={admin}>
                 <Component />
             </ProtectedRoute>
         ) : (
