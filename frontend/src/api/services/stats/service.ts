@@ -1,20 +1,24 @@
 import api from "../..";
 import Response from "../../../types/Response";
 
+
+
 interface Stats {
-    total_users: number;
-    total_songs: number;
-    total_playlists: number;
-    total_genres: number;
+    total: number;
+    growth: number;
 }
 
 
 
-const getStats = api.get<Response<Stats>>(`/statistics`);
 
+const getUserStats = (period: number) => api.get<Response<Stats>>(`/stats/user/${period}`);
+const getSongStats = (period: number) => api.get<Response<Stats>>(`/stats/song/${period}`);
+const getPlaylistStats = (period: number) => api.get<Response<Stats>>(`/stats/playlist/${period}`);
 
 const statsService = {
-    getStats,
+    getUserStats,
+    getSongStats,
+    getPlaylistStats,
 }
 
 export default statsService;
