@@ -4,9 +4,13 @@ import GenreAddForm from './GenreAddForm';
 import GenresTable from './GenresTable';
 import { useGetPaginatedGenres } from '../../../api/services/genre/query';
 import GenrePagination from './GenrePagination';
+import GenreEditForm from './GenreEditForm';
+import Genre from '../../../types/Genre';
 
 const GenreTab = () => {
   const [addOpen, setAddOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editGenre, setEditGenre] = useState<Genre | null>(null);
   const [page, setPage] = useState(1);
 
   const { data, refetch } = useGetPaginatedGenres(page);
@@ -30,7 +34,11 @@ const GenreTab = () => {
       </div>
 
       <div className='h-full w-full flex justify-between flex-col gap-4'>
-        <GenresTable genres={data?.data.data ?? []} />
+        <GenresTable 
+          genres={data?.data.data ?? []} 
+          setEditOpen={() => setEditOpen(true)}
+          setEditGenre={(genre: Genre) => setEditGenre(genre)}
+        />
         <GenrePagination
           currentPage={data?.data.current_page ?? 1}
           lastPage={data?.data.last_page ?? 1}
@@ -45,6 +53,11 @@ const GenreTab = () => {
         <GenreAddForm onClose={() => setAddOpen(false)} />
       )}
 
+      {editOpen && (
+        <GenreEditForm
+        genre={editGenre!} 
+        onClose={() => setEditOpen(false)}/>
+      )}
 
     </div>
   )

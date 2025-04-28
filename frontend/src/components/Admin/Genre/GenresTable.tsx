@@ -1,16 +1,18 @@
 import React from 'react'
 import Genre from '../../../types/Genre'
 import { formatDate } from '../../../util/Formatters';
-import { Trash } from 'lucide-react';
+import { Edit, Trash } from 'lucide-react';
 import useConfirmStore from '../../../stores/useConfirmStore';
 import { useDeleteGenre } from '../../../api/services/genre/query';
 import useToastStore from '../../../stores/useToastStore';
 
 interface props {
     genres: Genre[];
+    setEditOpen: () => void;
+    setEditGenre: (genre: Genre) => void;
 }
 
-const GenresTable = ({ genres }: props) => {
+const GenresTable = ({ genres, setEditGenre, setEditOpen }: props) => {
     const { showModal } = useConfirmStore();
     const { showToast } = useToastStore();
     const { mutate } = useDeleteGenre();
@@ -52,10 +54,21 @@ const GenresTable = ({ genres }: props) => {
                                             <button
                                                 className="text-red-500 hover:text-red-600 transition-all cursor-pointer"
                                                 onClick={(e) => handleRemove(e, genre.id)}
-                                                title="Remove from playlist"
-                                                aria-label="Remove from playlist"
+                                                title="Remove genre"
+                                                aria-label="Remove genre"
                                             >
                                                 <Trash size={18} />
+                                            </button>
+                                            <button
+                                                className="text-cyan-500 hover:text-cyan-600 transition-all cursor-pointer"
+                                                onClick={() => {
+                                                    setEditGenre(genre);
+                                                    setEditOpen();
+                                                }}
+                                                title="Edit genre"
+                                                aria-label="Edit genre"
+                                            >
+                                                <Edit size={18} />
                                             </button>
 
                                         </div>
