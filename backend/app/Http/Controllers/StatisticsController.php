@@ -59,4 +59,26 @@ class StatisticsController extends Controller
         return Res::success($likeGrowth, 'Likes growth retrieved successfully');
     }
 
+    public function getTopGenres()
+    {
+        $topGenres = $this->statisticsService->getTopGenres();
+
+        if (!$topGenres) {
+            return Res::error('Failed to get top genres');
+        }
+
+        return Res::success($topGenres, 'Top genres retrieved successfully');
+    }
+
+    public function getTopSongs()
+    {
+        $topSongs = $this->statisticsService->getTopSongs();
+
+        if (!$topSongs) {
+            return Res::error('Failed to get top songs');
+        }
+
+        return Res::success($topSongs, 'Top songs retrieved successfully');
+    }
+
 }

@@ -67,4 +67,12 @@ class StatisticsService implements IStatisticsService
     public function getLikeStats(int $period): array{
         return $this->getStatsForModel(Like::class, $period);
     }
+
+    public function getTopGenres() {
+        return Genre::withCount('songs')->orderByDesc('songs_count')->take(5)->get();
+    }
+
+    public function getTopSongs() {
+        return Song::withCount('likes')->orderByDesc('likes_count')->take(5)->get();
+    }
 }
