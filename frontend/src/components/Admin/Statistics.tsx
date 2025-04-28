@@ -1,12 +1,14 @@
-import { Disc, List, Tag, User } from 'lucide-react'
+import { Disc, Heart, List, User } from 'lucide-react'
 import StatCard from './StatCard'
-import { useGetPlaylistStats, useGetSongStats, useGetUserStats } from '../../api/services/stats/query'
+import { useGetLikeStats, useGetPlaylistStats, useGetSongStats, useGetUserStats } from '../../api/services/stats/query'
 import { useState } from 'react';
 
 const Statistics = () => {
-    const [userPeriod, setUserPeriod] = useState(7);
-    const [songPeriod, setSongPeriod] = useState(7);
-    const [playlistPeriod, setPlaylistPeriod] = useState(7);
+    const [userPeriod, setUserPeriod] = useState(1);
+    const [songPeriod, setSongPeriod] = useState(1);
+    const [playlistPeriod, setPlaylistPeriod] = useState(1);
+    const [likePeriod, setLikePeriod] = useState(1);
+    const { data: likeData, isPending: likePending, refetch: likeRefetch } = useGetLikeStats(likePeriod);
     const { data: userData, isPending: userPending, refetch: userRefetch } = useGetUserStats(userPeriod);
     const { data: songData, isPending: songPending, refetch: songRefetch } = useGetSongStats(songPeriod);
     const { data: playlistData, isPending: playlistPending, refetch: playlistRefetch } = useGetPlaylistStats(playlistPeriod);
@@ -23,6 +25,11 @@ const Statistics = () => {
     const handlePlaylistStats = (period: number) => {
         setPlaylistPeriod(period);
         playlistRefetch();
+    }
+
+    const handleLikeStats = (period: number) => {
+        setLikePeriod(period);
+        likeRefetch();
     }
 
 
@@ -49,13 +56,13 @@ const Statistics = () => {
             />
 
             <StatCard
-                title='Genres'
-                value={100}
-                growth={100}
-                isPending={false}
-                handler={handleUserStats}
-                setter={setUserPeriod}
-                icon={<Tag className="w-5 h-5" />}
+                title='Likes'
+                value={likeData?.data?.total ?? 0}
+                growth={likeData?.data?.growth ?? 0}
+                isPending={likePending}
+                handler={handleLikeStats}
+                setter={setLikePeriod}
+                icon={<Heart className="w-5 h-5" />}
             />
 
             <StatCard
