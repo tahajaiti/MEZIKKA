@@ -4,7 +4,6 @@ namespace App\Contracts;
 
 use App\Models\Song;
 use App\Http\Requests\SongPostRequest;
-use App\Http\Requests\SongUpdateRequest;
 
 interface ISongService
 {
@@ -20,7 +19,7 @@ interface ISongService
 
     public function create(SongPostRequest $request): ?Song;
 
-    public function update(SongUpdateRequest $request, string $songId): ?Song;
 
     public function destroy(string $songId): bool;
+
 }

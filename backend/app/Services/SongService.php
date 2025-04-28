@@ -7,8 +7,6 @@ use App\Models\Song;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\SongPostRequest;
-use App\Http\Requests\SongUpdateRequest;
-use App\Exceptions\UnauthorizedException;
 use Illuminate\Support\Facades\Storage;
 
 class SongService implements ISongService
@@ -84,22 +82,9 @@ class SongService implements ISongService
         return Song::create($data);
     }
 
-    public function update(SongUpdateRequest $request, string $songId): ?Song
-    {
-        $song = $this->authorizeUserSong($songId);
-        $data = $request->validated();
-
-        if ($request->hasFile('cover_file')) {
-            $data['cover_path'] = $this->handleFileUpload($request, 'cover_file', 'covers');
-        }
-
-        return $song->update($data) ? $song : null;
-    }
-
     public function destroy(string $songId): bool
     {
-        $song = $this->authorizeUserSong($songId);
-
+        $song = Song::findOrFail($songId);
         $res = $song->delete();
         Storage::disk('public')->delete($song->file_path);
         Storage::disk('public')->delete($song->cover_path);
@@ -112,14 +97,4 @@ class SongService implements ISongService
         return $request->hasFile($fileInputName) ? $request->file($fileInputName)->store($storagePath, 'public') : null;
     }
 
-    private function authorizeUserSong(string $songId)
-    {
-        $song = Song::where('id', $songId)->where('user_id', Auth::id())->first();
-
-        if (!$song) {
-            throw new UnauthorizedException();
-        }
-
-        return $song;
-    }
 }

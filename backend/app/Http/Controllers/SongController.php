@@ -5,9 +5,7 @@ namespace App\Http\Controllers;
 use App\Contracts\ISongService;
 use App\Helpers\Res;
 use App\Http\Requests\SongPostRequest;
-use App\Http\Requests\SongUpdateRequest;
 use App\Models\Song;
-use Illuminate\Support\Facades\Gate;
 
 class SongController extends Controller
 {
@@ -26,16 +24,27 @@ class SongController extends Controller
     public function index()
     {
         $res = $this->songService->index(false);
-        if ($res){
+        if ($res) {
             return Res::success($res);
         }
 
         return Res::error('Failed to get songs');
     }
 
-    public function userSongs(string $id) {
+    public function getPaginated()
+    {
+        $res = $this->songService->index(true);
+        if ($res) {
+            return Res::success($res);
+        }
+
+        return Res::error('Failed to get paginated songs');
+    }
+
+    public function userSongs(string $id)
+    {
         $res = $this->songService->userSongs($id);
-        if ($res){
+        if ($res) {
             return Res::success($res);
         }
 
@@ -43,17 +52,19 @@ class SongController extends Controller
     }
 
 
-    public function getByGenre(string $genre) {
+    public function getByGenre(string $genre)
+    {
         $res = $this->songService->getByGenre($genre);
-        if ($res){
+        if ($res) {
             return Res::success($res);
         }
         return Res::error('Failed to get songs by genre');
     }
 
-    public function getMostLiked() {
+    public function getMostLiked()
+    {
         $res = $this->songService->getMostLiked(false);
-        if ($res){
+        if ($res) {
             return Res::success($res);
         }
         return Res::error('Failed to get most liked songs');
@@ -80,7 +91,7 @@ class SongController extends Controller
     {
         $res = $this->songService->show($id);
 
-        if ($res){
+        if ($res) {
             return Res::success($res, 'Song retrieved successfully');
         }
 
@@ -88,23 +99,10 @@ class SongController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     */
-    public function update(SongUpdateRequest $request, string $songId)
-    {
-        Gate::authorize('update', Song::where('id', $songId)->first());
-        $res = $this->songService->update($request, $songId);
-        return $res ?
-            Res::success($res, 'Song updated succesfully', 200)
-            : Res::error('Failed to update song', 400);
-    }
-
-    /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        Gate::authorize('delete', Song::where('id', $id)->first());
         $res = $this->songService->destroy($id);
         return $res ? Res::success(null, 'Song deleted successfully', 200)
             : Res::error('Failed to delete song', 400);
