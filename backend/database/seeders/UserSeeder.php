@@ -14,21 +14,34 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->count(1)->create();
-        Profile::factory()->count(1)->create();
-
-        User::factory(1)->create([
+        User::factory()->create([
             'email' => 'admin@admin.com',
             'password' => Hash::make('password'),
             'name' => 'Admin',
             'role_id' => 1,
+            'created_at' => now()->subDays(rand(1, 365)),
+            'updated_at' => now()->subDays(rand(1, 365)),
         ]);
 
-        Profile::factory(1)->create([
-            'user_id' => 2,
+        Profile::factory()->create([
+            'user_id' => 1,
             'bio' => 'Admin user',
             'username' => 'admin',
-            'avatar' => 'https://example.com/avatar.jpg',
+            'avatar' => 'hehe',
+            'created_at' => now()->subDays(rand(1, 365)),
+            'updated_at' => now()->subDays(rand(1, 365)),
         ]);
+
+        User::factory(40)->create();
+
+        foreach (range(1, 40) as $i) {
+            Profile::factory()->create([
+                'user_id' => $i + 1,
+                'created_at' => now()->subDays(rand(1, 365)),
+                'updated_at' => now()->subDays(rand(1, 365)),
+            ]);
+        }
+
+
     }
 }

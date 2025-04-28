@@ -85,8 +85,9 @@ Route::middleware('jwt')->group(function () {
         Route::get('/stats/user/{period}', [StatisticsController::class, 'getUserStats'])->name('statistics.index');
         Route::get('/stats/song/{period}', [StatisticsController::class, 'getSongStats'])->name('statistics.song');
         Route::get('/stats/playlist/{period}', [StatisticsController::class, 'getPlaylistStats'])->name('statistics.playlist');
+        Route::get('/stats/like/{period}', [StatisticsController::class, 'getLikeStats'])->name('statistics.like');
 
-        
+
     });
 
 
