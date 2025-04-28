@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useCreateGenre } from '../../../api/services/genre/query';
+import useToastStore from '../../../stores/useToastStore';
 
 interface Props {
     onClose: () => void;
@@ -7,6 +8,7 @@ interface Props {
 
 const GenreAddForm = ({ onClose }: Props) => {
     const [name, setName] = useState('');
+    const { showToast } = useToastStore();
 
     useEffect(() => {
         const handleKeyUp = (e: KeyboardEvent) => {
@@ -26,13 +28,20 @@ const GenreAddForm = ({ onClose }: Props) => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
+        if (!name || name.length < 2) {
+            showToast('Name must be at least 2 characters long', 'error');
+            return;
+        };
+
         mutate(name, {
             onSuccess: () => {
                 setName('');
                 onClose();
+                showToast('Genre created successfully', 'success');
             },
             onError: () => {
                 setName('');
+                showToast('An error occurred while creating the genre', 'error');
             }
         });
     }
