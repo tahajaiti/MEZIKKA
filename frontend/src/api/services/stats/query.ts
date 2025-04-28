@@ -36,3 +36,21 @@ export const useGetLikeStats = (period: number) => {
         retry: 1,
     })
 }
+
+export const useGetTopGenres = () => {
+    return useQuery({
+        queryKey: ["top-genres"],
+        queryFn: () => statsService.getTopGenres(),
+        staleTime: 1000 * 60 * 5,
+        retry: 1,
+    })
+}
+
+export const useGetTopSongs = () => {
+    return useQuery({
+        queryKey: ["top-songs"],
+        queryFn: () => statsService.getTopSongs(),
+        staleTime: 1000 * 60 * 5,
+        retry: 1,
+    })
+}
