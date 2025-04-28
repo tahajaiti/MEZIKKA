@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Contracts\IGenreService;
-use App\Models\Genre;
 use App\Helpers\Res;
+use App\Models\Genre;
+use Illuminate\Http\Request;
+use App\Contracts\IGenreService;
 use App\Http\Requests\GenrePostRequest;
 
 class GenreController extends Controller
@@ -19,12 +20,17 @@ class GenreController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Res::success(Genre::all());
+        $page = $request->input('page');
+
+        $genres = $page ? $this->genreService->getPaginated() : $this->genreService->getAll();
+
+        return Res::success($genres);
     }
 
-    public function getImage(string $genre) {
+    public function getImage(string $genre)
+    {
         $res = $this->genreService->getImage($genre);
         if ($res) {
             return Res::success($res);

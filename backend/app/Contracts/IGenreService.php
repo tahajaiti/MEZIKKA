@@ -7,6 +7,10 @@ use App\Models\Genre;
 
 interface IGenreService
 {
+    public function getAll(): array;
+
+    public function getPaginated(): array;
+
     public function getImage(string $genre): ?string;
 
     public function create(GenrePostRequest $request): ?Genre;

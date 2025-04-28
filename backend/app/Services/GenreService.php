@@ -11,6 +11,16 @@ use Illuminate\Support\Facades\Http;
 class GenreService implements IGenreService
 {
 
+    public function getAll(): array
+    {
+        return Genre::all()->toArray();
+    }
+
+    public function getPaginated(): array
+    {
+        return Genre::paginate(10)->toArray();
+    }
+
     public function getImage(string $genre): string
     {
 
