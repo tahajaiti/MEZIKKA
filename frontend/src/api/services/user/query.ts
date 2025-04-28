@@ -41,3 +41,15 @@ export const useGetPaginatedUsers = (page: number) => {
         retry: 1,
     });
 }
+
+export const useDeleteUser = () => {
+    const queryClient = useQueryClient();
+
+
+    return useMutation({
+        mutationFn: (data: {id: number}) => userService.deleteUser(data.id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['users']});
+        }
+    })
+}

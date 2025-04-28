@@ -9,10 +9,13 @@ const updateProfile = (data: FormData) => api.post<Response<Profile>>(`/profile?
 
 const getPaginated = (page: number) => api.get<PaginateResponse<User[]>>(`/users?page=${page}`);
 
+const deleteUser = (id: number) => api.delete<Response<boolean>>(`/users/${id}`);
+
 const userService = {
     getUserById,
     getPaginated,
     updateProfile,
+    deleteUser
 }
 
 export default userService;
