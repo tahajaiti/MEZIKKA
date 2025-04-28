@@ -26,11 +26,11 @@ const UsersTable = ({ users }: props) => {
     }
 
     return (
-        <div className="bg-zinc-900/50 backdrop-blur-lg rounded-sm overflow-hidden shadow-lg border border-zinc-700 w-full">
+        <div className="bg-zinc-900/50 backdrop-blur-lg rounded-xl overflow-hidden shadow-lg border border-zinc-700 w-full">
             <div className="overflow-x-auto">
                 <table className="w-full">
                     <thead>
-                        <tr className="bg-black/50">
+                        <tr className="bg-zinc-900/70">
                             <th className="py-3 px-6 text-left text-xs font-medium uppercase tracking-wider">ID</th>
                             <th className="py-3 px-6 text-left text-xs font-medium uppercase tracking-wider">Name</th>
                             <th className="py-3 px-6 text-left text-xs font-medium uppercase tracking-wider">email</th>
@@ -66,7 +66,7 @@ const UsersTable = ({ users }: props) => {
                         ) : (
                             <tr>
                                 <td colSpan={5} className="py-8 text-center text-zinc-400">
-                                    No users found. Try a different search or add a new genre.
+                                    No users found.
                                 </td>
                             </tr>
                         )}
