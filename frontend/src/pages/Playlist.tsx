@@ -5,10 +5,14 @@ import { useEffect, useState } from 'react'
 import PlaylistCreateForm from '../components/Playlist/PlaylistCreateForm'
 import { useGetPlaylists } from '../api/services/playlist/query'
 import { PlaylistData } from '../types/Playlist'
+import PlaylistUpdateForm from '../components/Playlist/PlaylistUpdateForm'
+
 
 const Playlist = () => {
     const [addOpen, setAddOpen] = useState(false);
     const [playlists, setPlaylists] = useState<PlaylistData[]>([]);
+    const [updateOpen, setUpdateOpen] = useState(false);
+    const [selectedPlaylist, setSelectedPlaylist] = useState<PlaylistData | null>(null);
     const { data, isError } = useGetPlaylists();
 
     useEffect(() => {
@@ -37,6 +41,16 @@ const Playlist = () => {
 
             {addOpen && (<PlaylistCreateForm onClose={() => setAddOpen(false)} />)}
 
+            {updateOpen && selectedPlaylist && (
+                <PlaylistUpdateForm
+                    onClose={() => {
+                        setUpdateOpen(false);
+                        setSelectedPlaylist(null);
+                    }}
+                    playlist={selectedPlaylist}
+                />
+            )}
+
             <div className='w-full flex justify-between items-center'>
                 <h1 className='text-2xl font-bold'>Manage Playlists</h1>
                 <button
@@ -51,7 +65,13 @@ const Playlist = () => {
             <div className='grid grid-cols-5 items-center gap-20'>
                 {playlists.length > 0 ? (
                     playlists.map((playlist) => (
-                        <PlaylistCard key={playlist.id} playlist={playlist} />
+                        <PlaylistCard
+                            key={playlist.id}
+                            playlist={playlist}
+                            onEdit={() => {
+                                setSelectedPlaylist(playlist);
+                                setUpdateOpen(true);
+                            }} />
                     ))
                 ) : (
                     <div className="w-full text-center text-gray-500">
