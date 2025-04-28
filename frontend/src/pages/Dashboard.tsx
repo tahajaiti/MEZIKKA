@@ -2,6 +2,7 @@ import { motion } from 'motion/react'
 import Statistics from '../components/Admin/Stats/Statistics'
 import { useSearchParams } from 'react-router'
 import GenreTab from '../components/Admin/Genre/GenreTab';
+import UserTab from '../components/Admin/User/UserTab';
 
 const Dashboard = () => {
   const [params] = useSearchParams();
@@ -22,8 +23,11 @@ const Dashboard = () => {
 
       {tab === 'genres' && (
         <GenreTab />
-      )
-      }
+      )}
+
+      {tab === 'users' && (
+        <UserTab />
+      )}
 
     </motion.div>
   )
