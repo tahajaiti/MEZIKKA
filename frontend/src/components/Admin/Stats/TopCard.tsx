@@ -1,5 +1,5 @@
 import React from 'react';
-import { TopGenres, TopSongs } from '../../api/services/stats/service';
+import { TopGenres, TopSongs } from '../../../api/services/stats/service';
 import { Disc, Tag } from 'lucide-react';
 
 interface TopCardProps {

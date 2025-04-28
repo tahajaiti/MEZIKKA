@@ -1,5 +1,5 @@
 import { motion } from 'motion/react'
-import Statistics from '../components/Admin/Statistics'
+import Statistics from '../components/Admin/Stats/Statistics'
 import { useSearchParams } from 'react-router'
 import GenreTab from '../components/Admin/Genre/GenreTab';
 

@@ -1,6 +1,6 @@
 import { Disc, Heart, List, User } from 'lucide-react'
 import StatCard from './StatCard'
-import { useGetLikeStats, useGetPlaylistStats, useGetSongStats, useGetTopGenres, useGetTopSongs, useGetUserStats } from '../../api/services/stats/query'
+import { useGetLikeStats, useGetPlaylistStats, useGetSongStats, useGetTopGenres, useGetTopSongs, useGetUserStats } from '../../../api/services/stats/query'
 import { useState } from 'react';
 import TopCard from './TopCard';
 
@@ -82,7 +82,7 @@ const Statistics = () => {
             </div>
 
             <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6'>
-                <TopCard type='genres' data={topGenresData?.data ?? []} isLoading={topGenresPending}/>
+                <TopCard type='genres' data={topGenresData?.data ?? []} isLoading={topGenresPending} />
                 <TopCard type='songs' data={topSongsData?.data ?? []} isLoading={topSongsPending} />
             </div>
         </div>

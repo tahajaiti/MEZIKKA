@@ -1,4 +1,4 @@
-import { periods } from "../../util/StatPeriods";
+import { periods } from "../../../util/StatPeriods";
 import { useState } from "react";
 
 interface Props {
