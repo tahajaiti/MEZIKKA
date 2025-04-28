@@ -2,30 +2,42 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\IUserService;
 use App\Helpers\Res;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+
 
 class UserController extends Controller
 {
 
+    private IUserService $userService;
 
-    public function show(Request $request, string $id)
+    public function __construct(IUserService $userService)
     {
-        $user = User::with(['profile', 'followers'])->find($id);
+        $this->userService = $userService;
+    }
 
-        if (!$user) {
-            return Res::error('User not found', 404);
+    public function index(){
+        $res = $this->userService->getPaginated();
+
+        if ($res) {
+            return Res::success($res);
         }
 
-        $authUser = Auth::user();
-        $isFollowing = $authUser ? $authUser->isFollowing($user->id) : false;
+        return Res::error('Failed to get users');
+    }
 
-        return Res::success([
-            'user' => $user,
-            'is_following' => $isFollowing,
-        ]);
+    public function show(string $id)
+    {
+        $res = $this->userService->show($id);
+
+        if ($res) {
+            return Res::success([
+                'user' => $res['user'],
+                'is_following' => $res['is_following'],
+            ]);
+        }
+        return Res::error('User not found', 404);
     }
 
 
