@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useMutation, UseMutationResult, useQuery, UseQueryResult } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, UseMutationResult, useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import Response from "../../../types/Response";
 import songService from "./service";
 import SongData from "../../../types/Song";
@@ -89,4 +89,22 @@ export const useInfiniteGenreSongs = (genre: string) => {
         },
         retry: 1,
     });
+}
+
+export const useGetPaginatedSongs = (page: number) => {
+    return useQuery({
+        queryKey: ['songs'],
+        queryFn: () => songService.getPaginated(page)
+    })
+}
+
+export const useDeleteSong = () => {
+    const QueryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (data:{id: number}) => songService.deleteSong(data.id),
+        onSuccess: () => { 
+            QueryClient.invalidateQueries({queryKey: ['songs']});
+        }
+    })
 }
