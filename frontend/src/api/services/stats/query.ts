@@ -27,3 +27,12 @@ export const useGetPlaylistStats = (period: number) => {
         retry: 1,
     })
 }
+
+export const useGetLikeStats = (period: number) => {
+    return useQuery({
+        queryKey: ["like-stats", period],
+        queryFn: () => statsService.getLikeStats(period),
+        staleTime: 1000 * 60 * 5,
+        retry: 1,
+    })
+}
