@@ -1,12 +1,31 @@
 import React from 'react'
 import Genre from '../../../types/Genre'
 import { formatDate } from '../../../util/Formatters';
+import { Trash } from 'lucide-react';
+import useConfirmStore from '../../../stores/useConfirmStore';
+import { useDeleteGenre } from '../../../api/services/genre/query';
+import useToastStore from '../../../stores/useToastStore';
 
 interface props {
     genres: Genre[];
 }
 
 const GenresTable = ({ genres }: props) => {
+    const { showModal } = useConfirmStore();
+    const { showToast } = useToastStore();
+    const { mutate } = useDeleteGenre();
+
+    const handleRemove = (e: React.MouseEvent, id: number) => {
+        e.stopPropagation();
+        showModal("Are you sure you want to remove this genre?", () => {
+            mutate({ id }, {
+                onSuccess: () => {
+                    showToast("Genre removed successfully", "success");
+                }
+            })
+        });
+    }
+
     return (
         <div className="bg-zinc-900/50 backdrop-blur-lg rounded-sm overflow-hidden shadow-lg border border-zinc-700 w-full">
             <div className="overflow-x-auto">
@@ -30,6 +49,15 @@ const GenresTable = ({ genres }: props) => {
                                     <td className="py-4 px-6 text-zinc-400">{formatDate(genre.updated_at)}</td>
                                     <td className="py-4 px-6 text-right">
                                         <div className="flex justify-end space-x-2">
+                                            <button
+                                                className="text-red-500 hover:text-red-600 transition-all cursor-pointer"
+                                                onClick={(e) => handleRemove(e, genre.id)}
+                                                title="Remove from playlist"
+                                                aria-label="Remove from playlist"
+                                            >
+                                                <Trash size={18} />
+                                            </button>
+
                                         </div>
                                     </td>
                                 </tr>
