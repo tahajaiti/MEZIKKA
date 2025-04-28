@@ -1,11 +1,11 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import genreService from "./service";
 
 
 
 export const useGetGenres = () => {
     return useQuery({
-        queryKey: [`genres-${new Date()}`],
+        queryKey: ['genres'],
         queryFn: genreService.getAll,
         staleTime: 5 * 60 * 1000,
         retry: 1
@@ -14,7 +14,7 @@ export const useGetGenres = () => {
 
 export const useGetPaginatedGenres = (page: number) => {
     return useQuery({
-        queryKey: [`genres-${page}`],
+        queryKey: ['genres'],
         queryFn: () => genreService.getPaginated(page),
         staleTime: 5 * 60 * 1000,
         retry: 1
@@ -31,6 +31,8 @@ export const useGetGenreImg = (genre: string) => {
 }
 
 export const useCreateGenre = () => {
+    const QueryClient = useQueryClient();
+
     return useMutation({
         mutationFn: genreService.createGenre,
         onError: (error) => {
@@ -38,6 +40,7 @@ export const useCreateGenre = () => {
         },
         onSuccess: () => {
             console.log("Genre created successfully");
+            QueryClient.invalidateQueries({ queryKey: ['genres'] });
         }
     })
 }
