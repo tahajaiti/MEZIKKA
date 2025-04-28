@@ -18,7 +18,7 @@ class GenreService implements IGenreService
 
     public function getPaginated(): array
     {
-        return Genre::paginate(10)->toArray();
+        return Genre::orderBy('id', 'asc')->paginate(10)->toArray();
     }
 
     public function getImage(string $genre): string
