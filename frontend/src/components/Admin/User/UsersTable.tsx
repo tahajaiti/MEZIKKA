@@ -1,9 +1,9 @@
 import { formatDate } from '../../../util/Formatters';
 import { Trash } from 'lucide-react';
 import useConfirmStore from '../../../stores/useConfirmStore';
-import { useDeleteGenre } from '../../../api/services/genre/query';
 import useToastStore from '../../../stores/useToastStore';
 import User from '../../../types/User';
+import { useDeleteUser } from '../../../api/services/user/query';
 
 interface props {
     users: User[];
@@ -12,7 +12,7 @@ interface props {
 const UsersTable = ({ users }: props) => {
     const { showModal } = useConfirmStore();
     const { showToast } = useToastStore();
-    const { mutate } = useDeleteGenre();
+    const { mutate } = useDeleteUser();
 
     const handleRemove = (e: React.MouseEvent, id: number) => {
         e.stopPropagation();
