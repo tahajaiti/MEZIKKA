@@ -1,13 +1,11 @@
-import { useMutation, UseMutationResult, useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import userService from "./service";
-import { UserResponse } from "../../../types/User";
-import Profile from "../../../types/Profile";
-import Response from "../../../types/Response";
+
 import useAuthStore from "../../../stores/authStore";
 
 
 
-export const useGetUser = (id: string | number): UseQueryResult<Response<UserResponse>, Error> => {
+export const useGetUser = (id: string | number) => {
     return useQuery({
         queryKey: ['user', id],
         queryFn: () => userService.getUserById(id),
@@ -16,7 +14,7 @@ export const useGetUser = (id: string | number): UseQueryResult<Response<UserRes
     });
 };
 
-export const useUpdateProfile = (): UseMutationResult<Response<Profile>, Error, FormData> => {
+export const useUpdateProfile = () => {
     const queryClient = useQueryClient();
     const { setProfile } = useAuthStore.getState();
 
@@ -34,3 +32,12 @@ export const useUpdateProfile = (): UseMutationResult<Response<Profile>, Error, 
         }
     });
 } 
+
+export const useGetPaginatedUsers = (page: number) => {
+    return useQuery({
+        queryKey: ['users', page],
+        queryFn: () => userService.getPaginated(page),
+        staleTime: 5 * 60 * 1000,
+        retry: 1,
+    });
+}
