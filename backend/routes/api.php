@@ -93,6 +93,7 @@ Route::middleware('jwt')->group(function () {
         Route::apiResource('genres', GenreController::class)->except(['index', 'show']);
 
         Route::get('/users', [UserController::class, 'index'])->name('user.index');
+        Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('user.delete');
     });
 
 
