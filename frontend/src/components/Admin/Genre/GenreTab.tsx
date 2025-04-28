@@ -1,13 +1,22 @@
 import { Plus } from 'lucide-react'
-import React, { useState } from 'react'
+import { useEffect, useState } from 'react'
 import GenreAddForm from './GenreAddForm';
+import GenresTable from './GenresTable';
+import { useGetPaginatedGenres } from '../../../api/services/genre/query';
+import GenrePagination from './GenrePagination';
 
 const GenreTab = () => {
   const [addOpen, setAddOpen] = useState(false);
+  const [page, setPage] = useState(1);
 
+  const { data, refetch } = useGetPaginatedGenres(page);
+
+  useEffect(() => {
+    refetch();
+  }, [page, refetch]);
 
   return (
-    <div className="flex flex-col gap-4 items-center px-8">
+    <div className="flex flex-col gap-8 items-center px-8 h-full">
 
       <div className='w-full flex justify-between items-center'>
         <h1 className='text-2xl font-bold'>Manage Genres</h1>
@@ -20,9 +29,21 @@ const GenreTab = () => {
         </button>
       </div>
 
-    {addOpen && (
-      <GenreAddForm onClose={() => setAddOpen(false)} />
-    )}
+      <div className='h-full w-full flex justify-between flex-col gap-4'>
+        <GenresTable genres={data?.data.data ?? []} />
+        <GenrePagination
+          currentPage={data?.data.current_page ?? 1}
+          lastPage={data?.data.last_page ?? 1}
+          setPage={(page: number) => setPage(page)}
+          page={page}
+        />
+      </div>
+
+
+
+      {addOpen && (
+        <GenreAddForm onClose={() => setAddOpen(false)} />
+      )}
 
 
     </div>
