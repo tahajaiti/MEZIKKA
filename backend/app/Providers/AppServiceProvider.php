@@ -22,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind('App\Contracts\IFollowService', 'App\Services\FollowService');
         $this->app->bind('App\Contracts\IStatisticsService', 'App\Services\StatisticsService');
         $this->app->bind('App\Contracts\ILikeService', 'App\Services\LikeService');
+        $this->app->bind('App\Contracts\IUserService', 'App\Services\UserService');
 
 
     }

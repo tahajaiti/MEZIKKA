@@ -51,7 +51,7 @@ Route::middleware('jwt')->group(function () {
     Route::get('/songs/genre/{genre}', [SongController::class, 'getByGenre'])->name('songs.genre');
 
     // Genres
-    Route::apiResource('genres', GenreController::class);
+    Route::get('/genres', [GenreController::class, 'index'])->name('genres.index');
     Route::get('/genres/image/{genre}', [GenreController::class, 'getImage'])->name('genres.image');
 
     // Playlists
@@ -89,6 +89,10 @@ Route::middleware('jwt')->group(function () {
 
         Route::get('/stats/top/genres', [StatisticsController::class, 'getTopGenres'])->name('statistics.top.genres');
         Route::get('/stats/top/songs', [StatisticsController::class, 'getTopSongs'])->name('statistics.top.songs');
+
+        Route::apiResource('genres', GenreController::class)->except(['index', 'show']);
+
+        Route::get('/users', [UserController::class, 'index'])->name('user.index');
     });
 
 
