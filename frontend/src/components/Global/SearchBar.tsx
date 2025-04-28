@@ -1,31 +1,27 @@
-import { Search } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router";
+import { Search } from "lucide-react";
 
-const SearchBar = () => {
-    const [searchTerm, setSearchTerm] = useState("");
-    const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
-    const query = searchParams.get("q") || "";
+interface Props {
+    term: string;
+    setTerm: (term: string) => void;
+}
 
-    useEffect(() => {
-        setSearchTerm(query);
-    }, [query]);
+const SearchBar = ({ term, setTerm }: Props) => {
+    const [inputValue, setInputValue] = useState(term);
 
     useEffect(() => {
-        const trimmed = searchTerm.trim();
-
-        if (trimmed === "") {
-            navigate("/search");
-            return;
-        }
-
-        const timeout = setTimeout(() => {
-            navigate(`/search?q=${encodeURIComponent(trimmed)}`);
+        const handler = setTimeout(() => {
+            setTerm(inputValue);
         }, 500);
 
-        return () => clearTimeout(timeout);
-    }, [searchTerm, navigate]);
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [inputValue, setTerm]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInputValue(e.target.value);
+    };
 
     return (
         <div className="w-full max-w-5xl mx-auto relative">
@@ -38,10 +34,10 @@ const SearchBar = () => {
                 <div className="relative w-full">
                     <input
                         type="text"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        value={inputValue}
+                        onChange={handleChange}
                         placeholder="Search beats, artists, playlists..."
-                        className="w-full bg-zinc-800/80 backdrop-blur-sm  rounded-md py-4 pl-10 pr-4 text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all"
+                        className="w-full bg-zinc-800/80 backdrop-blur-sm rounded-md py-4 pl-10 pr-4 text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all"
                         autoFocus
                     />
                     <Search
