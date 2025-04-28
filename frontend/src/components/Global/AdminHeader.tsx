@@ -25,10 +25,10 @@ const AdminHeader = () => {
     };
 
     const adminNavItems = [
-        { icon: <Users className="w-4 h-4" />, label: "Users", path: "/admin/users" },
-        { icon: <Tag className="w-4 h-4" />, label: "Genres", path: "/admin/genres" },
-        { icon: <Disc className="w-4 h-4" />, label: "Songs", path: "/admin/songs" },
-        { icon: <BarChart className="w-4 h-4" />, label: "Statistics", path: "/admin/Statistics" },
+        { icon: <Users className="w-4 h-4" />, label: "Users", path: "/admin?tab=users" },
+        { icon: <Tag className="w-4 h-4" />, label: "Genres", path: "/admin?tab=genres" },
+        { icon: <Disc className="w-4 h-4" />, label: "Songs", path: "/admin?tab=songs" },
+        { icon: <BarChart className="w-4 h-4" />, label: "Statistics", path: "/admin?tab=statistics" },
     ];
 
     return (
