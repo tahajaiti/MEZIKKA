@@ -124,7 +124,6 @@ const Login = () => {
           Don't have an account?{' '}
           <Link to="/signup" className="text-white font-bold">SIGN UP</Link>
         </p>
-        <p className="text-white/40 text-sm text-center">Reset Password</p>
         {/* <div className="bg-white/40 w-full h-1"></div>
         <ButtonLarge
           type="button"

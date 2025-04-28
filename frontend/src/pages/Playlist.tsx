@@ -62,7 +62,7 @@ const Playlist = () => {
                 </button>
             </div>
 
-            <div className='grid grid-cols-5 items-center gap-20'>
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 items-center gap-20'>
                 {playlists.length > 0 ? (
                     playlists.map((playlist) => (
                         <PlaylistCard
