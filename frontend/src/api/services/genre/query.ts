@@ -44,3 +44,15 @@ export const useCreateGenre = () => {
         }
     })
 }
+
+export const useDeleteGenre = () => {
+    const QueryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (data: { id: number }) => genreService.deleteGenre(data.id),
+        onSuccess: () => {
+            QueryClient.invalidateQueries({ queryKey: ['genres'] });
+        }
+    })
+
+}
