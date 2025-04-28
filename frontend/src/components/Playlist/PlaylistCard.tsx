@@ -10,9 +10,10 @@ import { useNavigate } from "react-router"
 
 interface PlaylistCardProps {
     playlist: PlaylistData
+    onEdit: () => void
 }
 
-const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
+const PlaylistCard = ({ playlist, onEdit }: PlaylistCardProps) => {
     const { user } = useAuthStore();
     const { showModal } = useConfirmStore();
     const { showToast } = useToastStore();
@@ -32,6 +33,11 @@ const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
         });
     }
 
+    const handleEdit = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        onEdit();
+    }
+
     return (
         <div
             onClick={() => navigate(`/playlist/${playlist.id}`)}
@@ -49,7 +55,9 @@ const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
 
                 {isOwner && (
                     <div className="absolute top-2 right-2 flex gap-2">
-                        <button className="p-2 rounded-full bg-zinc-800/80 hover:bg-zinc-400/90 cursor-pointer transition-all text-zinc-200 hover:text-white">
+                        <button
+                            onClick={handleEdit}
+                            className="p-2 rounded-full bg-zinc-800/80 hover:bg-zinc-400/90 cursor-pointer transition-all text-zinc-200 hover:text-white">
                             <Edit size={16} />
                         </button>
                         <button

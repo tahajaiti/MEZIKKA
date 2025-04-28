@@ -38,7 +38,7 @@ const Search = () => {
             className="w-full h-full pt-10 px-6 sm:px-12 pb-12 bg-gradient-to-br from-purple-950 to-zinc-950 
             text-white overflow-y-auto flex flex-col gap-10"
         >
-            <SearchBar/>
+            <SearchBar term={term} setTerm={(term: string) => setTerm(term)}/>
 
             <section className="max-w-5xl mx-auto w-full">
                 <h2 className="text-3xl sm:text-4xl font-bold mb-6">

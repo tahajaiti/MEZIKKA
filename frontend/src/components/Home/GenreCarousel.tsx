@@ -12,14 +12,7 @@ const GenreCarousel = () => {
 
     useEffect(() => {
         if (data && data.data) {
-            const defaultGenre: Genre = {
-                id: 0,
-                name: "All Genres",
-                created_at: new Date(),
-                updated_at: new Date(),
-            }
-            const allGenres = [defaultGenre, ...data.data]
-            setGenres(allGenres);
+            setGenres(data.data);
         }
     }, [data])
 
