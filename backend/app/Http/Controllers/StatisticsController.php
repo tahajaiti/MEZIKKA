@@ -49,4 +49,14 @@ class StatisticsController extends Controller
         return Res::success($playlistGrowth, 'Playlist growth retrieved successfully');
     }
 
+    public function getLikeStats(string $period) {
+        $likeGrowth = $this->statisticsService->getLikeStats($period);
+
+        if (!$likeGrowth) {
+            return Res::error('Failed to get likes growth');
+        }
+
+        return Res::success($likeGrowth, 'Likes growth retrieved successfully');
+    }
+
 }
