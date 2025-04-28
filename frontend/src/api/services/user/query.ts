@@ -23,7 +23,6 @@ export const useUpdateProfile = (): UseMutationResult<Response<Profile>, Error, 
     return useMutation({
         mutationFn: (data: FormData) => userService.updateProfile(data),
         onSuccess: (res) => {
-            console.log(res);
             if (res.data) {
                 const id = res.data.id;
                 queryClient.invalidateQueries({ queryKey: ['user', id] });

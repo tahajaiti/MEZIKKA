@@ -43,7 +43,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ profile, close }) => {
                 close();
             },
             onError: () => {
-                showToast("File size is too big", "error");
+                showToast("Username already taken", "error");
             },
         });
     }

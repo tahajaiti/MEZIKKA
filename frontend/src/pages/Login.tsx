@@ -59,8 +59,13 @@ const Login = () => {
       login(
         { email: formData.email, password: formData.password },
         {
-          onSuccess: () => {
+          onSuccess: (res) => {
+            if (res.data?.user.role.name === 'admin') {
+              navigate('/admin');
+              return;
+            }
             navigate('/');
+            return;
           },
         }
       );
