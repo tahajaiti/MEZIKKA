@@ -14,6 +14,7 @@ interface PivotSongs extends SongData {
 
 const createPlaylist = (data: FormData) => api.post<Response<PlaylistData>>('/playlists', data);
 const deletePlaylist = (id: string) => api.delete<Response<PlaylistData>>(`/playlists/${id}`);
+const updatePlaylist = (id: string, data: FormData) => api.post<Response<PlaylistData>>(`/playlists/${id}?_method=put`, data);
 
 const getPlaylists = () => api.get<Response<PlaylistData[]>>('/playlists');
 const getPlaylist = (id: string, pageParam: number = 1) => api.get<Response<PlaylistData>>(`/playlists/${id}?page=${pageParam}`);
@@ -28,6 +29,7 @@ const removeSongFromPlaylist = (playlistId: string, songId: string) => api.delet
 const playlistService = {
     createPlaylist,
     deletePlaylist,
+    updatePlaylist,
     getPlaylists,
     getPlaylist,
     getUserPlaylist,

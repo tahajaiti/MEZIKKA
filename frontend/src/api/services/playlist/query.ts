@@ -24,6 +24,16 @@ export const useDeletePlaylist = () => {
     });
 }
 
+export const useUpdatePlaylist = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (data: { id: string, formData: FormData }) => playlistService.updatePlaylist(data.id, data.formData),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['playlists'] });
+        },
+    });
+}
+
 export const useGetPlaylists = () => {
     return useQuery({
         queryKey: ['playlists'],
