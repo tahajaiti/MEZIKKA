@@ -77,21 +77,23 @@ class PlaylistService implements IPlaylistService
 
     public function update(PlaylistUpdateRequest $request, Playlist $playlist)
     {
-        $path = $request->hasFile('cover_file') ? $request->file('cover_file')->store('playlist/covers', 'public') : null;
+        $data = $request->validated();
 
-        if ($playlist && $playlist->cover && $path) {
-            Storage::disk('public')->delete($playlist->cover);
+        if ($request->hasFile('cover_file')) {
+            if ($playlist->cover) {
+                Storage::disk('public')->delete($playlist->cover);
+            }
+            $data['cover'] = $request->file('cover_file')->store('playlist/covers', 'public');
         }
 
-        $data = $request->validated();
-        $data['cover'] = $path;
-        $data['title'] = $request->title ?? $playlist->title;
-        $data['description'] = $request->description ?? $playlist->description;
+        $data['title'] = $data['title'] ?? $playlist->title;
+        $data['description'] = $data['description'] ?? $playlist->description;
 
-        $res = $playlist->update($data);
+        $updated = $playlist->update($data);
 
-        return $res ? $request : null;
+        return $updated ? $playlist : null;
     }
+
 
     public function delete(Playlist $playlist): bool
     {
