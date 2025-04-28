@@ -12,12 +12,14 @@ const getImg = (genre: string) => api.get<Response<string>>(`/genres/image/${gen
 
 const createGenre = (name: string) => api.post<Response<Genre>>('/genres', { name });
 const deleteGenre = (id: number) => api.delete(`/genres/${id}`);
+const editGenre = (id: number, name: string) => api.put(`/genres/${id}`, { name });
 
 const genreService = {
     getAll,
     getPaginated,
     createGenre,
     deleteGenre,
+    editGenre,
     getImg
 }
 

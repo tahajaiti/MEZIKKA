@@ -56,3 +56,14 @@ export const useDeleteGenre = () => {
     })
 
 }
+
+export const useEditGenre = () => {
+    const QueryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (data: {id: number, name: string}) => genreService.editGenre(data.id, data.name),
+        onSuccess: () => {
+            QueryClient.invalidateQueries({ queryKey: ['genres'] });
+        }
+    })
+}
