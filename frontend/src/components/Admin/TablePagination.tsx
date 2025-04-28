@@ -1,5 +1,3 @@
-import React from 'react'
-
 interface props {
     currentPage: number;
     lastPage: number;
@@ -7,7 +5,7 @@ interface props {
     page: number;
 }
 
-const GenrePagination = ({ currentPage, lastPage, setPage, page }: props) => {
+const TablePagination = ({ currentPage, lastPage, setPage, page }: props) => {
 
     const pages = Array.from({ length: lastPage }, (_, i) => i + 1);
 
@@ -26,7 +24,7 @@ const GenrePagination = ({ currentPage, lastPage, setPage, page }: props) => {
                     key={num}
                     onClick={() => setPage(num)}
                     className={`px-4 py-2 rounded-sm cursor-pointer transition-all
-                                ${num === page ? 'bg-red-500 hover:bg-zinc-800' : 'bg-zinc-800 hover:bg-red-500'}`}
+                                ${num === page ? 'bg-red-500 hover:bg-zinc-600' : 'bg-zinc-800 hover:bg-red-600'}`}
                 >
                     {num}
                 </button>
@@ -43,4 +41,4 @@ const GenrePagination = ({ currentPage, lastPage, setPage, page }: props) => {
     )
 }
 
-export default GenrePagination
+export default TablePagination

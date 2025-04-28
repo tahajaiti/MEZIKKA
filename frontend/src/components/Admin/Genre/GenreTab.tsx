@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import GenreAddForm from './GenreAddForm';
 import GenresTable from './GenresTable';
 import { useGetPaginatedGenres } from '../../../api/services/genre/query';
-import GenrePagination from './GenrePagination';
 import GenreEditForm from './GenreEditForm';
 import Genre from '../../../types/Genre';
+import TablePagination from '../TablePagination';
 
 const GenreTab = () => {
   const [addOpen, setAddOpen] = useState(false);
@@ -39,7 +39,7 @@ const GenreTab = () => {
           setEditOpen={() => setEditOpen(true)}
           setEditGenre={(genre: Genre) => setEditGenre(genre)}
         />
-        <GenrePagination
+        <TablePagination
           currentPage={data?.data.current_page ?? 1}
           lastPage={data?.data.last_page ?? 1}
           setPage={(page: number) => setPage(page)}
