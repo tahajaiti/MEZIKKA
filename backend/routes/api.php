@@ -87,7 +87,8 @@ Route::middleware('jwt')->group(function () {
         Route::get('/stats/playlist/{period}', [StatisticsController::class, 'getPlaylistStats'])->name('statistics.playlist');
         Route::get('/stats/like/{period}', [StatisticsController::class, 'getLikeStats'])->name('statistics.like');
 
-
+        Route::get('/stats/top/genres', [StatisticsController::class, 'getTopGenres'])->name('statistics.top.genres');
+        Route::get('/stats/top/songs', [StatisticsController::class, 'getTopSongs'])->name('statistics.top.songs');
     });
 
 
