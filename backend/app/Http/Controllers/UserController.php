@@ -40,5 +40,15 @@ class UserController extends Controller
         return Res::error('User not found', 404);
     }
 
+    public function destroy(string $id)
+    {
+        $res = $this->userService->delete($id);
+
+        if ($res) {
+            return Res::success('User deleted successfully');
+        }
+
+        return Res::error('Failed to delete user', 404);
+    }
 
 }

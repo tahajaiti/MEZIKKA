@@ -34,4 +34,18 @@ class UserService implements IUserService
         ];
     }
 
+    public function delete(string $id): bool {
+        $user = User::find($id);
+
+        if (!$user) {
+            throw new Exception('User does not exist');
+        }
+
+        if ($user->id === Auth::user()->id) {
+            throw new Exception('You cannot delete your own account');
+        }
+
+        return $user->delete();
+    }
+
 }
