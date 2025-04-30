@@ -14,11 +14,7 @@ use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Authentication Routes
-|--------------------------------------------------------------------------
-*/
+// Auth
 Route::prefix('auth')->group(function () {
     Route::post('register', [AuthController::class, 'register'])->name('register');
     Route::post('login', [AuthController::class, 'login'])->name('login');
@@ -27,57 +23,33 @@ Route::prefix('auth')->group(function () {
     Route::middleware('jwt')->post('logout', [AuthController::class, 'logout'])->name('logout');
 });
 
-/*
-|--------------------------------------------------------------------------
-| Protected Routes
-|--------------------------------------------------------------------------
-*/
+// Protected
 Route::middleware('jwt')->group(function () {
-    /*
-    |----------------------
-    | Search Routes
-    |----------------------
-    */
+    // Search
     Route::prefix('search')->group(function () {
         Route::get('/', [SearchController::class, 'search'])->name('search');
         Route::get('user', [SearchController::class, 'userSearch'])->name('user.search');
         Route::get('playlist', [SearchController::class, 'playlistSearch'])->name('playlist.search');
     });
 
-    /*
-    |----------------------
-    | File Routes
-    |----------------------
-    */
+    // File
     Route::get('files/{path}', [FileController::class, 'serve'])
         ->where('path', '.*')
         ->name('files.serve');
 
-    /*
-    |----------------------
-    | Profile Routes
-    |----------------------
-    */
+    // Profile
     Route::prefix('profile')->group(function () {
         Route::get('/', [ProfileController::class, 'show'])->name('profile.show');
         Route::put('/', [ProfileController::class, 'update'])->name('profile.update');
     });
 
-    /*
-    |----------------------
-    | Song Routes
-    |----------------------
-    */
+    // Song
     Route::apiResource('songs', SongController::class);
     Route::get('songs/liked/most', [SongController::class, 'getMostLiked'])->name('songs.most_liked');
     Route::get('songs/user/{id}', [SongController::class, 'userSongs'])->name('songs.user');
     Route::get('songs/genre/{genre}', [SongController::class, 'getByGenre'])->name('songs.genre');
 
-    /*
-    |----------------------
-    | Genre Routes
-    |----------------------
-    */
+    // Genre
     Route::prefix('genres')->group(function () {
         Route::get('/', [GenreController::class, 'index'])->name('genres.index');
         Route::get('image/{genre}', [GenreController::class, 'getImage'])->name('genres.image');
