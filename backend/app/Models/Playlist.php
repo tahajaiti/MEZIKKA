@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Traits\hasLikes;
 use Illuminate\Database\Eloquent\Model;
 
 class Playlist extends Model
 {
-    //
+    use hasLikes;
 
     protected $fillable = [
         'title',
@@ -20,11 +21,6 @@ class Playlist extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function playlistItems()
-    {
-        return $this->hasMany(PlaylistItem::class);
-    }
-
     public function songs()
     {
         return $this->belongsToMany(Song::class, 'playlist_items')
@@ -32,9 +28,4 @@ class Playlist extends Model
             ->withTimestamps()
             ->orderBy('playlist_items.order');
     }
-
-    public function likes()
-{
-    return $this->morphMany(Like::class, 'likeable');
-}
 }

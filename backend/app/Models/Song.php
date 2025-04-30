@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\hasLikes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Song extends Model
 {
-    use HasFactory;
+    use HasFactory, hasLikes;
 
     protected $fillable = [
         'name',
@@ -46,15 +47,10 @@ class Song extends Model
             ->withTimestamps();
     }
 
-    public function likes()
-    {
-        return $this->morphMany(Like::class, 'likeable');
-    }
-
     protected function likedByUser(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->likes()->where('user_id', Auth::id())->exists()
+            get: fn() => $this->likes()->where('user_id', Auth::id())->exists()
         );
     }
 }
