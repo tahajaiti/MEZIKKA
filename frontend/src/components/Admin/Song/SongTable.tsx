@@ -5,6 +5,7 @@ import useConfirmStore from '../../../stores/useConfirmStore';
 import useToastStore from '../../../stores/useToastStore';
 import SongData from '../../../types/Song';
 import { useDeleteSong } from '../../../api/services/song/query';
+import { useNavigate } from 'react-router';
 
 interface props {
     songs: SongData[];
@@ -14,6 +15,8 @@ const SongTable = ({ songs }: props) => {
     const { showModal } = useConfirmStore();
     const { showToast } = useToastStore();
     const { mutate } = useDeleteSong();
+
+    const navigate = useNavigate();
 
     const handleRemove = (e: React.MouseEvent, id: number) => {
         e.stopPropagation();
@@ -43,7 +46,9 @@ const SongTable = ({ songs }: props) => {
                     <tbody className="divide-y divide-zinc-700">
                         {songs.length > 0 ? (
                             songs.map((song) => (
-                                <tr key={song.id} className="hover:bg-zinc-700/30 transition-colors">
+                                <tr 
+                                onClick={() => navigate(`/song/${song.id}`)}
+                                key={song.id} className="hover:bg-zinc-700/30 transition-colors cursor-pointer">
                                     <td className="py-4 px-6">{song.id}</td>
                                     <td className="py-4 px-6">
                                         <img

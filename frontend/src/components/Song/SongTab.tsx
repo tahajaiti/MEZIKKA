@@ -48,7 +48,8 @@ const SongTab = ({ id }: props) => {
         return <div className="text-center py-8 text-red-500">Failed to get likes</div>;
     }
 
-    const allSongs = data.pages.flatMap((page) => page.data?.data || []);
+    const allSongs = data.pages.flatMap((page) => page.data.data || []);
+    
 
 
     return (
