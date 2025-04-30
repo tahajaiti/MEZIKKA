@@ -5,7 +5,7 @@ import genreService from "./service";
 
 export const useGetGenres = () => {
     return useQuery({
-        queryKey: ['genres'],
+        queryKey: ['genres', 'all'],
         queryFn: genreService.getAll,
         staleTime: 5 * 60 * 1000,
         retry: 1
@@ -14,7 +14,7 @@ export const useGetGenres = () => {
 
 export const useGetPaginatedGenres = (page: number) => {
     return useQuery({
-        queryKey: ['genres'],
+        queryKey: ['genres', 'paginated'],
         queryFn: () => genreService.getPaginated(page),
         staleTime: 5 * 60 * 1000,
         retry: 1
@@ -40,7 +40,8 @@ export const useCreateGenre = () => {
         },
         onSuccess: () => {
             console.log("Genre created successfully");
-            QueryClient.invalidateQueries({ queryKey: ['genres'] });
+            QueryClient.invalidateQueries({ queryKey: ['genres', 'paginated'] });
+            QueryClient.invalidateQueries({ queryKey: ['genres', 'all'] });
         }
     })
 }
