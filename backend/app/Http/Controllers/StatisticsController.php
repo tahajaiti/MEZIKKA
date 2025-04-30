@@ -18,7 +18,7 @@ class StatisticsController extends Controller
 
     public function getUserStats(string $period)
     {
-        $userGrowth = $this->statisticsService->getUserStats($period);
+        $userGrowth = $this->statisticsService->stats('user',$period);
 
         if (!$userGrowth) {
             return Res::error('Failed to get user growth');
@@ -29,7 +29,7 @@ class StatisticsController extends Controller
 
     public function getSongStats(string $period)
     {
-        $songGrowth = $this->statisticsService->getSongStats($period);
+        $songGrowth = $this->statisticsService->stats('song',$period);
 
         if (!$songGrowth) {
             return Res::error('Failed to get song growth');
@@ -40,7 +40,7 @@ class StatisticsController extends Controller
 
     public function getPlaylistStats(string $period)
     {
-        $playlistGrowth = $this->statisticsService->getPlaylistStats($period);
+        $playlistGrowth = $this->statisticsService->stats('playlist',$period);
 
         if (!$playlistGrowth) {
             return Res::error('Failed to get playlist growth');
@@ -50,7 +50,7 @@ class StatisticsController extends Controller
     }
 
     public function getLikeStats(string $period) {
-        $likeGrowth = $this->statisticsService->getLikeStats($period);
+        $likeGrowth = $this->statisticsService->stats('like',$period);
 
         if (!$likeGrowth) {
             return Res::error('Failed to get likes growth');
