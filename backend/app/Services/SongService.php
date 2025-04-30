@@ -26,39 +26,10 @@ class SongService implements ISongService
         return $this->getSongs($paginate, null, $genre);
     }
 
-    private function getSongs($paginate = true, $sortBy = null, $genre = null)
-    {
-        $user = Auth::user();
-
-        $query = Song::with(['user.profile', 'genre'])->withCount('likes');
-
-        if ($sortBy === 'likes_count') {
-            $query->orderByDesc('likes_count');
-        }
-
-        if ($genre && strtolower($genre) !== 'all') {
-            $query->whereHas('genre', function ($q) use ($genre) {
-                $q->whereRaw('name ILIKE ?', [$genre]);
-            });
-        }
-
-        if ($paginate) {
-            $songs = $query->latest()->paginate(10);
-        } else {
-            $songs = $query->latest()->get();
-        }
-
-        $songs->each(function ($song) use ($user) {
-            $song->liked_by_user = $user ? in_array($song->id, $user->likes()->pluck('likeable_id')->toArray()) : false;
-        });
-
-        return $songs;
-    }
-
     public function userSongs(string $id)
     {
         $user = User::findOrFail($id);
-        return Song::where('user_id', $user->id)->get();
+        return Song::where('user_id', $user->id)->paginate(10);
     }
 
     public function show(string $songId): ?Song
@@ -96,5 +67,35 @@ class SongService implements ISongService
     {
         return $request->hasFile($fileInputName) ? $request->file($fileInputName)->store($storagePath, 'public') : null;
     }
+
+    private function getSongs($paginate = true, $sortBy = null, $genre = null)
+    {
+        $user = Auth::user();
+
+        $query = Song::with(['user.profile', 'genre'])->withCount('likes');
+
+        if ($sortBy === 'likes_count') {
+            $query->orderByDesc('likes_count');
+        }
+
+        if ($genre && strtolower($genre) !== 'all') {
+            $query->whereHas('genre', function ($q) use ($genre) {
+                $q->whereRaw('name ILIKE ?', [$genre]);
+            });
+        }
+
+        if ($paginate) {
+            $songs = $query->latest()->paginate(10);
+        } else {
+            $songs = $query->latest()->get();
+        }
+
+        $songs->each(function ($song) use ($user) {
+            $song->liked_by_user = $user ? in_array($song->id, $user->likes()->pluck('likeable_id')->toArray()) : false;
+        });
+
+        return $songs;
+    }
+
 
 }

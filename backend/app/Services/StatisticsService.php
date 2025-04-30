@@ -13,6 +13,52 @@ use InvalidArgumentException;
 class StatisticsService implements IStatisticsService
 {
 
+    private const MODEL_TYPES = [
+        'user' => User::class,
+        'song' => Song::class,
+        'playlist' => Playlist::class,
+        'like' => Like::class,
+    ];
+
+    public function __call($method, $args) {
+
+        if ($method === 'stats'){
+
+            $modelName = self::MODEL_TYPES[$args[0]] ?? null;
+
+            switch ($args[0]) {
+                case 'user':
+                    return $this->getStatsForModel($modelName,$args[1]);
+                case 'song':
+                    return $this->getStatsForModel($modelName,$args[1]);
+                case 'playlist':
+                    return $this->getStatsForModel($modelName,$args[1]);
+                case 'like':
+                    return $this->getStatsForModel($modelName,$args[1]);
+                default:
+                    throw new InvalidArgumentException('Invalid model type provided');
+            }
+        }
+    }
+
+    public function stats(string $modelType, int $period): array
+    {
+        $modelName = self::MODEL_TYPES[$modelType] ?? null;
+
+        if (!$modelName) {
+            throw new InvalidArgumentException('Invalid model type provided');
+        }
+
+        return $this->getStatsForModel($modelName, $period);
+    }
+
+    public function getTopGenres() {
+        return Genre::withCount('songs')->orderByDesc('songs_count')->take(5)->get();
+    }
+
+    public function getTopSongs() {
+        return Song::withCount('likes')->orderByDesc('likes_count')->take(5)->get();
+    }
 
     private function getStatsForModel(string $model, int $period): array
     {
@@ -47,32 +93,5 @@ class StatisticsService implements IStatisticsService
             'total' => $totalCount,
             'growth' => round($growthRate, 2),
         ];
-    }
-
-    public function getUserStats(int $period): array
-    {
-        return $this->getStatsForModel(User::class, $period);
-    }
-
-    public function getSongStats(int $period): array
-    {
-        return $this->getStatsForModel(Song::class, $period);
-    }
-
-    public function getPlaylistStats(int $period): array
-    {
-        return $this->getStatsForModel(Playlist::class, $period);
-    }
-
-    public function getLikeStats(int $period): array{
-        return $this->getStatsForModel(Like::class, $period);
-    }
-
-    public function getTopGenres() {
-        return Genre::withCount('songs')->orderByDesc('songs_count')->take(5)->get();
-    }
-
-    public function getTopSongs() {
-        return Song::withCount('likes')->orderByDesc('likes_count')->take(5)->get();
     }
 }
