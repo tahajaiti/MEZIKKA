@@ -1,16 +1,26 @@
-import { Link, useParams } from 'react-router'
+import { Link, useNavigate, useParams } from 'react-router'
 import { motion } from 'motion/react'
-import { useGetSong } from '../api/services/song/query';
+import { useDeleteSong, useGetSong } from '../api/services/song/query';
 import { formatDate, formatUrl } from '../util/Formatters';
-import { Calendar, Clock, Music, User } from 'lucide-react';
+import { Calendar, Clock, Music, Trash, User } from 'lucide-react';
 import LikeBtn from '../components/Like/LikeBtn';
 import usePlayerStore from '../stores/usePlayerStore';
 import { IoPauseCircle } from 'react-icons/io5';
 import { IoMdPlayCircle } from 'react-icons/io';
+import useAuthStore from '../stores/authStore';
+import useConfirmStore from '../stores/useConfirmStore';
+import useToastStore from '../stores/useToastStore';
 
 const Song = () => {
     const { id } = useParams();
+    const { user: loggedUser } = useAuthStore();
     const { setSong, setIsPlaying, isPlaying, currentSong } = usePlayerStore();
+    const { showModal } = useConfirmStore();
+    const { showToast } = useToastStore();
+
+    const navigate = useNavigate();
+
+    const { mutate } = useDeleteSong();
 
     const { data } = useGetSong(id!);
 
@@ -20,6 +30,8 @@ const Song = () => {
 
     const song = data?.data;
     const user = song?.user;
+
+    const isOwner = loggedUser?.id === user?.id;
 
     const img = formatUrl(data?.data?.cover_path);
     const userImg = formatUrl(user?.profile.avatar);
@@ -33,6 +45,22 @@ const Song = () => {
 
     const handlePause = () => {
         setIsPlaying(false);
+    }
+
+    const handleDelete = () => {
+        showModal("Are you sure you want to delete this song?",
+            () => {
+                mutate({ id: song.id }, {
+                    onSuccess: () => {
+                        showToast('Song deleted successfully', 'success');
+                        navigate('/', { replace: true });
+                    },
+                    onError: () => {
+                        showToast('Error deleting song', 'error');
+                    }
+                });
+            }
+        );
     }
 
     const yes = isPlaying && currentSong?.id === song.id ? true : false;
@@ -88,7 +116,7 @@ const Song = () => {
                             </div>
                         </Link>
                         <div className='scale-125'>
-                            <LikeBtn type='song' where='card' song={song} />
+                            <LikeBtn type='song' where='player' song={song} />
                         </div>
                     </div>
                 </div>
@@ -106,7 +134,17 @@ const Song = () => {
                 </div>
 
                 <div className="bg-zinc-800/50 rounded-xl p-5">
-                    <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4">Beat details</h2>
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider">Beat details</h2>
+                        {isOwner && (
+                            <button
+                                onClick={handleDelete}
+                                className="text-zinc-500 hover:text-red-500 p-1 rounded-md transition-all cursor-pointer"
+                            >
+                                <Trash />
+                            </button>
+                        )}
+                    </div>
 
                     <div className="grid gap-4">
                         <div className="flex items-center justify-between">
