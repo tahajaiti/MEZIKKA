@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useInfinitUserSongs } from '../../api/services/song/query';
+import { useInfiniteUserSongs } from '../../api/services/song/query';
 import { Disc } from 'lucide-react';
 import MiniSongCard from './MiniSongCard';
 
@@ -15,7 +15,7 @@ const SongTab = ({ id }: props) => {
         hasNextPage,
         isFetchingNextPage,
         isPending,
-    } = useInfinitUserSongs(id);
+    } = useInfiniteUserSongs(id);
 
     const loadMoreRef = useRef(null);
 

@@ -1,47 +1,46 @@
-import { useInfiniteQuery, useMutation, UseMutationResult, useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Response from "../../../types/Response";
 import songService from "./service";
 import SongData from "../../../types/Song";
 
 
 
-export const useCreateSong = (): UseMutationResult<
-    Response<SongData>,
-    Error,
-    FormData
-> => {
+export const useCreateSong = () => {
+    const queryClient = useQueryClient();
+
     return useMutation({
         mutationFn: (song: FormData) => songService.createSong(song),
-        onSuccess: (res) => {
-            console.log("Song created successfully", res);
+        onSuccess: (res: Response<SongData>) => {
+            queryClient.invalidateQueries({ queryKey: ['songs'] });
+            queryClient.invalidateQueries({ queryKey: ['song', res.data?.id] });
         },
-        onError: (error) => {
-            console.error("Error creating song", error);
+        onError: (error: Error) => {
+            console.error("Error creating song:", error);
         },
     });
-}
+};
 
-export const useGetSong = (id: string | number): UseQueryResult<Response<SongData>, Error> => {
+export const useGetSong = (id: string | number) => {
     return useQuery({
         queryKey: ['song', id],
         queryFn: () => songService.getSongById(id),
         staleTime: 5 * 60 * 1000,
         retry: 1,
         refetchOnWindowFocus: false,
-        enabled: true,
+        enabled: !!id,
     });
 };
 
-export const useGetFile = (id: string | number): UseQueryResult<ArrayBuffer, Error> => {
+export const useGetFile = (id: string | number) => {
     return useQuery({
         queryKey: ['file', id],
         queryFn: () => songService.getSongFile(id),
         staleTime: 5 * 60 * 1000,
         retry: 1,
         refetchOnWindowFocus: false,
-        enabled: true,
+        enabled: !!id,
     });
-}
+};
 
 export const useGetMostLikedSongs = () => {
     return useQuery({
@@ -50,24 +49,22 @@ export const useGetMostLikedSongs = () => {
         staleTime: 5 * 60 * 1000,
         retry: 1,
         refetchOnWindowFocus: false,
-        enabled: true,
     });
-}
+};
 
-export const useGetAllSongs = (): UseQueryResult<Response<SongData[]>, Error> => {
+export const useGetAllSongs = () => {
     return useQuery({
         queryKey: ['songs'],
         queryFn: () => songService.getAll(),
         staleTime: 5 * 60 * 1000,
         retry: 1,
         refetchOnWindowFocus: false,
-        enabled: true,
     });
-}
+};
 
-export const useInfinitUserSongs = (id: string | number) => {
+export const useInfiniteUserSongs = (id: string | number) => {
     return useInfiniteQuery({
-        queryKey: ['likes'],
+        queryKey: ['user-songs', id],
         queryFn: ({ pageParam = 1 }) => songService.getUserSongs(id, pageParam),
         initialPageParam: 1,
         getNextPageParam: (lastPage) => {
@@ -75,12 +72,13 @@ export const useInfinitUserSongs = (id: string | number) => {
             return current_page < totalPages ? current_page + 1 : undefined;
         },
         retry: 1,
+        enabled: !!id,
     });
-}
+};
 
 export const useInfiniteGenreSongs = (genre: string) => {
     return useInfiniteQuery({
-        queryKey: ['song','genre', genre],
+        queryKey: ['songs', 'genre', genre],
         queryFn: ({ pageParam = 1 }) => songService.getSongsByGenre(genre, pageParam),
         initialPageParam: 1,
         getNextPageParam: (lastPage) => {
@@ -88,23 +86,32 @@ export const useInfiniteGenreSongs = (genre: string) => {
             return current_page < totalPages ? current_page + 1 : undefined;
         },
         retry: 1,
+        enabled: !!genre,
     });
-}
+};
 
 export const useGetPaginatedSongs = (page: number) => {
     return useQuery({
-        queryKey: ['songs'],
-        queryFn: () => songService.getPaginated(page)
-    })
-}
+        queryKey: ['songs', 'paginated', page],
+        queryFn: () => songService.getPaginated(page),
+        staleTime: 5 * 60 * 1000,
+        retry: 1,
+        refetchOnWindowFocus: false,
+        enabled: !!page,
+    });
+};
 
 export const useDeleteSong = () => {
-    const QueryClient = useQueryClient();
+    const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (data:{id: number}) => songService.deleteSong(data.id),
-        onSuccess: () => { 
-            QueryClient.invalidateQueries({queryKey: ['songs']});
-        }
-    })
-}
+        mutationFn: ({ id }: { id: number }) => songService.deleteSong(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['songs'] });
+            queryClient.invalidateQueries({ queryKey: ['user-songs'] });
+        },
+        onError: (error: Error) => {
+            console.error("Error deleting song:", error);
+        },
+    });
+};
