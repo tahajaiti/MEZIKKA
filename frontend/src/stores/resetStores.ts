@@ -11,6 +11,9 @@ export const resetAll = () => {
     try {
         storeResets.forEach((reset) => reset());
         console.log(`Reset ${storeResets.size} stores`);
+
+        console.log(storeResets);
+
     } catch (error) {
         console.error("Error resetting stores:", error);
     }

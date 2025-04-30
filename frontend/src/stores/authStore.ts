@@ -49,6 +49,7 @@ const useAuthStore = create<AuthState>((set) => {
                 localStorage.removeItem("profile");
                 set({ token: null, user: null, profile: null, isAuthenticated: false });
                 resetAll();
+
                 goTo('/login');
             } catch (error) {
                 console.error("Error clearing authentication:", error);
