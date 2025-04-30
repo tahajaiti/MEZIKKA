@@ -6,6 +6,7 @@ import { Link } from "react-router";
 import { logout } from "../../stores/authStore";
 import { useLogout } from "../../api/services/auth/query";
 import { useState, useRef, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Header = () => {
   const { profile, user } = useAuthStore();
@@ -14,12 +15,15 @@ const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const queryClient = useQueryClient();
+
   const isAdmin = user?.role.name === "admin";
 
   const handleLogout = () => {
     mutate(undefined, {
       onSuccess: () => {
         logout();
+        queryClient.clear();
       },
       onError: (error) => {
         console.error("Logout error:", error);
