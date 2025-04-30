@@ -40,7 +40,7 @@ class LikeService implements ILikeService
 
         $liked = $user->likes()
             ->where('likeable_type', Song::class)
-            ->with('likeable')
+            ->with('likeable', 'likeable.user.profile')
             ->paginate(2);
 
         $songs = $liked->getCollection()->map(function ($like) {

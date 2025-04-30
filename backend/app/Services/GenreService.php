@@ -24,7 +24,7 @@ class GenreService implements IGenreService
     public function getImage(string $genre): string
     {
 
-        $cacheKey = "pexels_img_$genre";
+        $cacheKey = "pexel_image_$genre";
 
         $imgUrl = Cache::remember($cacheKey, now()->addDays(7), function () use ($genre) {
             $request = Http::withHeaders([
