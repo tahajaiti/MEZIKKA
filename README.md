@@ -8,9 +8,9 @@
 
 ## Links
 
-[Maquette](https://www.figma.com/design/IKDzDWyTYCZxOX56DyMTni/Untitled?node-id=0-1&t=6ej7F2HelxDlRLUJ-1)
-[Scrum Board](https://trello.com/b/3hW5aSwN/mezikka)
-[Presentation] (https://www.canva.com/design/DAGmHbc9938/GK8ZENhfETbkaKKO3LU0lg/view?utm_content=DAGmHbc9938&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h1458d55eb3)
+- [Maquette](https://www.figma.com/design/IKDzDWyTYCZxOX56DyMTni/Untitled?node-id=0-1&t=6ej7F2HelxDlRLUJ-1)
+- [Scrum Board](https://trello.com/b/3hW5aSwN/mezikka)
+- [Presentation](https://shorturl.at/BjEBz)
 
 ---
 
